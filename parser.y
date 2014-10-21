@@ -11,6 +11,14 @@ extern "C" int yyparse();
 	int ival;
 }
 
+%left '<' '>' '='
+
+%left '+' '-'
+
+%left '*' '/'
+
+%left UMINUS
+
 %token CLASS
 
 %token PUBLIC
@@ -46,8 +54,6 @@ extern "C" int yyparse();
 %token ID
 
 %token INTEGER_LITERAL
-
-%token OP
 
 %token STRING
 
@@ -123,7 +129,11 @@ Statement:
 	;
 
 Exp:
-	Exp OP Exp
+	Exp '*' Exp
+	| Exp '+' Exp
+	| Exp '/' Exp
+	| Exp '-' Exp
+	| '-' Exp %prec UMINUS
 	| Exp "[" Exp "]"
 	| Exp "." LENGTH
 	| Exp "." ID "(" ExpList ")"
