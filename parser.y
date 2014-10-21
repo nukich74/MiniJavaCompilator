@@ -89,10 +89,13 @@ MethodDecl:
 	| PUBLIC Type ID "(" FormalList ")" "{" VarDecls RETURN Exp ";" "}"
 	| PUBLIC Type ID "(" FormalList ")" "{" VarDecls Statements RETURN Exp ";" "}"
 	| PUBLIC Type ID "(" FormalList ")" "{" Statements RETURN Exp ";" "}"
+	| PUBLIC Type ID "(" ")" "{" RETURN Exp ";" "}"
+	| PUBLIC Type ID "(" ")" "{" VarDecls RETURN Exp ";" "}"
+	| PUBLIC Type ID "(" ")" "{" VarDecls Statements RETURN Exp ";" "}"
+	| PUBLIC Type ID "(" ")" "{" Statements RETURN Exp ";" "}"
 	;
 FormalList:
-
-	| Type ID
+	Type ID
 	| Type ID FormalRest
 	;
 FormalRest:
@@ -124,6 +127,7 @@ Exp:
 	| Exp "[" Exp "]"
 	| Exp "." LENGTH
 	| Exp "." ID "(" ExpList ")"
+	| Exp "." ID "(" ")"
 	| INTEGER_LITERAL
 	| TRUE
 	| FALSE
@@ -135,8 +139,7 @@ Exp:
 	| "(" Exp ")"
 	;
 ExpList:
-	
-	| Exp
+	Exp
 	| Exp ExpRest
 	;
 ExpRest:
