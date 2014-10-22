@@ -1,13 +1,14 @@
 %{
 #include <iostream>
 
-using namespace std;
+#define YYSTYPE int
 
 extern "C" int yylex();
 extern "C" int yyparse();
+void yyerror(const char *);
 %}
 
-%union {
+%union{
 	int ival;
 }
 
@@ -87,10 +88,11 @@ VarDecls:
 	;
 VarDecl:
 	Type ID ';'
+	| Type ID error ';'
 	;
 MethodDecls:
 	MethodDecl
-	| MethodDecls MethodDecl
+	| MethodDecl MethodDecl
 	;
 MethodDecl:
 	PUBLIC Type ID '(' FormalList ')' '{' RETURN Exp ';' '}'
@@ -101,6 +103,7 @@ MethodDecl:
 	| PUBLIC Type ID '(' ')' '{' VarDecls RETURN Exp ';' '}'
 	| PUBLIC Type ID '(' ')' '{' VarDecls Statements RETURN Exp ';' '}'
 	| PUBLIC Type ID '(' ')' '{' Statements RETURN Exp ';' '}'
+
 	;
 FormalList:
 	Type ID
@@ -121,13 +124,15 @@ Statements:
 	| Statements Statement
 	;
 Statement:
-	ID '=' Exp
+	ID '=' Exp ';'
 	| ID '[' Exp ']' '=' Exp ';'
 	| SYSTEM_OUT_PRINTLN '(' Exp ')' ';'
 	| '{' '}'
 	| '{' Statements '}'
 	| IF '(' Exp ')' Statement ELSE Statement
 	| WHILE '(' Exp ')' Statement
+	| error ';' { std::cout << "Statement error at : " << @1.first_line << ' ' << @1.first_column << std::endl; }
+	| '{' error '}' { std::cout << "Statement error at : " << @1.first_line << ' ' << @1.first_column << std::endl; }
 	;
 
 Exp:
@@ -161,8 +166,12 @@ ExpRest:
 	
 %%
 
-int main()
+void yyerror( const char* str )
 {
+	std::cout << str << std::endl;
+}
+
+int main() {
 	while( yyparse() != 0 );
 	return 0;
 }

@@ -46,13 +46,11 @@
 
 [a-zA-Z][a-zA-Z0-9]*		{ return ID; }
 
-[0-9]+ 				{ yylval.ival = atoi(yytext); return INTEGER_LITERAL; }
+[0-9]+ 				{ yylval.ival = atoi(yytext); return INTEGER_LITERAL;}
 
 "/*"((("*"[^/])?)|[^*])*"*/"	{}
 
 "//"[^"\n"]+			{}
-
-["&&""<""+""-""*"]		{ return OP; }
 
 [\t\r\n\ ]+			{}
 

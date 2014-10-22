@@ -71,7 +71,7 @@ typedef union YYSTYPE
 {
 
 /* Line 1676 of yacc.c  */
-#line 10 "C:\\Users\\vvorotilov\\Documents\\Visual Studio 2013\\Projects\\Compilers\\Compilers\\parser.y"
+#line 11 "C:\\Users\\Errathy\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\parser.y"
 
 	int ival;
 
@@ -87,4 +87,18 @@ typedef union YYSTYPE
 
 extern YYSTYPE yylval;
 
+#if ! defined YYLTYPE && ! defined YYLTYPE_IS_DECLARED
+typedef struct YYLTYPE
+{
+  int first_line;
+  int first_column;
+  int last_line;
+  int last_column;
+} YYLTYPE;
+# define yyltype YYLTYPE /* obsolescent; will be withdrawn */
+# define YYLTYPE_IS_DECLARED 1
+# define YYLTYPE_IS_TRIVIAL 1
+#endif
+
+extern YYLTYPE yylloc;
 
