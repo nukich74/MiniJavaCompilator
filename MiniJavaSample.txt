@@ -1,0 +1,8 @@
+class Factorial {
+	public static void main(String[] a) {
+		System.out.println( 123 );
+		123 sdgsgufsfsd; ;dasf;
+		seless buggy h;
+		return;
+	}
+}
