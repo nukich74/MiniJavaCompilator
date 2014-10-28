@@ -75,6 +75,7 @@ ClassDecls:
 	;
 MainClass:
 	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements '}' '}'
+	| CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements error '}' '}' { std::cout << "Syntax error : incorrect symbols in Main function in line : " << @16.first_line << std::endl; }
 ClassDecl:
 	CLASS ID '{' '}'
 	| CLASS ID '{' VarDecls '}'
@@ -87,7 +88,7 @@ VarDecls:
 	;
 VarDecl:
 	Type ID ';'
-	| Type error ';' { std::cout << "Error in line : " << @2.first_line << std::endl; }
+	| Type error ';' { std::cout << "Syntax error : incorrect variable definition in line : " << @2.first_line << std::endl; }
 	;
 MethodDecls:
 	MethodDecl
@@ -129,8 +130,8 @@ Statement:
 	| '{' Statements '}'
 	| IF '(' Exp ')' Statement ELSE Statement
 	| WHILE '(' Exp ')' Statement
-	| error ';' { std::cout << "Error in line : " << @1.first_line << std::endl; }
-	| SYSTEM_OUT_PRINTLN error ';' { std::cout << "Error in line : " << @2.first_line << std::endl; }
+	| error ';' { std::cout << "Syntax error : incorrect statement in line :" << @1.first_line << std::endl; }
+	| SYSTEM_OUT_PRINTLN error ';' { std::cout << "Syntax error : incorrect Println-statement in line : " << @2.first_line << std::endl; }
 	;
 
 Exp:
@@ -166,9 +167,5 @@ ExpRest:
 
 void yyerror( const char* str )
 {
-}
-
-int main() {
-	while( yyparse() != 0 );
-	return 0;
+	std::cout << str << std::endl;
 }

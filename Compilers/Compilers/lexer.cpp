@@ -1,6 +1,6 @@
-#line 2 "C:\\Users\\vvorotilov\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
+#line 2 "C:\\Users\\Errathy\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
 
-#line 4 "C:\\Users\\vvorotilov\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
+#line 4 "C:\\Users\\Errathy\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
 
 #define  YY_INT_ALIGNED short int
 
@@ -548,7 +548,7 @@ char *yytext;
 #include "parser.tab.hpp"
 #define YY_DECL extern "C" int yylex()
 #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
-#line 552 "C:\\Users\\vvorotilov\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
+#line 552 "C:\\Users\\Errathy\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
 
 #define INITIAL 0
 
@@ -729,7 +729,7 @@ YY_DECL
     
 #line 12 "lexer.l"
 
-#line 733 "C:\\Users\\vvorotilov\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
+#line 733 "C:\\Users\\Errathy\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
 
 	if ( !(yy_init) )
 		{
@@ -954,7 +954,7 @@ YY_RULE_SETUP
 #line 64 "lexer.l"
 ECHO;
 	YY_BREAK
-#line 958 "C:\\Users\\vvorotilov\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
+#line 958 "C:\\Users\\Errathy\\Documents\\GitHub\\MiniJavaCompilator\\Compilers\\Compilers\\lexer.cpp"
 case YY_STATE_EOF(INITIAL):
 	yyterminate();
 

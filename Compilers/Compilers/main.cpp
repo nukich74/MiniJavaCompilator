@@ -1,7 +1,7 @@
-extern "C" int yylex();
 
-int main(int argc, char ** argv)
-{
-	while( yylex() != 0 );
+extern "C" int yyparse();
+
+int main() {
+	while( yyparse() != 0 );
 	return 0;
 }

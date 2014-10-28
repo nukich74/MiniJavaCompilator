@@ -88,6 +88,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexer.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />
   </ItemGroup>
   <ItemGroup>
