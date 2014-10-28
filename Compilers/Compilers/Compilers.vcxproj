@@ -59,7 +59,8 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>
+      </AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -73,7 +74,8 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(GNUWIN32)\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -94,10 +96,10 @@
   <ItemGroup>
     <CustomBuild Include="lexer.l">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GNUWIN32)\win_flex_bison\win_flex.exe --wincompat -o"$(ProjectDir)lexer.cpp" lexer.l</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\win_flex_bison\win_flex.exe --wincompat -o"$(ProjectDir)lexer.cpp" lexer.l</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lexer.cpp</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling flex</Message>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">flex++.exe -o"$(ProjectDir)lexer.cpp" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\win_flex_bison\win_flex.exe --wincompat -o"$(ProjectDir)lexer.cpp" lexer.l</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling flex</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lexer.cpp</Outputs>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -105,9 +107,12 @@
     </CustomBuild>
     <CustomBuild Include="parser.y">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GNUWIN32)\win_flex_bison\win_bison.exe -o"parser.tab.cpp" parser.y -v -d</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\win_flex_bison\win_bison.exe -o"parser.tab.cpp" parser.y -v -d</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling bison</Message>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">parser.tab.cpp;parser.tab.hpp;parser.output</Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\win_flex_bison\win_bison.exe -o"parser.tab.cpp" parser.y -v -d</Command>
+      <Message Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Compiling bison</Message>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">parser.tab.cpp;parser.tab.hpp;parser.output</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
