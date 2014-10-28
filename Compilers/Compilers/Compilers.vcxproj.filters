@@ -18,21 +18,20 @@
     <ClInclude Include="Grammar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="parser.tab.hpp">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="lexer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="parser.tab.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="lexer.l">
-      <Filter>Source Files</Filter>
-    </CustomBuild>
-    <CustomBuild Include="parser.y">
-      <Filter>Source Files</Filter>
-    </CustomBuild>
+    <CustomBuild Include="lexer.l" />
+    <CustomBuild Include="parser.y" />
   </ItemGroup>
 </Project>

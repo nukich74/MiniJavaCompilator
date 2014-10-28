@@ -3,9 +3,11 @@
 %{
 #include <iostream>
 #include <math.h>
-#include "parser.tab.h"
+#include "parser.tab.hpp"
 #define YY_DECL extern "C" int yylex()
+#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
 %}
+%option yylineno
 
 %%
 "class"				{ return CLASS; }
@@ -53,6 +55,11 @@
 "//"[^"\n"]+			{}
 
 [\t\r\n\ ]+			{}
+
+[\[\]\)\(\{\}\;]		{ return yytext[0]; }
+
+.				{}
+
 
 %%
 extern int YYText();

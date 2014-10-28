@@ -53,11 +53,14 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(GNUWIN32)\include;C:\GnuWin32\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>
+      </AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -81,15 +84,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="Grammar.h" />
+    <ClInclude Include="parser.tab.hpp" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexer.cpp" />
-    <ClCompile Include="main.cpp" />
+    <ClCompile Include="parser.tab.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lexer.l">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">flex++.exe -o"$(ProjectDir)lexer.cpp" "%(FullPath)"</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GNUWIN32)\win_flex_bison\win_flex.exe --wincompat -o"$(ProjectDir)lexer.cpp" lexer.l</Command>
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lexer.cpp</Outputs>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling flex</Message>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">flex++.exe -o"$(ProjectDir)lexer.cpp" "%(FullPath)"</Command>
@@ -100,9 +104,9 @@
     </CustomBuild>
     <CustomBuild Include="parser.y">
       <FileType>Document</FileType>
-      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">bison.exe "%(FullPath)" -v -d</Command>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(GNUWIN32)\win_flex_bison\win_bison.exe -o"parser.tab.cpp" parser.y -v -d</Command>
       <Message Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Compiling bison</Message>
-      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">parser.tab.c;parser.tab.h;parser.output</Outputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">parser.tab.cpp;parser.tab.hpp;parser.output</Outputs>
     </CustomBuild>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,12 +1,12 @@
 %{
 #include <iostream>
 
-#define YYSTYPE int
-
 extern "C" int yylex();
 extern "C" int yyparse();
 void yyerror(const char *);
 %}
+
+%error-verbose
 
 %union{
 	int ival;
@@ -64,7 +64,6 @@ void yyerror(const char *);
 
 %token <ival> INT
 
-
 %%
 Program: 
 	MainClass
@@ -75,7 +74,7 @@ ClassDecls:
 	| ClassDecls ClassDecl
 	;
 MainClass:
-	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statement '}' '}'
+	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements '}' '}'
 ClassDecl:
 	CLASS ID '{' '}'
 	| CLASS ID '{' VarDecls '}'
@@ -88,7 +87,7 @@ VarDecls:
 	;
 VarDecl:
 	Type ID ';'
-	| Type ID error ';'
+	| Type error ';' { std::cout << "Error in line : " << @2.first_line << std::endl; }
 	;
 MethodDecls:
 	MethodDecl
@@ -103,7 +102,6 @@ MethodDecl:
 	| PUBLIC Type ID '(' ')' '{' VarDecls RETURN Exp ';' '}'
 	| PUBLIC Type ID '(' ')' '{' VarDecls Statements RETURN Exp ';' '}'
 	| PUBLIC Type ID '(' ')' '{' Statements RETURN Exp ';' '}'
-
 	;
 FormalList:
 	Type ID
@@ -131,8 +129,8 @@ Statement:
 	| '{' Statements '}'
 	| IF '(' Exp ')' Statement ELSE Statement
 	| WHILE '(' Exp ')' Statement
-	| error ';' { std::cout << "Statement error at : " << @1.first_line << ' ' << @1.first_column << std::endl; }
-	| '{' error '}' { std::cout << "Statement error at : " << @1.first_line << ' ' << @1.first_column << std::endl; }
+	| error ';' { std::cout << "Error in line : " << @1.first_line << std::endl; }
+	| SYSTEM_OUT_PRINTLN error ';' { std::cout << "Error in line : " << @2.first_line << std::endl; }
 	;
 
 Exp:
@@ -168,7 +166,6 @@ ExpRest:
 
 void yyerror( const char* str )
 {
-	std::cout << str << std::endl;
 }
 
 int main() {
