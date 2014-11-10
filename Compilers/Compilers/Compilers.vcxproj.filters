@@ -33,6 +33,12 @@
     <ClInclude Include="MainClass.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ClassDeclList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ClassDecl.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexer.cpp">
