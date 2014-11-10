@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Program.h"
+#include "MainClass.h"
 #include "Exp.h"
 
 class IVisitor {
@@ -20,5 +21,6 @@ public:
 	virtual void visit( CNewIdExpIndex& exp );
 	virtual void visit( CNotExp& exp );
 	virtual void visit( CExpInBrackets& exp );
-	virtual void visit( CProgram& exp );
+	virtual void visit( CProgram& program );
+	virtual void visit( CMainClass& mainClass  )
 };

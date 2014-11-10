@@ -30,6 +30,9 @@
     <ClInclude Include="Exp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="MainClass.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexer.cpp">
