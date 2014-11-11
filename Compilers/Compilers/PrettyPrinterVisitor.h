@@ -14,7 +14,6 @@ public:
 	virtual void visit( CId& exp );
 	virtual void visit( CThis& exp );
 	virtual void visit( CNewIntExpIndex& exp );
-	virtual void visit( CNewIdExpIndex& exp );
 	virtual void visit( CNotExp& exp );
 	virtual void visit( CExpInBrackets& exp );
 	virtual void visit( CProgram& program );
