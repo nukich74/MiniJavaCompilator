@@ -9,6 +9,7 @@
 #include "MethodDeclList.h"
 #include "FormalList.h"
 #include "Type.h"
+#include "StatementList.h"
 #include "Exp.h"
 
 class IVisitor {
@@ -37,4 +38,5 @@ public:
 	virtual void visit( CMethodDeclList& methodDeclList );
 	virtual void visit( CFormalList& formalList );
 	virtual void visit( CType& type );
+	virtual void visit( CStatementList& statementList );
 };
