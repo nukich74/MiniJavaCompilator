@@ -94,6 +94,7 @@
     <ClInclude Include="MethodDecl.h" />
     <ClInclude Include="MethodDeclList.h" />
     <ClInclude Include="parser.tab.hpp" />
+    <ClInclude Include="PrettyPrinterVisitor.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="VarDecl.h" />
     <ClInclude Include="VarDeclList.h" />
@@ -103,6 +104,7 @@
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />
+    <ClCompile Include="PrettyPrinterVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lexer.l">
