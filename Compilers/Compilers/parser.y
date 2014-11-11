@@ -81,6 +81,10 @@ ClassDecl:
 	| CLASS ID '{' VarDecls '}'
 	| CLASS ID '{' VarDecls MethodDecls '}'
 	| CLASS ID '{' MethodDecls '}'
+	| CLASS ID EXTENDS ID '{' '}'
+	| CLASS ID EXTENDS ID '{' VarDecls '}'
+	| CLASS ID EXTENDS ID '{' VarDecls MethodDecls '}'
+	| CLASS ID EXTENDS ID '{' MethodDecls '}'
 	;
 VarDecls:
 	VarDecl

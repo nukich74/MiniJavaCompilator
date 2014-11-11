@@ -87,18 +87,23 @@
   <ItemGroup>
     <ClInclude Include="ClassDecl.h" />
     <ClInclude Include="ClassDeclList.h" />
+    <ClInclude Include="ClassDescription.h" />
     <ClInclude Include="Exp.h" />
+    <ClInclude Include="FieldDescription.h" />
     <ClInclude Include="FormalList.h" />
     <ClInclude Include="Grammar.h" />
     <ClInclude Include="MainClass.h" />
     <ClInclude Include="MethodDecl.h" />
     <ClInclude Include="MethodDeclList.h" />
+    <ClInclude Include="MethodDescription.h" />
     <ClInclude Include="parser.tab.hpp" />
     <ClInclude Include="PrettyPrinterVisitor.h" />
     <ClInclude Include="Program.h" />
     <ClInclude Include="Statement.h" />
     <ClInclude Include="StatementList.h" />
+    <ClInclude Include="SymbolTable.h" />
     <ClInclude Include="Type.h" />
+    <ClInclude Include="TypeIdentifier.h" />
     <ClInclude Include="VarDecl.h" />
     <ClInclude Include="VarDeclList.h" />
     <ClInclude Include="Visitor.h" />
@@ -108,6 +113,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="PrettyPrinterVisitor.cpp" />
+    <ClCompile Include="SymbolTable.cpp" />
+    <ClCompile Include="TypeIdentifier.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lexer.l">

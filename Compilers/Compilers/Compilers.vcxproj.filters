@@ -5,6 +5,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="PrettyPrinterVisitor.cpp" />
+    <ClCompile Include="TypeIdentifier.cpp" />
+    <ClCompile Include="SymbolTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ClassDecl.h" />
@@ -24,6 +26,11 @@
     <ClInclude Include="Visitor.h" />
     <ClInclude Include="StatementList.h" />
     <ClInclude Include="Statement.h" />
+    <ClInclude Include="MethodDescription.h" />
+    <ClInclude Include="ClassDescription.h" />
+    <ClInclude Include="FieldDescription.h" />
+    <ClInclude Include="SymbolTable.h" />
+    <ClInclude Include="TypeIdentifier.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lexer.l" />
