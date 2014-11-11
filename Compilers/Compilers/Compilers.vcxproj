@@ -92,6 +92,7 @@
     <ClInclude Include="MainClass.h" />
     <ClInclude Include="parser.tab.hpp" />
     <ClInclude Include="Program.h" />
+    <ClInclude Include="VarDecl.h" />
     <ClInclude Include="VarDeclList.h" />
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
