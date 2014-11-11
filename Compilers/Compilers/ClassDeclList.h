@@ -7,13 +7,9 @@
 
 class CClassDeclList : public IClassDeclList {
 public:
-	CClassDeclList( std::shared_ptr<IClassDecl> _pClassDecl ) { classDeclList.push_back( _pClassDecl ); }
-
-	std::list< std::shared_ptr<IClassDecl> >& GetClassDeclList() { return classDeclList; }
-	void PushBack( std::shared_ptr<IClassDecl> _pClassDecl ) { classDeclList.push_back( _pClassDecl ); }
+	CClassDeclList( IClassDecl* _pClassDecl ) { classDeclList.push_back( std::shared_ptr<IClassDecl>( _pClassDecl ) ); }
 
 	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
 
-private:
 	std::list< std::shared_ptr<IClassDecl> > classDeclList;
 };
