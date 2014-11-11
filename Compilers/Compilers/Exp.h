@@ -4,86 +4,85 @@
 
 class CExpBinOpExp : public IExp {
 public:
-	CExpBinOpExp( IExp* newLeft, char op, IExp* newRight ) : left( newLeft ), operation( op ), right( newRight ) {}
-	char GetOperation( );
-	IExp* GetRightChild( );
-	IExp* GetLeftChild( );
-private:
-	IExp* left;
-	IExp* right;
+	CExpBinOpExp( IExp* _left, char op, IExp* _right ) 
+		: left(_left), operation(op), right(_right) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> left;
+	std::shared_ptr<IExp> right;
 	char operation;
 };
 
 class CUnMinExp : public IExp {
 public:
-	CUnMinExp( IExp* child ) : exp( child ) {}
-	IExp* GetExp( );
-private:
-	IExp* exp;
+	CUnMinExp(IExp* _exp) : exp(_exp) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> exp;
 };
 
 class CExpWithIndex : public IExp {
 public:
-	CExpWithIndex( IExp* newExp, IExp* newIndex ) : exp( newExp ), index( newIndex ) {}
-	IExp* GetExp( );
-	IExp* GetIndex( );
-private:
-	IExp* exp;
-	IExp* index;
+	CExpWithIndex(IExp* _exp, IExp* _index) : exp(_exp), index(_index) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> exp;
+	std::shared_ptr<IExp> index;
 };
 
 class CExpDotLength : public IExp {
 public:
-	CExpDotLength( IExp* newExp ) : exp( newExp ) {}
-	IExp* GetExp( );
-private:
-	IExp* exp;
+	CExpDotLength(IExp* _exp) : exp(_exp) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> exp;
 };
 
 class CExpIdExpList : public IExp {
 public:
-	CExpIdExpList( IExp* newExp, IExp* newId, IExpList* newExpList ) : exp( newExp ), id( newId ), expList( newExpList ) {}
-	IExp* GetExp( );
-	IExp* GetId( );
-	IExpList* GetExpList( );
-private:
-	IExp* exp;
-	IExp* id;
-	IExpList* expList;
+	CExpIdExpList( IExp* _exp, IExp* _id, IExpList* _expList ) 
+		: exp(_exp), id(_id), expList(_expList) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> exp;
+	std::shared_ptr<IExp> id;
+	std::shared_ptr<IExpList> expList;
 };
 
 class CExpIdVoidExpList : public IExp {
 public:
-	IExp* GetExp( );
-	IExp* GetId( );
-private:
-	IExp* exp;
-	IExp* id;
+	CExpIdVoidExpList(IExp* _exp, IExp* _id) : exp(_exp), id(_id) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> exp;
+	std::shared_ptr<IExp> id;
 };
 
 class CIntegerLiteral : public IExp {
 public:
-	CIntegerLiteral( int newValue ) : value( newValue ) {}
-	int GetInteger( );
-private:
+	CIntegerLiteral(int _value) : value(_value) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	int value;
 };
 
 class CTrue : public IExp {
 public:
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	bool GetValue( ) { return true; };
 };
 
 class CFalse : public IExp {
 public:
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	bool GetValue( ) { return false; }
 };
 
 class CId : public IExp {
 public:
-	CId( std::string newValue ) : value( newValue ) {}
-	std::string GetString( );
-private:
+	CId(std::string _value) : value(_value) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	std::string value;
 };
 //пока не понятно что тут должно быть
@@ -91,31 +90,32 @@ class CThis : public IExp {};
 
 class CNewIntExpIndex : public IExp {
 public:
-	CNewIntExpIndex( IExp* newExp ) : exp( newExp ) {}
-	IExp* GetExp( );
-private:
-	IExp* exp;
+	CNewIntExpIndex(std::shared_ptr<IExp> _exp) : exp(_exp) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> exp;
 };
 
 class CNewIdExpIndex : public IExp {
 public:
-	CNewIdExpIndex( IExp* newExp ) : exp( newExp ) {}
-	IExp* GetExp( );
-private:
-	IExp* exp;
+	CNewIdExpIndex(std::shared_ptr<IExp> _exp) : exp(_exp) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> exp;
 };
 
 class CNotExp : public IExp {
 public:
-	CNotExp( IExp* newExp ) : exp( newExp ) {}
-	IExp* GetExp( );
-private:
-	IExp* exp;
+	CNotExp(std::shared_ptr<IExp> _exp) : exp(_exp) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> exp;
 };
 
 class CExpInBrackets : public IExp {
-	CExpInBrackets( IExp* newExp ) : exp( newExp ) {}
-	IExp* GetExp( );
-private:
-	IExp* exp;
+public:
+	CExpInBrackets( std::shared_ptr<IExp> _exp ) : exp( _exp ) {}
+
+	void accept(IVisitor& visitor) { visitor.visit(*this); }
+	std::shared_ptr<IExp> exp;
 };
