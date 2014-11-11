@@ -7,7 +7,14 @@
 
 class CVarDeclList : public IVarDeclList {
 public:
-	CVarDeclList( IVarDecl* _pVarDecl ) { varDeclList.push_back( std::shared_ptr<IVarDecl>( _pVarDecl ) ); }
+	CVarDeclList( CVarDeclList* pVarDeclList, IVarDecl* _pVarDecl )
+	{
+		if( pVarDeclList != 0 )
+		{
+			varDeclList = pVarDeclList->varDeclList;
+		}
+		varDeclList.push_back( std::shared_ptr<IVarDecl>( _pVarDecl ) );
+	}
 
 	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
 
