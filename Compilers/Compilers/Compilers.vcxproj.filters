@@ -54,6 +54,9 @@
     <ClInclude Include="FormalList.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ExpList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexer.cpp">
