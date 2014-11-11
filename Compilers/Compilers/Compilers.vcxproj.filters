@@ -23,6 +23,7 @@
     <ClInclude Include="VarDeclList.h" />
     <ClInclude Include="Visitor.h" />
     <ClInclude Include="StatementList.h" />
+    <ClInclude Include="Statement.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lexer.l" />
