@@ -95,6 +95,7 @@
     <ClInclude Include="MethodDeclList.h" />
     <ClInclude Include="parser.tab.hpp" />
     <ClInclude Include="Program.h" />
+    <ClInclude Include="Type.h" />
     <ClInclude Include="VarDecl.h" />
     <ClInclude Include="VarDeclList.h" />
     <ClInclude Include="Visitor.h" />
