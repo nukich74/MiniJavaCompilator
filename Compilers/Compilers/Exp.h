@@ -96,12 +96,12 @@ public:
 	std::shared_ptr<IExp> exp;
 };
 
-class CNewIdExpIndex : public IExp {
+class CNewId : public IExp {
 public:
-	CNewIdExpIndex(std::shared_ptr<IExp> _exp) : exp(_exp) {}
+	CNewId(IType* _type) : type(_type) {}
 
 	void accept(IVisitor& visitor) { visitor.visit(*this); }
-	std::shared_ptr<IExp> exp;
+	std::shared_ptr<IType> type;
 };
 
 class CNotExp : public IExp {
