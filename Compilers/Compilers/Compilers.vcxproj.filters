@@ -39,6 +39,9 @@
     <ClInclude Include="ClassDecl.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="VarDeclList.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="lexer.cpp">

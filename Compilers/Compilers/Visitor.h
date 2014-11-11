@@ -4,6 +4,7 @@
 #include "MainClass.h"
 #include "ClassDeclList.h"
 #include "ClassDecl.h"
+#include "VarDeclList.h"
 #include "Exp.h"
 
 class IVisitor {
@@ -27,4 +28,5 @@ public:
 	virtual void visit( CMainClass& mainClass );
 	virtual void visit( CClassDeclList& classDeclList );
 	virtual void visit( CClassDecl& classDecl );
+	virtual void visit( CVarDeclList& varDeclList );
 };

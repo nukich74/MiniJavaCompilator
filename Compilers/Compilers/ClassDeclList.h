@@ -5,7 +5,7 @@
 #include "Grammar.h"
 #include "Visitor.h"
 
-class CClassDeclList : public IMainClass {
+class CClassDeclList : public IClassDeclList {
 public:
 	CClassDeclList( std::shared_ptr<IClassDecl> _pClassDecl ) { classDeclList.push_back( _pClassDecl ); }
 
