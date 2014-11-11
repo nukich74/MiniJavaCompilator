@@ -92,7 +92,7 @@ VarDecl:
 	;
 MethodDecls:
 	MethodDecl
-	| MethodDecl MethodDecl
+	| MethodDecls MethodDecl
 	;
 MethodDecl:
 	PUBLIC Type ID '(' FormalList ')' '{' RETURN Exp ';' '}'
