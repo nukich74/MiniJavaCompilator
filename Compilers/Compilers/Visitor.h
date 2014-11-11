@@ -38,9 +38,13 @@ public:
 	virtual void visit( CId& exp );
 	// EXP -> THIS
 	virtual void visit( CThis& exp );
+	// EXP -> NEW INT [ EXP ]
 	virtual void visit( CNewIntExpIndex& exp );
+	// EXP -> NEW ID ( )
 	virtual void visit( CNewId& exp );
+	// EXP -> ! EXP
 	virtual void visit( CNotExp& exp );
+	// EXP -> ( EXP )
 	virtual void visit( CExpInBrackets& exp );
 	virtual void visit( CProgram& program );
 	virtual void visit( CMainClass& mainClass );
