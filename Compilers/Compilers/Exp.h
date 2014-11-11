@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Visitor.h"
 #include "Grammar.h"
 
 class CExpBinOpExp : public IExp {

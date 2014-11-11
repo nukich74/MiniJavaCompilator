@@ -1,6 +1,6 @@
 #pragma once
 
-class IVisitor;
+#include "Visitor.h"
 
 // Корневой интерфейс программы
 class IProgram {

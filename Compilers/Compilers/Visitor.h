@@ -61,6 +61,5 @@ public:
 	virtual void visit( CCurlyBraceStatement& curlyBraceStatement );
 	virtual void visit( CIfStatement& ifStatement );
 	virtual void visit( CWhileStatement& whileStatement );
-	virtual void visit( CExp& expList );
-	virtual void visit( CExpExpRest& expList );
+	virtual void visit( CExpList& expList );
 };
