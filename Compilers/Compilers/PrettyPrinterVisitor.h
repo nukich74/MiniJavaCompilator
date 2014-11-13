@@ -23,4 +23,13 @@ public:
 	virtual void visit( CVarDeclList& varDeclList );
 	virtual void visit( CVarDecl& varDecl );
 	virtual void visit( CMethodDeclList& methodDeclList );
+	virtual void visit( CFormalList& formalList );
+	virtual void visit( CType& type );
+	virtual void visit( CStatementList& statementList );
+	virtual void visit( CAssignStatement& assignStatement );
+	virtual void visit( CPrintStatement& printStatement );
+	virtual void visit( CCurlyBraceStatement& curlyBraceStatement );
+	virtual void visit( CIfStatement& ifStatement );
+	virtual void visit( CWhileStatement& whileStatement );
+	virtual void visit( CExpList& expList );
 };

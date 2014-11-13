@@ -127,15 +127,90 @@ void CPrettyPrinterVisitor::visit( CClassDecl& classDecl )
 
 void CPrettyPrinterVisitor::visit( CVarDeclList& varDeclList )
 {
-
+	for( const auto& decl : varDeclList.varDeclList ) {
+		decl->accept( *this );
+		std::cout << std::endl;
+	}
 }
 
 void CPrettyPrinterVisitor::visit( CVarDecl& varDecl )
 {
-
+	varDecl.pType->accept( *this );
+	std::cout << " ";
+	varDecl.pId->accept( *this );
+	std::cout << std::endl;
 }
 
 void CPrettyPrinterVisitor::visit( CMethodDeclList& methodDeclList )
+{
+	for( const auto& decl : methodDeclList.methodDeclList ) {
+		decl->accept( *this );
+		std::cout << std::endl;
+	}
+}
+
+void CPrettyPrinterVisitor::visit( CFormalList& formalList )
+{
+	for( const auto& decl : formalList.formalList ) {
+		decl.first->accept( *this );
+		std::cout << " ";
+		decl.second->accept( *this );
+		std::cout << std::endl;
+	}
+}
+
+void CPrettyPrinterVisitor::visit( CType& type )
+{
+	switch( type.type ) {
+		case CType::T_INT:
+			std::cout << "int ";
+		case CType::T_INTARR:
+			std::cout << "int[] ";
+		case CType::T_BOOL:
+			std::cout << "boolean ";
+		case CType::T_ID:
+		{
+			type.pId->accept( *this );
+		}
+		default:
+			//assert( false );
+	}
+}
+
+void CPrettyPrinterVisitor::visit( CStatementList& statementList )
+{
+	for( const auto& decl : statementList.statementList ) {
+		decl->accept( *this );
+		std::cout << std::endl;
+	}
+}
+
+void CPrettyPrinterVisitor::visit( CAssignStatement& assignStatement )
+{
+
+}
+
+void CPrettyPrinterVisitor::visit( CPrintStatement& printStatement )
+{
+
+}
+
+void CPrettyPrinterVisitor::visit( CCurlyBraceStatement& curlyBraceStatement )
+{
+
+}
+
+void CPrettyPrinterVisitor::visit( CIfStatement& ifStatement )
+{
+
+}
+
+void CPrettyPrinterVisitor::visit( CWhileStatement& whileStatement )
+{
+
+}
+
+void CPrettyPrinterVisitor::visit( CExpList& expList )
 {
 
 }
