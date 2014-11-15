@@ -4,17 +4,12 @@
 #include "Grammar.h"
 #include "Exp.h"
 #include "Visitor.h"
+#include "TypeIdentifier.h"
 
 class CType : public IType {
 public:
-	enum Type {
-		T_INT,
-		T_INTARR,
-		T_BOOL,
-		T_ID
-	};
 
-	CType( CType::Type _type, CId* _pId ) :
+	CType( SymbolsTable::CTypeIdentifier _type, CId* _pId ) :
 		type( _type ),
 		pId( _pId ) {}
 
@@ -23,6 +18,6 @@ public:
 		visitor.visit( *this );
 	}
 
-	Type type;
+	SymbolsTable::CTypeIdentifier type;
 	std::shared_ptr<CId> pId;
 };

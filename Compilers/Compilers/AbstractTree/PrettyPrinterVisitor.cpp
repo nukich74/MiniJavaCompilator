@@ -1,6 +1,8 @@
 #include "PrettyPrinterVisitor.h"
 #include <iostream>
 #include <string>
+#include <cassert>
+#include "Visitor.h"
 
 void CPrettyPrinterVisitor::visit( CExpBinOpExp& exp )
 {
@@ -161,19 +163,16 @@ void CPrettyPrinterVisitor::visit( CFormalList& formalList )
 
 void CPrettyPrinterVisitor::visit( CType& type )
 {
-	switch( type.type ) {
-		case CType::T_INT:
-			std::cout << "int ";
-		case CType::T_INTARR:
-			std::cout << "int[] ";
-		case CType::T_BOOL:
-			std::cout << "boolean ";
-		case CType::T_ID:
-		{
-			type.pId->accept( *this );
-		}
-		default:
-			//assert( false );
+	if( type.type ==  SymbolsTable::BT_Int ) {
+		std::cout << "int ";
+	} else if( type.type ==  SymbolsTable::BT_IntArr ) {
+		std::cout << "int[] ";
+	} else if( type.type ==  SymbolsTable::BT_Bool ) {
+		std::cout << "boolean ";
+	} else if( type.type == SymbolsTable::BT_UserDefined ) {
+		type.pId->accept( *this );
+	} else {
+		assert( false );
 	}
 }
 

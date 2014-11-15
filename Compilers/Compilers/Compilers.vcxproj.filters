@@ -1,39 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="lexer.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="SymbolsTable\SymbolTable.cpp" />
+    <ClCompile Include="SymbolsTable\SymbolTableConstructor.cpp" />
+    <ClCompile Include="SymbolsTable\TypeIdentifier.cpp" />
+    <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
+    <ClCompile Include="lexer.cpp" />
     <ClCompile Include="parser.tab.cpp" />
-    <ClCompile Include="PrettyPrinterVisitor.cpp" />
-    <ClCompile Include="TypeIdentifier.cpp" />
-    <ClCompile Include="SymbolTable.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ClassDecl.h" />
-    <ClInclude Include="ClassDeclList.h" />
-    <ClInclude Include="Exp.h" />
-    <ClInclude Include="FormalList.h" />
-    <ClInclude Include="Grammar.h" />
-    <ClInclude Include="MainClass.h" />
-    <ClInclude Include="MethodDecl.h" />
-    <ClInclude Include="MethodDeclList.h" />
-    <ClInclude Include="parser.tab.hpp" />
-    <ClInclude Include="PrettyPrinterVisitor.h" />
-    <ClInclude Include="Program.h" />
-    <ClInclude Include="Type.h" />
-    <ClInclude Include="VarDecl.h" />
-    <ClInclude Include="VarDeclList.h" />
     <ClInclude Include="Visitor.h" />
-    <ClInclude Include="StatementList.h" />
-    <ClInclude Include="Statement.h" />
-    <ClInclude Include="MethodDescription.h" />
-    <ClInclude Include="ClassDescription.h" />
-    <ClInclude Include="FieldDescription.h" />
-    <ClInclude Include="SymbolTable.h" />
-    <ClInclude Include="TypeIdentifier.h" />
+    <ClInclude Include="SymbolsTable\ClassDescription.h" />
+    <ClInclude Include="SymbolsTable\MethodDescription.h" />
+    <ClInclude Include="SymbolsTable\SymbolsTableUtils.h" />
+    <ClInclude Include="SymbolsTable\SymbolTable.h" />
+    <ClInclude Include="SymbolsTable\SymbolTableConstructor.h" />
+    <ClInclude Include="SymbolsTable\VariableDescription.h" />
+    <ClInclude Include="SymbolsTable\TypeIdentifier.h" />
+    <ClInclude Include="AbstractTree\ClassDecl.h" />
+    <ClInclude Include="AbstractTree\ClassDeclList.h" />
+    <ClInclude Include="AbstractTree\Exp.h" />
+    <ClInclude Include="AbstractTree\FormalList.h" />
+    <ClInclude Include="AbstractTree\Grammar.h" />
+    <ClInclude Include="AbstractTree\MainClass.h" />
+    <ClInclude Include="AbstractTree\MethodDecl.h" />
+    <ClInclude Include="AbstractTree\MethodDeclList.h" />
+    <ClInclude Include="AbstractTree\PrettyPrinterVisitor.h" />
+    <ClInclude Include="AbstractTree\Program.h" />
+    <ClInclude Include="AbstractTree\Statement.h" />
+    <ClInclude Include="AbstractTree\StatementList.h" />
+    <ClInclude Include="AbstractTree\Type.h" />
+    <ClInclude Include="AbstractTree\VarDecl.h" />
+    <ClInclude Include="AbstractTree\VarDeclList.h" />
+    <ClInclude Include="parser.tab.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="lexer.l" />
     <CustomBuild Include="parser.y" />
+    <CustomBuild Include="lexer.l" />
   </ItemGroup>
 </Project>

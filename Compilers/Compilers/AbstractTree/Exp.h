@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Visitor.h"
 #include "Grammar.h"
+#include "Visitor.h"
 
 class CExpBinOpExp : public IExp {
 public:
