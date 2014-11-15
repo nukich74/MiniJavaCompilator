@@ -6,11 +6,13 @@
 
 class CMainClass : public IMainClass {
 public:
-	CMainClass( IStatementList* _pStatementList ) :
+	CMainClass( CId* _pId, IStatementList* _pStatementList ) :
+		pId( _pId ),
 		pStatementList( _pStatementList )
 	{}
 
 	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
 
 	std::shared_ptr<IStatementList> pStatementList;
+	std::shared_ptr<CId> pId;
 };

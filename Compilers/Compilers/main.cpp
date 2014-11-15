@@ -1,4 +1,3 @@
-
 extern "C" int yyparse();
 
 int main() {

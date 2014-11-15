@@ -1,51 +1,29 @@
+﻿// Автор: Николай Фролов.
+
+// Описание: Класс реализующий визитор, строящий таблицу символов.
+
 #pragma once
 
-#include "Program.h"
-#include "MainClass.h"
-#include "ClassDeclList.h"
-#include "ClassDecl.h"
-#include "VarDeclList.h"
-#include "VarDecl.h"
-#include "MethodDeclList.h"
-#include "MethodDecl.h"
-#include "FormalList.h"
-#include "Type.h"
-#include "StatementList.h"
-#include "Statement.h"
-#include "Exp.h"
-#include "ExpList.h"
+#include "Visitor.h"
+#include "SymbolTable.h"
 
-class IVisitor {
+class CSymbolTableConstructor : public IVisitor {
 public:
-	// EXP -> EXP BINOP EXP
+	SymbolsTable::CSymbolTable symbolTable;
+
 	virtual void visit( CExpBinOpExp& exp );
-	// EXP -> -EXP
 	virtual void visit( CUnMinExp& exp );
-	// EXP -> EXP [ EXP ]
 	virtual void visit( CExpWithIndex& exp );
-	// EXP -> EXP.LENGTH
 	virtual void visit( CExpDotLength& exp );
-	// EXP -> EXP . ID ( EXPLIST )
 	virtual void visit( CExpIdExpList& exp );
-	// EXP -> EXP . ID ( )
 	virtual void visit( CExpIdVoidExpList& exp );
-	// EXP -> INTEGER_LITERAL
 	virtual void visit( CIntegerLiteral& exp );
-	// EXP -> TRUE
 	virtual void visit( CTrue& exp );
-	// EXP -> FALSE
 	virtual void visit( CFalse& exp );
-	// EXP -> ID
 	virtual void visit( CId& exp );
-	// EXP -> THIS
 	virtual void visit( CThis& exp );
-	// EXP -> NEW INT [ EXP ]
 	virtual void visit( CNewIntExpIndex& exp );
-	// EXP -> NEW ID ( )
-	virtual void visit( CNewId& exp );
-	// EXP -> ! EXP
 	virtual void visit( CNotExp& exp );
-	// EXP -> ( EXP )
 	virtual void visit( CExpInBrackets& exp );
 	virtual void visit( CProgram& program );
 	virtual void visit( CMainClass& mainClass );
@@ -64,4 +42,12 @@ public:
 	virtual void visit( CIfStatement& ifStatement );
 	virtual void visit( CWhileStatement& whileStatement );
 	virtual void visit( CExpList& expList );
+
+private:
+	// Текущий класс в котором мы находимся.
+	SymbolsTable::CClassDescription curClass;
+	// Текущий метод в котором мы находимся. 0( IsZero == 0 ), если вне методов.
+	SymbolsTable::CMethodDescription curMethod;
+	// Текущая переменная, которую мы конструируем. 
+	SymbolsTable::CVariableDescription curVariable;
 };
