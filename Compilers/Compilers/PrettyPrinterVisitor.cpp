@@ -187,12 +187,21 @@ void CPrettyPrinterVisitor::visit( CStatementList& statementList )
 
 void CPrettyPrinterVisitor::visit( CAssignStatement& assignStatement )
 {
-
+	assignStatement.pId->accept( *this );
+	if( assignStatement.pExp1 != 0 ) {
+		std::cout << "[";
+		assignStatement.pExp1->accept( *this );
+		std::cout << "]";
+	}
+	std::cout << " = ";
+	assignStatement.pExp2->accept( *this );
 }
 
 void CPrettyPrinterVisitor::visit( CPrintStatement& printStatement )
 {
-
+	std::cout << "System.out.println( ";
+	printStatement.pExp->accept( *this );
+	std::cout << " );";
 }
 
 void CPrettyPrinterVisitor::visit( CCurlyBraceStatement& curlyBraceStatement )
@@ -202,12 +211,25 @@ void CPrettyPrinterVisitor::visit( CCurlyBraceStatement& curlyBraceStatement )
 
 void CPrettyPrinterVisitor::visit( CIfStatement& ifStatement )
 {
-
+	std::cout << "if( ";
+	ifStatement.pExp->accept( *this );
+	std::cout << ") {\n";
+	ifStatement.pStatement1->accept( *this );
+	std::cout << "}\n";
+	if( ifStatement.pStatement2 != 0 ) {
+		std::cout << "else {\n";
+		ifStatement.pStatement2->accept( *this );
+		std::cout << "}\n";
+	}
 }
 
 void CPrettyPrinterVisitor::visit( CWhileStatement& whileStatement )
 {
-
+	std::cout << "while( ";
+	whileStatement.pExp->accept( *this );
+	std::cout << ") {\n";
+	whileStatement.pStatement->accept( *this );
+	std::cout << "}\n";
 }
 
 void CPrettyPrinterVisitor::visit( CExpList& expList )
