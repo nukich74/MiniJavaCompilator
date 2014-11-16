@@ -205,7 +205,8 @@ void CPrettyPrinterVisitor::visit( CPrintStatement& printStatement )
 
 void CPrettyPrinterVisitor::visit( CCurlyBraceStatement& curlyBraceStatement )
 {
-
+	// кто-нибудь объ€сните что за класс такой
+	curlyBraceStatement.pStatementList->accept( *this );
 }
 
 void CPrettyPrinterVisitor::visit( CIfStatement& ifStatement )
@@ -233,5 +234,8 @@ void CPrettyPrinterVisitor::visit( CWhileStatement& whileStatement )
 
 void CPrettyPrinterVisitor::visit( CExpList& expList )
 {
-
+	for( const auto& decl : expList.expList ) {
+		decl->accept( *this );
+		std::cout << std::endl;
+	}
 }
