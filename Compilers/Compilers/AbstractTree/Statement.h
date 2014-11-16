@@ -2,21 +2,21 @@
 
 #include <memory>
 #include <list>
-#include "Grammar.h"
-#include "Exp.h"
-#include "Visitor.h"
+#include <Grammar.h>
+#include <Exp.h>
+#include <Visitor.h>
 
 class CAssignStatement : public IStatement {
 public:
-	CAssignStatement( CId* _pId, IExp* _pExp1, IExp* _pExp2 ) :
-		pId( _pId ),
+	CAssignStatement( std::string& _id, IExp* _pExp1, IExp* _pExp2 ) :
+		id( _id ),
 		pExp1( _pExp1 ),
 		pExp2( _pExp2 )
 		{}
 
 	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
 
-	std::shared_ptr<CId> pId;
+	std::string id;
 	std::shared_ptr<IExp> pExp1;
 	std::shared_ptr<IExp> pExp2;
 };

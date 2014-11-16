@@ -1,8 +1,8 @@
 #pragma once
 
 #include <memory>
-#include "Grammar.h"
-#include "Visitor.h"
+#include <Grammar.h>
+#include <Visitor.h>
 
 class CProgram : public IProgram {
 public:

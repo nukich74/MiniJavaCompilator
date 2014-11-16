@@ -2,8 +2,8 @@
 
 #include <memory>
 #include <list>
-#include "Grammar.h"
-#include "Visitor.h"
+#include <Grammar.h>
+#include <Visitor.h>
 
 class CClassDeclList : public IClassDeclList {
 public:
