@@ -1706,7 +1706,7 @@ yyreduce:
         case 2:
 /* Line 1792 of yacc.c  */
 #line 75 "parser.y"
-    { (yyval.pval) = new CProgram( static_cast<CMainClass*>( (yyvsp[(1) - (1)].pval) ), 0 ); CPrettyPrinterVisitor visitor; CMainClass* main = static_cast<CMainClass*>( (yyval.pval) ); main->accept( visitor );  }
+    { (yyval.pval) = new CProgram( static_cast<CMainClass*>( (yyvsp[(1) - (1)].pval) ), 0 ); CPrettyPrinterVisitor visitor; CMainClass* main = static_cast<CMainClass*>( (yyval.pval) ); main->accept( visitor ); delete main;  }
     break;
 
   case 3:

@@ -72,7 +72,7 @@ void yyerror(const char *);
 %%
 
 Program: 
-	MainClass { $$ = new CProgram( static_cast<CMainClass*>( $1 ), 0 ); CPrettyPrinterVisitor visitor; CMainClass* main = static_cast<CMainClass*>( $$ ); main->accept( visitor );  }
+	MainClass { $$ = new CProgram( static_cast<CMainClass*>( $1 ), 0 ); CPrettyPrinterVisitor visitor; CMainClass* main = static_cast<CMainClass*>( $$ ); main->accept( visitor ); delete main;  }
 	| MainClass ClassDecls { $$ = new CProgram( static_cast<CMainClass*>( $1 ), static_cast<CClassDeclList*>( $2 ) ); }
 	;
 ClassDecls:
