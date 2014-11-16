@@ -76,13 +76,15 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 11 "parser.y"
+#line 13 "parser.y"
 
 	int ival;
+	char sval[255];
+	void* pval;
 
 
 /* Line 2058 of yacc.c  */
-#line 86 "parser.tab.hpp"
+#line 88 "parser.tab.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */

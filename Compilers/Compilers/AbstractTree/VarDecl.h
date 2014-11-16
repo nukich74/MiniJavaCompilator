@@ -6,7 +6,7 @@
 
 class CVarDecl : public IVarDecl {
 public:
-	CVarDecl( IType* _pType, std::string& _id ) :
+	CVarDecl( IType* _pType, const std::string& _id ) :
 		id( _id ),
 		pType( _pType )
 	{}

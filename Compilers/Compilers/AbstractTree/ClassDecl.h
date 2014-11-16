@@ -6,7 +6,7 @@
 
 class CClassDecl : public IClassDecl {
 public:
-	CClassDecl( std::string& _classId, IVarDeclList* _pVarDeclList, IMethodDeclList* _pMethodDeclList, std::string& _parrentId ) :
+	CClassDecl( const std::string& _classId, IVarDeclList* _pVarDeclList, IMethodDeclList* _pMethodDeclList, const std::string& _parrentId ) :
 		classId( _classId ),
 		pVarDeclList( _pVarDeclList ),
 		pMethodDeclList( _pMethodDeclList ),

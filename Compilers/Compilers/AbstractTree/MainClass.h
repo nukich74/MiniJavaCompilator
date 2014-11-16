@@ -6,7 +6,7 @@
 
 class CMainClass : public IMainClass {
 public:
-	CMainClass( std::string& _id1, std::string& _id2, IStatementList* _pStatementList ) :
+	CMainClass( const std::string& _id1, const std::string& _id2, IStatementList* _pStatementList ) :
 		id1( _id1 ),
 		id2( _id2 ),
 		pStatementList( _pStatementList )

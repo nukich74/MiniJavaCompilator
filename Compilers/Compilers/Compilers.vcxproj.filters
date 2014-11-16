@@ -5,9 +5,9 @@
     <ClCompile Include="SymbolsTable\SymbolTable.cpp" />
     <ClCompile Include="SymbolsTable\SymbolTableConstructor.cpp" />
     <ClCompile Include="SymbolsTable\TypeIdentifier.cpp" />
-    <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="parser.tab.cpp" />
+    <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -18,6 +18,8 @@
     <ClInclude Include="SymbolsTable\SymbolTableConstructor.h" />
     <ClInclude Include="SymbolsTable\VariableDescription.h" />
     <ClInclude Include="SymbolsTable\TypeIdentifier.h" />
+    <ClInclude Include="parser.tab.hpp" />
+    <ClInclude Include="common.h" />
     <ClInclude Include="AbstractTree\ClassDecl.h" />
     <ClInclude Include="AbstractTree\ClassDeclList.h" />
     <ClInclude Include="AbstractTree\Exp.h" />
@@ -33,8 +35,6 @@
     <ClInclude Include="AbstractTree\Type.h" />
     <ClInclude Include="AbstractTree\VarDecl.h" />
     <ClInclude Include="AbstractTree\VarDeclList.h" />
-    <ClInclude Include="parser.tab.hpp" />
-    <ClInclude Include="common.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

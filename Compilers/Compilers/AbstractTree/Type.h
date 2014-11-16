@@ -8,15 +8,14 @@
 class CType : public IType {
 public:
 
-	CType( SymbolsTable::CTypeIdentifier _type, std::string& _id ) :
-		type( _type ),
-		id( _id ) {}
+	CType( const std::string& _id ) :
+		id( _id )
+	{ }
 
 	void accept( IVisitor& visitor )
 	{
 		visitor.visit( *this );
 	}
 
-	SymbolsTable::CTypeIdentifier type;
 	std::string id;
 };

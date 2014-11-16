@@ -8,7 +8,7 @@
 
 class CAssignStatement : public IStatement {
 public:
-	CAssignStatement( std::string& _id, IExp* _pExp1, IExp* _pExp2 ) :
+	CAssignStatement( const std::string& _id, IExp* _pExp1, IExp* _pExp2 ) :
 		id( _id ),
 		pExp1( _pExp1 ),
 		pExp2( _pExp2 )

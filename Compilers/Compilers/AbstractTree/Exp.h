@@ -41,22 +41,22 @@ public:
 
 class CExpIdExpList : public IExp {
 public:
-	CExpIdExpList( IExp* _exp, IExp* _id, IExpList* _expList ) 
+	CExpIdExpList( IExp* _exp, const std::string& _id, IExpList* _expList ) 
 		: exp(_exp), id(_id), expList(_expList) {}
 
 	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	std::shared_ptr<IExp> exp;
-	std::shared_ptr<IExp> id;
+	std::string id;
 	std::shared_ptr<IExpList> expList;
 };
 
 class CExpIdVoidExpList : public IExp {
 public:
-	CExpIdVoidExpList(IExp* _exp, IExp* _id) : exp(_exp), id(_id) {}
+	CExpIdVoidExpList(IExp* _exp, const std::string& _id) : exp(_exp), id(_id) {}
 
 	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	std::shared_ptr<IExp> exp;
-	std::shared_ptr<IExp> id;
+	std::string id;
 };
 
 class CIntegerLiteral : public IExp {
@@ -86,12 +86,14 @@ public:
 	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	std::string value;
 };
-//пока не понятно что тут должно быть
-class CThis : public IExp {};
+
+class CThis : public IExp {
+	void accept(IVisitor& visitor) { visitor.visit( *this ); }
+};
 
 class CNewIntExpIndex : public IExp {
 public:
-	CNewIntExpIndex(std::shared_ptr<IExp> _exp) : exp(_exp) {}
+	CNewIntExpIndex( IExp* _exp) : exp(_exp) {}
 
 	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	std::shared_ptr<IExp> exp;
@@ -99,15 +101,15 @@ public:
 
 class CNewId : public IExp {
 public:
-	CNewId(IType* _type) : type(_type) {}
+	CNewId(const std::string& _typeId) : typeId( _typeId ) {}
 
 	void accept(IVisitor& visitor) { visitor.visit(*this); }
-	std::shared_ptr<IType> type;
+	std::string typeId;
 };
 
 class CNotExp : public IExp {
 public:
-	CNotExp(std::shared_ptr<IExp> _exp) : exp(_exp) {}
+	CNotExp(IExp* _exp) : exp(_exp) {}
 
 	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	std::shared_ptr<IExp> exp;
@@ -115,7 +117,7 @@ public:
 
 class CExpInBrackets : public IExp {
 public:
-	CExpInBrackets( std::shared_ptr<IExp> _exp ) : exp( _exp ) {}
+	CExpInBrackets( IExp* _exp ) : exp( _exp ) {}
 
 	void accept(IVisitor& visitor) { visitor.visit(*this); }
 	std::shared_ptr<IExp> exp;

@@ -6,96 +6,96 @@
 class IProgram {
 public:
 	virtual ~IProgram() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Главный классa
 class IMainClass {
 public:
 	virtual ~IMainClass() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Список классов
 class IClassDeclList {
 public:
 	virtual ~IClassDeclList() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Описание класса
 class IClassDecl {
 public:
 	virtual ~IClassDecl() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Список объявлений переменных
 class IVarDeclList {
 public:
 	virtual ~IVarDeclList() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Объявление переменной
 class IVarDecl {
 public:
 	virtual ~IVarDecl() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Список методов класса
 class IMethodDeclList {
 public:
 	virtual ~IMethodDeclList() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Метод класса
 class IMethodDecl {
 public:
 	virtual ~IMethodDecl() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Список параметров
 class IFormalList {
 public:
 	virtual ~IFormalList() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Тип
 class IType {
 public:
 	virtual ~IType() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Последовательность команд
 class IStatementList {
 public:
 	virtual ~IStatementList() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Одна команда (или блок)
 class IStatement {
 public:
 	virtual ~IStatement() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Последовательность выражений (аргументы функции)
 class IExpList {
 public:
 	virtual ~IExpList() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };
 
 // Арифметическое выражение
 class IExp {
 public:
 	virtual ~IExp() {}
-	void accept( IVisitor& visitor );
+	virtual void accept( IVisitor& visitor ) = 0;
 };

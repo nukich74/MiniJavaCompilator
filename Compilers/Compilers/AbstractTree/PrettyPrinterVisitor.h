@@ -14,6 +14,7 @@ public:
 	virtual void visit( CId& exp );
 	virtual void visit( CThis& exp );
 	virtual void visit( CNewIntExpIndex& exp );
+	virtual void visit( CNewId& exp );
 	virtual void visit( CNotExp& exp );
 	virtual void visit( CExpInBrackets& exp );
 	virtual void visit( CProgram& program );
@@ -23,6 +24,7 @@ public:
 	virtual void visit( CVarDeclList& varDeclList );
 	virtual void visit( CVarDecl& varDecl );
 	virtual void visit( CMethodDeclList& methodDeclList );
+	virtual void visit( CMethodDecl& methodDecl );
 	virtual void visit( CFormalList& formalList );
 	virtual void visit( CType& type );
 	virtual void visit( CStatementList& statementList );

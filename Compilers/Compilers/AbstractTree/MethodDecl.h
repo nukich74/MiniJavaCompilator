@@ -7,7 +7,7 @@
 
 class CMethodDecl : public IMethodDecl {
 public:
-	CMethodDecl( IType* _pType, std::string& _id, IFormalList* _pFormalList, IVarDeclList* _pVarDeclList, IStatementList* _pStatementList,
+	CMethodDecl( IType* _pType, const std::string& _id, IFormalList* _pFormalList, IVarDeclList* _pVarDeclList, IStatementList* _pStatementList,
 		IExp* _pExp ) :
 		id( _id ),
 		pType( _pType ),

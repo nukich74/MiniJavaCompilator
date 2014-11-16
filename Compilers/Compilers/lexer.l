@@ -2,7 +2,8 @@
 
 %{
 #include <iostream>
-#include <math.h>
+#include <cmath>
+#include <cstring>
 #include "parser.tab.hpp"
 #define YY_DECL extern "C" int yylex()
 #define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
@@ -46,7 +47,7 @@
 
 "this"				{ return THIS; }
 
-[a-zA-Z][a-zA-Z0-9]*		{ return ID; }
+[a-zA-Z][a-zA-Z0-9]*		{ strcpy_s( yylval.sval, yytext ); return ID; }
 
 [0-9]+ 				{ yylval.ival = atoi(yytext); return INTEGER_LITERAL;}
 

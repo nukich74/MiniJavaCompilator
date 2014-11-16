@@ -7,7 +7,7 @@
 
 class CFormalList : public IFormalList {
 public:
-	CFormalList( CFormalList* pFormalList, IType* _pType, std::string& id )
+	CFormalList( CFormalList* pFormalList, IType* _pType, const std::string& id )
 	{
 		if( pFormalList != 0 )
 		{
