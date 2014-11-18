@@ -23,6 +23,8 @@ namespace SymbolsTable {
 		// Если тип не стандартный, то здесь имя класса.
 		std::string UserDefinedName;
 
+		CTypeIdentifier() { }
+
 		CTypeIdentifier( const std::string& typeName );
 
 		bool operator == ( const CTypeIdentifier& rhs ) const;

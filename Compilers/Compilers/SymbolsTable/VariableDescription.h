@@ -10,6 +10,8 @@
 namespace SymbolsTable {
 	struct CVariableDescription {
 	public:
+		CVariableDescription() { }
+
 		// Имя переменной.
 		std::string Name;
 		// Тип переменной.

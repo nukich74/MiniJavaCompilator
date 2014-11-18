@@ -12,6 +12,7 @@
 namespace SymbolsTable {
 	class CMethodDescription {
 	public:
+		CMethodDescription() { }
 
 		// Имя метода.
 		std::string Name;

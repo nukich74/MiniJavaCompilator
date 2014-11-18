@@ -20,6 +20,8 @@ namespace SymbolsTable {
 		// Базовый класс. - Если отсутствует, то пустая строка.
 		std::string BaseClass;
 
+		CClassDescription() { }
+
 		explicit CClassDescription( const std::string& _Name )
 			: Name( _Name )
 		{ }

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <common.h>
 #include <PrettyPrinterVisitor.h>
+#include <SymbolTableConstructor.h>
 
 extern "C" int yylex();
 extern "C" int yyparse();
@@ -72,7 +73,7 @@ void yyerror(const char *);
 %%
 
 Program: 
-	MainClass { $$ = new CProgram( static_cast<CMainClass*>( $1 ), 0 ); CPrettyPrinterVisitor visitor; CMainClass* main = static_cast<CMainClass*>( $$ ); main->accept( visitor ); delete main;  }
+	MainClass { $$ = new CProgram( static_cast<CMainClass*>( $1 ), 0 ); CPrettyPrinterVisitor visitor; CMainClass* main = static_cast<CMainClass*>( $$ ); main->accept( visitor ); CSymbolTableConstructor table; main->accept( table ); delete main;  }
 	| MainClass ClassDecls { $$ = new CProgram( static_cast<CMainClass*>( $1 ), static_cast<CClassDeclList*>( $2 ) ); }
 	;
 ClassDecls:

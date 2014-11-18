@@ -9,22 +9,25 @@
 
 class CSymbolTableConstructor : public IVisitor {
 public:
+	CSymbolTableConstructor() { }
+
 	SymbolsTable::CSymbolTable symbolTable;
 
-	virtual void visit( CExpBinOpExp& exp );
-	virtual void visit( CUnMinExp& exp );
-	virtual void visit( CExpWithIndex& exp );
-	virtual void visit( CExpDotLength& exp );
-	virtual void visit( CExpIdExpList& exp );
-	virtual void visit( CExpIdVoidExpList& exp );
-	virtual void visit( CIntegerLiteral& exp );
-	virtual void visit( CTrue& exp );
-	virtual void visit( CFalse& exp );
-	virtual void visit( CId& exp );
-	virtual void visit( CThis& exp );
-	virtual void visit( CNewIntExpIndex& exp );
-	virtual void visit( CNotExp& exp );
-	virtual void visit( CExpInBrackets& exp );
+	virtual void visit( CExpBinOpExp& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CUnMinExp& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CExpWithIndex& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CExpDotLength& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CExpIdExpList& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CExpIdVoidExpList& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CIntegerLiteral& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CTrue& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CFalse& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CId& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CThis& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CNewIntExpIndex& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CNewId& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CNotExp& exp ) { IVisitor::visit( exp ); }
+	virtual void visit( CExpInBrackets& exp ) { IVisitor::visit( exp ); }
 	virtual void visit( CProgram& program );
 	virtual void visit( CMainClass& mainClass );
 	virtual void visit( CClassDeclList& classDeclList );
@@ -35,13 +38,13 @@ public:
 	virtual void visit( CMethodDecl& methodDecl );
 	virtual void visit( CFormalList& formalList );
 	virtual void visit( CType& type );
-	virtual void visit( CStatementList& statementList );
-	virtual void visit( CAssignStatement& assignStatement );
-	virtual void visit( CPrintStatement& printStatement );
-	virtual void visit( CCurlyBraceStatement& curlyBraceStatement );
-	virtual void visit( CIfStatement& ifStatement );
-	virtual void visit( CWhileStatement& whileStatement );
-	virtual void visit( CExpList& expList );
+	virtual void visit( CStatementList& statementList ) { IVisitor::visit( statementList ); }
+	virtual void visit( CAssignStatement& assignStatement ) { IVisitor::visit( assignStatement ); }
+	virtual void visit( CPrintStatement& printStatement ) { IVisitor::visit( printStatement ); }
+	virtual void visit( CCurlyBraceStatement& curlyBraceStatement ) { IVisitor::visit( curlyBraceStatement ); }
+	virtual void visit( CIfStatement& ifStatement ) { IVisitor::visit( ifStatement ); }
+	virtual void visit( CWhileStatement& whileStatement ) { IVisitor::visit( whileStatement ); }
+	virtual void visit( CExpList& expList ) { IVisitor::visit( expList ); }
 
 private:
 	// Текущий класс в котором мы находимся.
