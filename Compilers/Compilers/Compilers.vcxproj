@@ -87,6 +87,7 @@
     <ClInclude Include="AbstractTree\ClassDecl.h" />
     <ClInclude Include="AbstractTree\ClassDeclList.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="Frame.h" />
     <ClInclude Include="SymbolsTable\ClassDescription.h" />
     <ClInclude Include="AbstractTree\Exp.h" />
     <ClInclude Include="SymbolsTable\VariableDescription.h" />
@@ -108,6 +109,7 @@
     <ClInclude Include="SymbolsTable\TypeIdentifier.h" />
     <ClInclude Include="AbstractTree\VarDecl.h" />
     <ClInclude Include="AbstractTree\VarDeclList.h" />
+    <ClInclude Include="Temp.h" />
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
   <ItemGroup>
@@ -118,6 +120,7 @@
     <ClCompile Include="SymbolsTable\SymbolTable.cpp" />
     <ClCompile Include="SymbolsTable\SymbolTableConstructor.cpp" />
     <ClCompile Include="SymbolsTable\TypeIdentifier.cpp" />
+    <ClCompile Include="Temp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lexer.l">

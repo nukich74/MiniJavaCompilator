@@ -8,6 +8,7 @@
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
+    <ClCompile Include="Temp.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -35,6 +36,8 @@
     <ClInclude Include="AbstractTree\Type.h" />
     <ClInclude Include="AbstractTree\VarDecl.h" />
     <ClInclude Include="AbstractTree\VarDeclList.h" />
+    <ClInclude Include="Frame.h" />
+    <ClInclude Include="Temp.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
