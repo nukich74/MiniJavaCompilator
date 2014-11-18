@@ -1,17 +1,17 @@
-#pragma once
+п»ї#pragma once
 
 #include <MethodDescription.h>
 #include <vector>
 
 namespace Frame
 {
-// Переменная фрейма
+// РџРµСЂРµРјРµРЅРЅР°СЏ С„СЂРµР№РјР°
 class IAccess {
 public:
 	virtual ~IAccess() {}
 };
 
-// Класс-контейнер с платформо-зависимой информацией о функции
+// РљР»Р°СЃСЃ-РєРѕРЅС‚РµР№РЅРµСЂ СЃ РїР»Р°С‚С„РѕСЂРјРѕ-Р·Р°РІРёСЃРёРјРѕР№ РёРЅС„РѕСЂРјР°С†РёРµР№ Рѕ С„СѓРЅРєС†РёРё
 class CFrame {
 public:
 	CFrame( const SymbolsTable::CMethodDescription* _name ) :
@@ -21,11 +21,11 @@ public:
 		locals.resize( name->Locals.size(), 0 );
 	}
 			
-	// Доступ к формальным параметрам
+	// Р”РѕСЃС‚СѓРї Рє С„РѕСЂРјР°Р»СЊРЅС‹Рј РїР°СЂР°РјРµС‚СЂР°Рј
 	int FormalsCount() const { return formals.size(); }
 	const IAccess* Formal( size_t index ) const { return formals[index]; }
 
-	// Доступ к локальным переменным
+	// Р”РѕСЃС‚СѓРї Рє Р»РѕРєР°Р»СЊРЅС‹Рј РїРµСЂРµРјРµРЅРЅС‹Рј
 	int LocalsCount() const { return locals.size(); }
 	const IAccess* Local( size_t index ) const { return locals[index]; }
 
