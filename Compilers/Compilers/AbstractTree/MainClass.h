@@ -12,7 +12,7 @@ public:
 		pStatementList( _pStatementList )
 	{}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::shared_ptr<IStatementList> pStatementList;
 	std::string id1;

@@ -16,7 +16,7 @@ public:
 		statementList.push_back( std::shared_ptr<IStatement>( _pStatement ) );
 	}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::list< std::shared_ptr<IStatement> > statementList;
 };

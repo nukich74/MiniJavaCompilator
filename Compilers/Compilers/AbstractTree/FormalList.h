@@ -16,7 +16,7 @@ public:
 		formalList.push_back( std::make_pair( std::shared_ptr<IType>( _pType ), id ) );
 	}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::list< std::pair< std::shared_ptr<IType>, std::string > > formalList;
 };

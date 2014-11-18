@@ -16,7 +16,7 @@ public:
 		classDeclList.push_back( std::shared_ptr<IClassDecl>( _pClassDecl ) );
 	}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::list< std::shared_ptr<IClassDecl> > classDeclList;
 };

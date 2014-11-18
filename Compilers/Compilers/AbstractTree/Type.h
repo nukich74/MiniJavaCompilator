@@ -12,7 +12,7 @@ public:
 		id( _id )
 	{ }
 
-	void accept( IVisitor& visitor )
+	void accept( IVisitor& visitor ) const
 	{
 		visitor.visit( *this );
 	}

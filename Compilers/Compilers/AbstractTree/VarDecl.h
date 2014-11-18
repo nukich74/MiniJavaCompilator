@@ -11,7 +11,7 @@ public:
 		pType( _pType )
 	{}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::shared_ptr<IType> pType;
 	std::string id;

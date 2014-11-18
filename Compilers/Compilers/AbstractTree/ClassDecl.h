@@ -13,7 +13,7 @@ public:
 		parrentId( _parrentId )
 	{}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::string classId;
 	std::shared_ptr<IVarDeclList> pVarDeclList;

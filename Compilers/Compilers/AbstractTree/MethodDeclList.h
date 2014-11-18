@@ -16,7 +16,7 @@ public:
 		methodDeclList.push_back( std::shared_ptr<IMethodDecl>( _pMethodDecl ) ); 
 	}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::list< std::shared_ptr<IMethodDecl> > methodDeclList;
 };

@@ -14,7 +14,7 @@ public:
 		pExp2( _pExp2 )
 		{}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::string id;
 	std::shared_ptr<IExp> pExp1;
@@ -26,7 +26,7 @@ public:
 	CPrintStatement( IExp* _pExp ) :
 		pExp( _pExp ) {}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::shared_ptr<IExp> pExp;
 };
@@ -36,7 +36,7 @@ public:
 	CCurlyBraceStatement( IStatementList* _pStatementList ) :
 		pStatementList( _pStatementList ) {}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::shared_ptr<IStatementList> pStatementList;
 };
@@ -48,7 +48,7 @@ public:
 		pStatement1( _pStatement1 ),
 		pStatement2( _pStatement2 ) {}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::shared_ptr<IExp> pExp;
 	std::shared_ptr<IStatement> pStatement1;
@@ -61,7 +61,7 @@ public:
 		pExp( _pExp ),
 		pStatement( _pStatement ) {}
 
-	void accept( IVisitor& visitor ) { visitor.visit( *this ); }
+	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
 
 	std::shared_ptr<IExp> pExp;
 	std::shared_ptr<IStatement> pStatement;
