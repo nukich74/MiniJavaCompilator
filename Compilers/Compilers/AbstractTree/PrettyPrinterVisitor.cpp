@@ -5,20 +5,20 @@
 #include <common.h>
 #include <Visitor.h>
 
-void CPrettyPrinterVisitor::visit( CExpBinOpExp& exp )
+void CPrettyPrinterVisitor::visit( const CExpBinOpExp& exp )
 {
 	exp.left->accept( *this );
 	std::cout << exp.operation;
 	exp.right->accept( *this );
 }
 
-void CPrettyPrinterVisitor::visit( CUnMinExp& exp )
+void CPrettyPrinterVisitor::visit( const CUnMinExp& exp )
 {
 	std::cout << "-";
 	exp.exp->accept( *this );
 }
 
-void CPrettyPrinterVisitor::visit( CExpWithIndex& exp )
+void CPrettyPrinterVisitor::visit( const CExpWithIndex& exp )
 {
 	exp.exp->accept( *this );
 	std::cout << "[";
@@ -26,13 +26,13 @@ void CPrettyPrinterVisitor::visit( CExpWithIndex& exp )
 	std::cout << "]";
 }
 
-void CPrettyPrinterVisitor::visit( CExpDotLength& exp )
+void CPrettyPrinterVisitor::visit( const CExpDotLength& exp )
 {
 	exp.exp->accept( *this );
 	std::cout << ".Length";
 }
 
-void CPrettyPrinterVisitor::visit( CExpIdExpList& exp )
+void CPrettyPrinterVisitor::visit( const CExpIdExpList& exp )
 {
 	exp.exp->accept( *this );
 	std::cout << ".";
@@ -42,7 +42,7 @@ void CPrettyPrinterVisitor::visit( CExpIdExpList& exp )
 	std::cout << ")";
 }
 
-void CPrettyPrinterVisitor::visit( CExpIdVoidExpList& exp )
+void CPrettyPrinterVisitor::visit( const CExpIdVoidExpList& exp )
 {
 	exp.exp->accept( *this );
 	std::cout << ".";
@@ -50,57 +50,57 @@ void CPrettyPrinterVisitor::visit( CExpIdVoidExpList& exp )
 	std::cout << "()";
 }
 
-void CPrettyPrinterVisitor::visit( CIntegerLiteral& exp )
+void CPrettyPrinterVisitor::visit( const CIntegerLiteral& exp )
 {
 	std::cout << exp.value << ' ';
 }
 
-void CPrettyPrinterVisitor::visit( CTrue& exp )
+void CPrettyPrinterVisitor::visit( const CTrue& exp )
 {
 	std::cout << " True ";
 }
 
-void CPrettyPrinterVisitor::visit( CFalse& exp )
+void CPrettyPrinterVisitor::visit( const CFalse& exp )
 {
 	std::cout << " False ";
 }
 
-void CPrettyPrinterVisitor::visit( CId& exp )
+void CPrettyPrinterVisitor::visit( const CId& exp )
 {
 	std::cout << exp.value;
 	std::cout << ' ';
 }
 
-void CPrettyPrinterVisitor::visit( CThis& exp )
+void CPrettyPrinterVisitor::visit( const CThis& exp )
 {
 	std::cout << " this ";
 }
 
-void CPrettyPrinterVisitor::visit( CNewIntExpIndex& exp )
+void CPrettyPrinterVisitor::visit( const CNewIntExpIndex& exp )
 {
 	std::cout << "new int[";
 	exp.exp->accept( *this );
 	std::cout << "]";
 }
-void CPrettyPrinterVisitor::visit( CNewId& exp )
+void CPrettyPrinterVisitor::visit( const CNewId& exp )
 {
 	std::cout << exp.typeId;
 }
 
-void CPrettyPrinterVisitor::visit( CNotExp& exp )
+void CPrettyPrinterVisitor::visit( const CNotExp& exp )
 {
 	std::cout << "!";
 	exp.exp->accept( *this );
 }
 
-void CPrettyPrinterVisitor::visit( CExpInBrackets& exp )
+void CPrettyPrinterVisitor::visit( const CExpInBrackets& exp )
 {
 	std::cout << "(";
 	exp.exp->accept( *this );
 	std::cout << ")";
 }
 
-void CPrettyPrinterVisitor::visit( CProgram& program )
+void CPrettyPrinterVisitor::visit( const CProgram& program )
 {
 	program.pMainClass->accept( *this );
 	if( program.pClassDeclList != 0 ) {
@@ -108,7 +108,7 @@ void CPrettyPrinterVisitor::visit( CProgram& program )
 	}
 }
 
-void CPrettyPrinterVisitor::visit( CMainClass& mainClass )
+void CPrettyPrinterVisitor::visit( const CMainClass& mainClass )
 {
 	std::cout << "class "; 
 	std::cout << mainClass.id1;
@@ -122,7 +122,7 @@ void CPrettyPrinterVisitor::visit( CMainClass& mainClass )
 	std::cout << "}" << std::endl << "};";
 }
 
-void CPrettyPrinterVisitor::visit( CClassDeclList& classDeclList )
+void CPrettyPrinterVisitor::visit( const CClassDeclList& classDeclList )
 {
 	for( const auto& clsDecl : classDeclList.classDeclList ) {
 		clsDecl->accept( *this );
@@ -130,7 +130,7 @@ void CPrettyPrinterVisitor::visit( CClassDeclList& classDeclList )
 	}
 }
 
-void CPrettyPrinterVisitor::visit( CClassDecl& classDecl )
+void CPrettyPrinterVisitor::visit( const CClassDecl& classDecl )
 {
 	std::cout << "class ";
 	std::cout << classDecl.classId;
@@ -146,7 +146,7 @@ void CPrettyPrinterVisitor::visit( CClassDecl& classDecl )
 	std::cout << "};";
 }
 
-void CPrettyPrinterVisitor::visit( CVarDeclList& varDeclList )
+void CPrettyPrinterVisitor::visit( const CVarDeclList& varDeclList )
 {
 	for( const auto& decl : varDeclList.varDeclList ) {
 		decl->accept( *this );
@@ -154,7 +154,7 @@ void CPrettyPrinterVisitor::visit( CVarDeclList& varDeclList )
 	}
 }
 
-void CPrettyPrinterVisitor::visit( CVarDecl& varDecl )
+void CPrettyPrinterVisitor::visit( const CVarDecl& varDecl )
 {
 	varDecl.pType->accept( *this );
 	std::cout << " ";
@@ -162,7 +162,7 @@ void CPrettyPrinterVisitor::visit( CVarDecl& varDecl )
 	std::cout << std::endl;
 }
 
-void CPrettyPrinterVisitor::visit( CMethodDeclList& methodDeclList )
+void CPrettyPrinterVisitor::visit( const CMethodDeclList& methodDeclList )
 {
 	for( const auto& decl : methodDeclList.methodDeclList ) {
 		decl->accept( *this );
@@ -170,7 +170,7 @@ void CPrettyPrinterVisitor::visit( CMethodDeclList& methodDeclList )
 	}
 }
 
-void CPrettyPrinterVisitor::visit( CMethodDecl& methodDecl )
+void CPrettyPrinterVisitor::visit( const CMethodDecl& methodDecl )
 {
 	methodDecl.pType->accept( *this );
 	std::cout << methodDecl.id;
@@ -188,7 +188,7 @@ void CPrettyPrinterVisitor::visit( CMethodDecl& methodDecl )
 	}
 }
 
-void CPrettyPrinterVisitor::visit( CFormalList& formalList )
+void CPrettyPrinterVisitor::visit( const CFormalList& formalList )
 {
 	for( const auto& decl : formalList.formalList ) {
 		decl.first->accept( *this );
@@ -198,12 +198,12 @@ void CPrettyPrinterVisitor::visit( CFormalList& formalList )
 	}
 }
 
-void CPrettyPrinterVisitor::visit( CType& type )
+void CPrettyPrinterVisitor::visit( const CType& type )
 {
 	std::cout << type.id;
 }
 
-void CPrettyPrinterVisitor::visit( CStatementList& statementList )
+void CPrettyPrinterVisitor::visit( const CStatementList& statementList )
 {
 	for( const auto& decl : statementList.statementList ) {
 		decl->accept( *this );
@@ -211,7 +211,7 @@ void CPrettyPrinterVisitor::visit( CStatementList& statementList )
 	}
 }
 
-void CPrettyPrinterVisitor::visit( CAssignStatement& assignStatement )
+void CPrettyPrinterVisitor::visit( const CAssignStatement& assignStatement )
 {
 	std::cout << assignStatement.id;
 	if( assignStatement.pExp1 != 0 ) {
@@ -223,19 +223,19 @@ void CPrettyPrinterVisitor::visit( CAssignStatement& assignStatement )
 	assignStatement.pExp2->accept( *this );
 }
 
-void CPrettyPrinterVisitor::visit( CPrintStatement& printStatement )
+void CPrettyPrinterVisitor::visit( const CPrintStatement& printStatement )
 {
 	std::cout << "System.out.println( ";
 	printStatement.pExp->accept( *this );
 	std::cout << " );";
 }
 
-void CPrettyPrinterVisitor::visit( CCurlyBraceStatement& curlyBraceStatement )
+void CPrettyPrinterVisitor::visit( const CCurlyBraceStatement& curlyBraceStatement )
 {
 	curlyBraceStatement.pStatementList->accept( *this );
 }
 
-void CPrettyPrinterVisitor::visit( CIfStatement& ifStatement )
+void CPrettyPrinterVisitor::visit( const CIfStatement& ifStatement )
 {
 	std::cout << "if( ";
 	ifStatement.pExp->accept( *this );
@@ -249,7 +249,7 @@ void CPrettyPrinterVisitor::visit( CIfStatement& ifStatement )
 	}
 }
 
-void CPrettyPrinterVisitor::visit( CWhileStatement& whileStatement )
+void CPrettyPrinterVisitor::visit( const CWhileStatement& whileStatement )
 {
 	std::cout << "while( ";
 	whileStatement.pExp->accept( *this );
@@ -258,7 +258,7 @@ void CPrettyPrinterVisitor::visit( CWhileStatement& whileStatement )
 	std::cout << "}\n";
 }
 
-void CPrettyPrinterVisitor::visit( CExpList& expList )
+void CPrettyPrinterVisitor::visit( const CExpList& expList )
 {
 	for( const auto& decl : expList.expList ) {
 		decl->accept( *this );
