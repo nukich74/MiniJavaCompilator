@@ -31,7 +31,7 @@ namespace SymbolsTable {
 				} else if( varName != "" ) {
 					return "field " + varName + " in class " + className;
 				} else if( methodName != "" ) {
-					return "method " + methodName + " in class" + className;
+					return "method " + methodName + " in class " + className;
 				} else {
 					return "class " + className;
 				}
