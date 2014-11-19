@@ -1,8 +1,11 @@
 class Factorial {
 	public static void main(String[] a) {
-		System.out.println( 123 );
-		123 sdgsgufsfsd; ;dasf;
-		seless buggy h;
-		return;
+		System.out.println( (new Summator()).Sum());
+	}
+}
+
+class Summator {
+	public int Sum(int a, int b) {
+		return a+b;
 	}
 }

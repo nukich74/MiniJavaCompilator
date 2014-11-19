@@ -1,0 +1,26 @@
+class Factorial {
+	public static void main(String[] a) {
+		System.out.println(1);
+	}
+}
+
+
+class a {
+	int a;
+	int b;
+	public int a() {
+		return a;
+	}
+}
+
+class b extends a {
+	public int func {
+		return a+b;
+	}
+}
+
+class c extends a {
+	public int func {
+		return a*b;
+	}
+}
