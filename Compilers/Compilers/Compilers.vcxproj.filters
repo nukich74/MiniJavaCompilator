@@ -9,6 +9,7 @@
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
     <ClCompile Include="Temp.cpp" />
+    <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -39,6 +40,7 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Temp.h" />
     <ClInclude Include="AbstractTree\ExpList.h" />
+    <ClInclude Include="SymbolsTable\ErrorsAggregator.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

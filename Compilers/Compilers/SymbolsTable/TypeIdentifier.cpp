@@ -8,7 +8,7 @@ namespace SymbolsTable {
 	{
 		if( typeName == "int" ) {
 			Base = BT_Int;
-		} else if( typeName == "bool" ) {
+		} else if( typeName == "boolean" ) {
 			Base = BT_Bool;
 		} else if( typeName == "int[]" ){
 			Base = BT_IntArr;

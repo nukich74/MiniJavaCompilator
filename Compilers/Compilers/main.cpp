@@ -17,6 +17,10 @@ int main() {
 		astRoot->accept( printer );
 		CSymbolTableConstructor tableConstructor;
 		astRoot->accept( tableConstructor );
+		if( !tableConstructor.errors.errors.empty() ) {
+			tableConstructor.errors.WriteErrors();
+			return 0;
+		}
 	}
 	return 0;
 }

@@ -11,8 +11,8 @@ namespace SymbolsTable {
 	template <class T>
 	bool HasSuchNameInScope( std::vector<T> descriptors, std::string name )
 	{
-		for( int i = 0; i < static_cast<int>( descriptors.size() ); ++i ) {
-			if( descriptors[i].Name == name ) {
+		for( auto ptr = descriptors.begin() ; ptr != descriptors.end(); ++ptr ) {
+			if( ptr->Name == name ) {
 				return true;
 			}
 		}

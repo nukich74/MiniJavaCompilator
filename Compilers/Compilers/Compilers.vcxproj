@@ -91,6 +91,7 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="SymbolsTable\ClassDescription.h" />
     <ClInclude Include="AbstractTree\Exp.h" />
+    <ClInclude Include="SymbolsTable\ErrorsAggregator.h" />
     <ClInclude Include="SymbolsTable\VariableDescription.h" />
     <ClInclude Include="AbstractTree\FormalList.h" />
     <ClInclude Include="AbstractTree\Grammar.h" />
@@ -118,6 +119,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
+    <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />
     <ClCompile Include="SymbolsTable\SymbolTable.cpp" />
     <ClCompile Include="SymbolsTable\SymbolTableConstructor.cpp" />
     <ClCompile Include="SymbolsTable\TypeIdentifier.cpp" />
