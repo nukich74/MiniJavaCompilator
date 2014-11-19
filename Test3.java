@@ -1,56 +1,41 @@
-
-public class MainProgram {
-    
-    public static void main( String[] args ) 
-    {
-        int i = -1;
-        int bbb = 100;
-        /*
-        while( i < 33 ) {
-            System.out.println( i + 1 + toBinary(i) );
-            System.out.println( i );
-
-        }
-        */
-        System.out.println( i + 1 + toBinary( i ) );
-        System.out.println( i );
-        BaseString cc;
-        cc.testA( false );
-        String gg;
-        gg.testB( 178 );
-    }
-
-    public int toBinary( int a ) 
-    {
-        return a + 1;
-    } 
-
+class MainProgram {
+	public static void main( String[] args )
+	{
+		a = 1 + i;
+		while( i < 33 ) {
+			System.out.println( i + 1 );
+			System.out.println( i + 5 );
+		}
+		System.out.println( 1 + i );
+		System.out.println( 1 );
+	}
 }
 
 class BaseString {
-    int a;
-    int[] bb;
-
-    public boolean testA( boolean b) {
-        a = 10;
-        bb[0] = 2;
-        return true;
-        /*
-        if( a && b ) {
-            return true;
-        } else {
-            return false;
-        }
-        */
-    }
+	int a;
+	int[] bb;
 }
 
-class String {
-    boolean tabs;
+class NotString extends BaseString {
+	boolean tabs;
+	public int testB( int q )
+	{
+		if( a < 5 && q < 0 ) {
+			q = 3;
+		} else {
+			q = 10;
+		}
+		return a + q;
+	}
 
-    public int testB( int q ) {
-        return a + q;
-    }
+	public boolean testC( boolean flag, int[] array )
+	{
+		int variable;
+		int[] array;
+		int variable2;
+		boolean flag2;
+		BaseString parent;
 
-
+		return true;
+	}
 }

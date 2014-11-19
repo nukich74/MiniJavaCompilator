@@ -38,6 +38,7 @@
     <ClInclude Include="AbstractTree\VarDeclList.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="Temp.h" />
+    <ClInclude Include="AbstractTree\ExpList.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

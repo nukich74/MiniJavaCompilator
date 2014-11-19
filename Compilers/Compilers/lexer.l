@@ -13,6 +13,8 @@
 %%
 "class"				{ return CLASS; }
 
+"extends"			{ return EXTENDS; }
+
 "public"			{ return PUBLIC; }
 
 "static" 			{ return STATIC; }
@@ -49,7 +51,7 @@
 
 [a-zA-Z][a-zA-Z0-9]*		{ strcpy_s( yylval.sval, yytext ); return ID; }
 
-[0-9]+ 				{ yylval.ival = atoi(yytext); return INTEGER_LITERAL;}
+[0-9]+ 				{ yylval.ival = atoi(yytext); return INTEGER_LITERAL; }
 
 "/*"((("*"[^/])?)|[^*])*"*/"	{}
 
@@ -57,10 +59,11 @@
 
 [\t\r\n\ ]+			{}
 
-[\[\]\)\(\{\}\;]		{ return yytext[0]; }
+[\[\]\)\(\{\}\;\/\*\-\+\<\=\,]		{ return yytext[0]; }
 
-.				{}
+"&&"					{ return yytext[0]; }
 
+.						{}
 
 %%
 extern int YYText();

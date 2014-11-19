@@ -1,9 +1,22 @@
-extern "C" int yyparse();
+int yyparse( void**, int* );
 
 #include <fstream>
 #include <iostream>
+#include <common.h>
+#include <memory>
+#include <PrettyPrinterVisitor.h>
+#include <SymbolTableConstructor.h>
 
 int main() {
-	while( yyparse() != 0 );
+	void* ptr;
+	int hasError = 0;
+	while( yyparse( &ptr, &hasError ) != 0 );
+	if( hasError == 0 ) {
+		std::unique_ptr<CProgram> astRoot( static_cast<CProgram*>( ptr ) );
+		CPrettyPrinterVisitor printer;
+		astRoot->accept( printer );
+		CSymbolTableConstructor tableConstructor;
+		astRoot->accept( tableConstructor );
+	}
 	return 0;
 }

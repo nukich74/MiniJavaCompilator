@@ -11,7 +11,7 @@ class CSymbolTableConstructor : public IVisitor {
 public:
 	CSymbolTableConstructor() { }
 
-	SymbolsTable::CSymbolTable symbolTable;
+	static SymbolsTable::CSymbolTable symbolTable;
 
 	virtual void visit( const CExpBinOpExp& exp ) { IVisitor::visit( exp ); }
 	virtual void visit( const CUnMinExp& exp ) { IVisitor::visit( exp ); }

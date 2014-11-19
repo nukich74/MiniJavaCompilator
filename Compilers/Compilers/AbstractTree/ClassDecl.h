@@ -10,7 +10,7 @@ public:
 		classId( _classId ),
 		pVarDeclList( _pVarDeclList ),
 		pMethodDeclList( _pMethodDeclList ),
-		parrentId( _parrentId )
+		parentId( _parrentId )
 	{}
 
 	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
@@ -18,5 +18,5 @@ public:
 	std::string classId;
 	std::shared_ptr<IVarDeclList> pVarDeclList;
 	std::shared_ptr<IMethodDeclList> pMethodDeclList;
-	std::string parrentId;
+	std::string parentId;
 };

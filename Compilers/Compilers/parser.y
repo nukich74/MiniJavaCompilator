@@ -1,13 +1,15 @@
 %{
 #include <iostream>
 #include <common.h>
-#include <PrettyPrinterVisitor.h>
-#include <SymbolTableConstructor.h>
 
 extern "C" int yylex();
-extern "C" int yyparse();
-void yyerror(const char *);
+void yyerror( void**, int*, const char *);
+
 %}
+
+%parse-param {void** root}
+
+%parse-param {int* hasError}
 
 %error-verbose
 
@@ -16,6 +18,9 @@ void yyerror(const char *);
 	char sval[255];
 	void* pval;
 }
+
+%left '&'
+
 %left '<' '>' '='
 
 %left '+' '-'
@@ -73,8 +78,8 @@ void yyerror(const char *);
 %%
 
 Program: 
-	MainClass { $$ = new CProgram( static_cast<CMainClass*>( $1 ), 0 ); CPrettyPrinterVisitor visitor; CMainClass* main = static_cast<CMainClass*>( $$ ); main->accept( visitor ); CSymbolTableConstructor table; main->accept( table ); delete main;  }
-	| MainClass ClassDecls { $$ = new CProgram( static_cast<CMainClass*>( $1 ), static_cast<CClassDeclList*>( $2 ) ); }
+	MainClass { *root = new CProgram( static_cast<CMainClass*>( $1 ), 0 ); }
+	| MainClass ClassDecls { *root = new CProgram( static_cast<CMainClass*>( $1 ), static_cast<CClassDeclList*>( $2 ) ); }
 	;
 ClassDecls:
 	ClassDecl { $$ = new CClassDeclList( 0, static_cast<CClassDecl*>( $1 ) ); }
@@ -82,12 +87,12 @@ ClassDecls:
 	;
 MainClass:
 	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements '}' '}' { $$ = new CMainClass( $2, $12, static_cast<CStatementList*>( $15 ) ); }
-	| CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements error '}' '}' { std::cout << "Syntax error : incorrect symbols in Main function in line : " << @16.first_line << std::endl; }
+	| CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements error '}' '}' { *hasError = 1; std::cout << "Syntax error : incorrect symbols in Main function in line : " << @16.first_line << std::endl; }
 ClassDecl:
-	CLASS ID '{' '}' { $$ = new CClassDecl( $2, 0, 0, 0 ); }
-	| CLASS ID '{' VarDecls '}' { $$ = new CClassDecl( $2, static_cast<CVarDeclList*>( $4 ), 0, 0 ); }
-	| CLASS ID '{' VarDecls MethodDecls '}' { $$ = new CClassDecl( $2, static_cast<CVarDeclList*>$4, static_cast<CMethodDeclList*>( $5 ), 0 ); }
-	| CLASS ID '{' MethodDecls '}' { $$ = new CClassDecl( $2, 0, static_cast<CMethodDeclList*>( $4 ), 0 ); }
+	CLASS ID '{' '}' { $$ = new CClassDecl( $2, 0, 0, "" ); }
+	| CLASS ID '{' VarDecls '}' { $$ = new CClassDecl( $2, static_cast<CVarDeclList*>( $4 ), 0, "" ); }
+	| CLASS ID '{' VarDecls MethodDecls '}' { $$ = new CClassDecl( $2, static_cast<CVarDeclList*>$4, static_cast<CMethodDeclList*>( $5 ), "" ); }
+	| CLASS ID '{' MethodDecls '}' { $$ = new CClassDecl( $2, 0, static_cast<CMethodDeclList*>( $4 ), "" ); }
 	| CLASS ID EXTENDS ID '{' '}' { $$ = new CClassDecl( $2, 0, 0, $4 ); }
 	| CLASS ID EXTENDS ID '{' VarDecls '}' { $$ = new CClassDecl( $2, static_cast<CVarDeclList*>( $6 ), 0, $4 ); }
 	| CLASS ID EXTENDS ID '{' VarDecls MethodDecls '}' { $$ = new CClassDecl( $2, static_cast<CVarDeclList*>( $6 ), static_cast<CMethodDeclList*>( $7 ), $4 ); }
@@ -99,7 +104,7 @@ VarDecls:
 	;
 VarDecl:
 	Type ID ';' { $$ = new CVarDecl( static_cast<CType*>( $1 ), $2 ); }
-	| Type error ';' { std::cout << "Syntax error : incorrect variable definition in line : " << @2.first_line << std::endl; }
+	| Type error ';' { *hasError = 1; std::cout << "Syntax error : incorrect variable definition in line : " << @2.first_line << std::endl; }
 	;
 MethodDecls:
 	MethodDecl { $$ = new CMethodDeclList( 0, static_cast<CMethodDecl*>( $1 ) ); }
@@ -126,7 +131,7 @@ FormalRest:
 Type:
 	INT { $$ = new CType( "int" ); }
 	| INT '[' ']' { $$ = new CType( "int[]" ); }
-	| BOOLEAN { $$ = new CType( "bool" ); }
+	| BOOLEAN { $$ = new CType( "boolean" ); }
 	| ID { $$ = new CType( $1 ); }
 	;
 Statements:
@@ -141,8 +146,8 @@ Statement:
 	| '{' Statements '}' { $$ = new CCurlyBraceStatement( static_cast<IStatementList*>( $2 ) ); }
 	| IF '(' Exp ')' Statement ELSE Statement { $$ = new CIfStatement( static_cast<IExp*>( $3 ), static_cast<IStatement*>( $5 ), static_cast<IStatement*>( $7 ) ); }
 	| WHILE '(' Exp ')' Statement { $$ = new CWhileStatement( static_cast<IExp*>( $3 ), static_cast<IStatement*>( $5 ) ); }
-	| error ';' { std::cout << "Syntax error : incorrect statement in line :" << @1.first_line << std::endl; }
-	| SYSTEM_OUT_PRINTLN error ';' { std::cout << "Syntax error : incorrect Println-statement in line : " << @2.first_line << std::endl; }
+	| error ';' { *hasError = 1; std::cout << "Syntax error : incorrect statement in line :" << @1.first_line << std::endl; }
+	| SYSTEM_OUT_PRINTLN error ';' { *hasError = 1; std::cout << "Syntax error : incorrect Println-statement in line : " << @2.first_line << std::endl; }
 	;
 
 Exp:
@@ -150,6 +155,8 @@ Exp:
 	| Exp '+' Exp { $$ = new CExpBinOpExp( static_cast<IExp*>( $1 ), '+', static_cast<IExp*>( $3 ) ); }
 	| Exp '/' Exp { $$ = new CExpBinOpExp( static_cast<IExp*>( $1 ), '/', static_cast<IExp*>( $3 ) ); }
 	| Exp '-' Exp { $$ = new CExpBinOpExp( static_cast<IExp*>( $1 ), '-', static_cast<IExp*>( $3 ) ); }
+	| Exp '<' Exp { $$ = new CExpBinOpExp( static_cast<IExp*>( $1 ), '<', static_cast<IExp*>( $3 ) ); }
+	| Exp '&' Exp { $$ = new CExpBinOpExp( static_cast<IExp*>( $1 ), '&', static_cast<IExp*>( $3 ) ); }
 	| '-' Exp %prec UMINUS { $$ = new CUnMinExp( static_cast<IExp*>( $2 ) ); }
 	| Exp '[' Exp ']' { $$ = new CExpWithIndex( static_cast<IExp*>( $1 ), static_cast<IExp*>( $3 ) ); }
 	| Exp '.' LENGTH { $$ = new CExpDotLength( static_cast<IExp*>( $1 ) ); }
@@ -176,7 +183,7 @@ ExpRest:
 	
 %%
 
-void yyerror( const char* str )
+void yyerror( void**, int*, const char* str )
 {
 	std::cout << str << std::endl;
 }

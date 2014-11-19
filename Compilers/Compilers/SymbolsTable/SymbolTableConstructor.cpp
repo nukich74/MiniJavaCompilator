@@ -8,6 +8,8 @@
 
 using namespace SymbolsTable;
 
+SymbolsTable::CSymbolTable CSymbolTableConstructor::symbolTable;
+
 void CSymbolTableConstructor::visit( const CProgram& program )
 {
 	program.pMainClass->accept( *this );
@@ -34,9 +36,13 @@ void CSymbolTableConstructor::visit( const CClassDeclList& classDeclList )
 void CSymbolTableConstructor::visit( const CClassDecl& classDecl )
 {
 	curClass.Name = classDecl.classId;
-	curClass.BaseClass = classDecl.parrentId;
-	classDecl.pVarDeclList->accept( *this );
-	classDecl.pMethodDeclList->accept( *this );
+	curClass.BaseClass = classDecl.parentId;
+	if( classDecl.pVarDeclList != 0 ) {
+		classDecl.pVarDeclList->accept( *this );
+	}
+	if( classDecl.pMethodDeclList != 0 ) {
+		classDecl.pMethodDeclList->accept( *this );
+	}
 	symbolTable.AddClass( curClass );
 	curClass.MakeZero();
 }
@@ -97,8 +103,12 @@ void CSymbolTableConstructor::visit( const CMethodDecl& methodDecl )
 {
 	curMethod.Name = methodDecl.id;
 	methodDecl.pType->accept( *this );
-	methodDecl.pFormalList->accept( *this );
-	methodDecl.pVarDeclList->accept( *this );
+	if( methodDecl.pFormalList != 0 ) {
+		methodDecl.pFormalList->accept( *this );
+	}
+	if( methodDecl.pVarDeclList != 0 ) {
+		methodDecl.pVarDeclList->accept( *this );
+	}
 	curClass.Methods.push_back( curMethod );
 	curMethod.MakeZero();
 }
