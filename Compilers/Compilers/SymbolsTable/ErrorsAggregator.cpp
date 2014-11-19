@@ -11,7 +11,7 @@ void CErrorsAggregator::AddError( ErrorType type, ErrorPosition position )
 	std::string msg;
 	switch( type ) {
 		case ET_Redefinition:
-			msg += "Redefinition in ";
+			msg += "Redefinition of ";
 			break;
 		default:
 			assert( false );

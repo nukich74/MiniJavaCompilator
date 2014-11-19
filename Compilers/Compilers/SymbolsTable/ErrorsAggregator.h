@@ -27,11 +27,11 @@ namespace SymbolsTable {
 				assert( false );
 			} else {
 				if( methodName != "" && varName != "" ) {
-					return "class " + className + " method " + methodName + " variable defenition of " + varName;
+					return "variable " + varName + " in method " + methodName + " of class " + className;
 				} else if( varName != "" ) {
-					return "class " + className + " field definition of " + varName;
+					return "field " + varName + " in class " + className;
 				} else if( methodName != "" ) {
-					return "class " + className + " method definition of" + methodName;
+					return "method " + methodName + " in class" + className;
 				} else {
 					return "class " + className;
 				}

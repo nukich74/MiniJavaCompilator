@@ -39,3 +39,20 @@ class NotString extends BaseString {
 		return true;
 	}
 }
+
+class BaseString {
+	int a;
+	int b;
+	boolean a;
+
+	public boolean testBase()
+	{
+		int a;
+		return a;
+	}
+	public int testBase(int flag)
+	{
+		int b;
+		return b;
+	}
+}
