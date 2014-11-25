@@ -41,6 +41,9 @@
     <ClInclude Include="Temp.h" />
     <ClInclude Include="AbstractTree\ExpList.h" />
     <ClInclude Include="SymbolsTable\ErrorsAggregator.h" />
+    <ClInclude Include="IRTree\IRTree.h" />
+    <ClInclude Include="IRTree\IRExp.h" />
+    <ClInclude Include="IRTree\IRHelpers.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
