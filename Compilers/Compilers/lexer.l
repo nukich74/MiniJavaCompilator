@@ -6,9 +6,33 @@
 #include <cstring>
 #include "parser.tab.hpp"
 #define YY_DECL extern "C" int yylex()
-#define YY_USER_ACTION yylloc.first_line = yylloc.last_line = yylineno;
+
+static void updateLocation()
+{
+	static int currLine = 1;
+	static int currCol  = 1;
+
+	yylloc.first_line   = currLine;
+	yylloc.first_column = currCol;
+
+	char * currentSymbol;
+	for( currentSymbol = yytext; *currentSymbol != '\0'; ++currentSymbol ) {
+		if( *currentSymbol == '\n' ) {
+			currLine++;
+			currCol = 1;
+		} else if( *currentSymbol == '\t' ) {
+			currCol += 4;
+		} else {
+			currCol++;
+		}
+	}
+
+	yylloc.last_line   = currLine;
+	yylloc.last_column = currCol - 1;
+}
+
+#define YY_USER_ACTION updateLocation();
 %}
-%option yylineno
 
 %%
 "class"				{ return CLASS; }

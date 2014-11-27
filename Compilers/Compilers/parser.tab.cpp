@@ -66,14 +66,12 @@
 #line 1 "parser.y"
 
 #include <iostream>
-#include <common.h>
-
 extern "C" int yylex();
 void yyerror( void**, int*, const char *);
 
 
 /* Line 371 of yacc.c  */
-#line 77 "parser.tab.cpp"
+#line 75 "parser.tab.cpp"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -102,6 +100,13 @@ void yyerror( void**, int*, const char *);
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+/* Line 387 of yacc.c  */
+#line 8 "parser.y"
+ #include <common.h> 
+
+/* Line 387 of yacc.c  */
+#line 110 "parser.tab.cpp"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -143,11 +148,24 @@ typedef union YYSTYPE
 
 	int ival;
 	char sval[255];
-	void* pval;
+	CProgram* program;
+	CMainClass* mainClass;
+	CClassDeclList* classDecls;
+	CClassDecl* classDecl;
+	CStatementList* statements;
+	IStatement* statement;
+	CVarDeclList* varDecls;
+	CVarDecl* varDecl;
+	CMethodDeclList* methodDecls;
+	CMethodDecl* methodDecl;
+	CType* type;
+	CFormalList* formalList;
+	CExpList* expList;
+	IExp* exp;
 
 
 /* Line 387 of yacc.c  */
-#line 151 "parser.tab.cpp"
+#line 169 "parser.tab.cpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -188,7 +206,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 192 "parser.tab.cpp"
+#line 210 "parser.tab.cpp"
 
 #ifdef short
 # undef short
@@ -524,14 +542,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    81,    81,    82,    85,    86,    89,    90,    92,    93,
-      94,    95,    96,    97,    98,    99,   102,   103,   106,   107,
-     110,   111,   114,   115,   116,   117,   118,   119,   120,   121,
-     124,   125,   128,   129,   132,   133,   134,   135,   138,   139,
-     142,   143,   144,   145,   146,   147,   148,   149,   150,   154,
-     155,   156,   157,   158,   159,   160,   161,   162,   163,   164,
-     165,   166,   167,   168,   169,   170,   171,   172,   173,   176,
-     177,   180,   181
+       0,   119,   119,   120,   123,   124,   127,   128,   130,   131,
+     132,   133,   134,   135,   136,   137,   140,   141,   144,   145,
+     148,   149,   152,   153,   154,   155,   156,   157,   158,   159,
+     162,   163,   166,   167,   170,   171,   172,   173,   176,   177,
+     180,   181,   182,   183,   184,   185,   186,   187,   188,   192,
+     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
+     203,   204,   205,   206,   207,   208,   209,   210,   211,   214,
+     215,   218,   219
 };
 #endif
 
@@ -1739,433 +1757,433 @@ yyreduce:
     {
         case 2:
 /* Line 1792 of yacc.c  */
-#line 81 "parser.y"
-    { *root = new CProgram( static_cast<CMainClass*>( (yyvsp[(1) - (1)].pval) ), 0 ); }
+#line 119 "parser.y"
+    { *root = new CProgram( (yyvsp[(1) - (1)].mainClass), 0 ); }
     break;
 
   case 3:
 /* Line 1792 of yacc.c  */
-#line 82 "parser.y"
-    { *root = new CProgram( static_cast<CMainClass*>( (yyvsp[(1) - (2)].pval) ), static_cast<CClassDeclList*>( (yyvsp[(2) - (2)].pval) ) ); }
+#line 120 "parser.y"
+    { *root = new CProgram( (yyvsp[(1) - (2)].mainClass), (yyvsp[(2) - (2)].classDecls) ); }
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 85 "parser.y"
-    { (yyval.pval) = new CClassDeclList( 0, static_cast<CClassDecl*>( (yyvsp[(1) - (1)].pval) ) ); }
+#line 123 "parser.y"
+    { (yyval.classDecls) = new CClassDeclList( 0, (yyvsp[(1) - (1)].classDecl) ); }
     break;
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 86 "parser.y"
-    { (yyval.pval) = new CClassDeclList( static_cast<CClassDeclList*>( (yyvsp[(1) - (2)].pval) ), static_cast<CClassDecl*>( (yyvsp[(2) - (2)].pval) ) ); }
+#line 124 "parser.y"
+    { (yyval.classDecls) = new CClassDeclList( (yyvsp[(1) - (2)].classDecls), (yyvsp[(2) - (2)].classDecl) ); }
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 89 "parser.y"
-    { (yyval.pval) = new CMainClass( (yyvsp[(2) - (17)].sval), (yyvsp[(12) - (17)].sval), static_cast<CStatementList*>( (yyvsp[(15) - (17)].pval) ) ); }
+#line 127 "parser.y"
+    { (yyval.mainClass) = new CMainClass( (yyvsp[(2) - (17)].sval), (yyvsp[(12) - (17)].sval), (yyvsp[(15) - (17)].statements) ); }
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 90 "parser.y"
-    { *hasError = 1; std::cout << "Syntax error : incorrect symbols in Main function in line : " << (yylsp[(16) - (18)]).first_line << std::endl; }
+#line 128 "parser.y"
+    { *hasError = 1; std::cout << "Syntax error : incorrect symbols in Main function from " << (yylsp[(16) - (18)]).first_line << ":" << (yylsp[(16) - (18)]).first_column << " to " << (yylsp[(16) - (18)]).last_line << ":" << (yylsp[(16) - (18)]).last_column << std::endl; }
     break;
 
   case 8:
 /* Line 1792 of yacc.c  */
-#line 92 "parser.y"
-    { (yyval.pval) = new CClassDecl( (yyvsp[(2) - (4)].sval), 0, 0, "" ); }
+#line 130 "parser.y"
+    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (4)].sval), 0, 0, "" ); }
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 93 "parser.y"
-    { (yyval.pval) = new CClassDecl( (yyvsp[(2) - (5)].sval), static_cast<CVarDeclList*>( (yyvsp[(4) - (5)].pval) ), 0, "" ); }
+#line 131 "parser.y"
+    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (5)].sval), (yyvsp[(4) - (5)].varDecls), 0, "" ); }
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 94 "parser.y"
-    { (yyval.pval) = new CClassDecl( (yyvsp[(2) - (6)].sval), static_cast<CVarDeclList*>(yyvsp[(4) - (6)].pval), static_cast<CMethodDeclList*>( (yyvsp[(5) - (6)].pval) ), "" ); }
+#line 132 "parser.y"
+    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (6)].sval), (yyvsp[(4) - (6)].varDecls), (yyvsp[(5) - (6)].methodDecls), "" ); }
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 95 "parser.y"
-    { (yyval.pval) = new CClassDecl( (yyvsp[(2) - (5)].sval), 0, static_cast<CMethodDeclList*>( (yyvsp[(4) - (5)].pval) ), "" ); }
+#line 133 "parser.y"
+    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (5)].sval), 0, (yyvsp[(4) - (5)].methodDecls), "" ); }
     break;
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 96 "parser.y"
-    { (yyval.pval) = new CClassDecl( (yyvsp[(2) - (6)].sval), 0, 0, (yyvsp[(4) - (6)].sval) ); }
+#line 134 "parser.y"
+    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (6)].sval), 0, 0, (yyvsp[(4) - (6)].sval) ); }
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 97 "parser.y"
-    { (yyval.pval) = new CClassDecl( (yyvsp[(2) - (7)].sval), static_cast<CVarDeclList*>( (yyvsp[(6) - (7)].pval) ), 0, (yyvsp[(4) - (7)].sval) ); }
+#line 135 "parser.y"
+    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (7)].sval), (yyvsp[(6) - (7)].varDecls), 0, (yyvsp[(4) - (7)].sval) ); }
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 98 "parser.y"
-    { (yyval.pval) = new CClassDecl( (yyvsp[(2) - (8)].sval), static_cast<CVarDeclList*>( (yyvsp[(6) - (8)].pval) ), static_cast<CMethodDeclList*>( (yyvsp[(7) - (8)].pval) ), (yyvsp[(4) - (8)].sval) ); }
+#line 136 "parser.y"
+    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (8)].sval), (yyvsp[(6) - (8)].varDecls), (yyvsp[(7) - (8)].methodDecls), (yyvsp[(4) - (8)].sval) ); }
     break;
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 99 "parser.y"
-    { (yyval.pval) = new CClassDecl( (yyvsp[(2) - (7)].sval), 0, static_cast<CMethodDeclList*>( (yyvsp[(6) - (7)].pval) ), (yyvsp[(4) - (7)].sval) ); }
+#line 137 "parser.y"
+    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (7)].sval), 0, (yyvsp[(6) - (7)].methodDecls), (yyvsp[(4) - (7)].sval) ); }
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 102 "parser.y"
-    { (yyval.pval) = new CVarDeclList( 0, static_cast<CVarDecl*>( (yyvsp[(1) - (1)].pval) ) ); }
+#line 140 "parser.y"
+    { (yyval.varDecls) = new CVarDeclList( 0, (yyvsp[(1) - (1)].varDecl) ); }
     break;
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 103 "parser.y"
-    { (yyval.pval) = new CVarDeclList( static_cast<CVarDeclList*>( (yyvsp[(1) - (2)].pval) ) , static_cast<CVarDecl*>( (yyvsp[(2) - (2)].pval) ) ); }
+#line 141 "parser.y"
+    { (yyval.varDecls) = new CVarDeclList( (yyvsp[(1) - (2)].varDecls), (yyvsp[(2) - (2)].varDecl) ); }
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 106 "parser.y"
-    { (yyval.pval) = new CVarDecl( static_cast<CType*>( (yyvsp[(1) - (3)].pval) ), (yyvsp[(2) - (3)].sval) ); }
+#line 144 "parser.y"
+    { (yyval.varDecl) = new CVarDecl( (yyvsp[(1) - (3)].type), (yyvsp[(2) - (3)].sval) ); }
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 107 "parser.y"
-    { *hasError = 1; std::cout << "Syntax error : incorrect variable definition in line : " << (yylsp[(2) - (3)]).first_line << std::endl; }
+#line 145 "parser.y"
+    { *hasError = 1; std::cout << "Syntax error : incorrect variable definition from " << (yylsp[(2) - (3)]).first_line << ":" << (yylsp[(2) - (3)]).first_column << " to " << (yylsp[(2) - (3)]).last_line << ":" << (yylsp[(2) - (3)]).last_column << std::endl; }
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 110 "parser.y"
-    { (yyval.pval) = new CMethodDeclList( 0, static_cast<CMethodDecl*>( (yyvsp[(1) - (1)].pval) ) ); }
+#line 148 "parser.y"
+    { (yyval.methodDecls) = new CMethodDeclList( 0, (yyvsp[(1) - (1)].methodDecl) ); }
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 111 "parser.y"
-    { (yyval.pval) = new CMethodDeclList( static_cast<CMethodDeclList*>( (yyvsp[(1) - (2)].pval) ), static_cast<CMethodDecl*>( (yyvsp[(2) - (2)].pval) ) ); }
+#line 149 "parser.y"
+    { (yyval.methodDecls) = new CMethodDeclList( (yyvsp[(1) - (2)].methodDecls), (yyvsp[(2) - (2)].methodDecl) ); }
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 114 "parser.y"
-    { (yyval.pval) = new CMethodDecl( static_cast<CType*>( (yyvsp[(2) - (11)].pval) ), (yyvsp[(3) - (11)].sval), static_cast<CFormalList*>( (yyvsp[(5) - (11)].pval) ), 0, 0, static_cast<IExp*>( (yyvsp[(9) - (11)].pval) ) ); }
+#line 152 "parser.y"
+    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (11)].type), (yyvsp[(3) - (11)].sval), (yyvsp[(5) - (11)].formalList), 0, 0, (yyvsp[(9) - (11)].exp) ); }
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 115 "parser.y"
-    { (yyval.pval) = new CMethodDecl( static_cast<CType*>( (yyvsp[(2) - (12)].pval) ), (yyvsp[(3) - (12)].sval), static_cast<CFormalList*>( (yyvsp[(5) - (12)].pval) ), static_cast<CVarDeclList*>( (yyvsp[(8) - (12)].pval) ), 0, static_cast<IExp*>( (yyvsp[(10) - (12)].pval) ) ); }
+#line 153 "parser.y"
+    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (12)].type), (yyvsp[(3) - (12)].sval), (yyvsp[(5) - (12)].formalList), (yyvsp[(8) - (12)].varDecls), 0, (yyvsp[(10) - (12)].exp) ); }
     break;
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 116 "parser.y"
-    { (yyval.pval) = new CMethodDecl( static_cast<CType*>( (yyvsp[(2) - (13)].pval) ), (yyvsp[(3) - (13)].sval), static_cast<CFormalList*>( (yyvsp[(5) - (13)].pval) ), static_cast<CVarDeclList*>( (yyvsp[(8) - (13)].pval) ), static_cast<CStatementList*>( (yyvsp[(9) - (13)].pval) ), static_cast<IExp*>( (yyvsp[(11) - (13)].pval) ) ); }
+#line 154 "parser.y"
+    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (13)].type), (yyvsp[(3) - (13)].sval), (yyvsp[(5) - (13)].formalList), (yyvsp[(8) - (13)].varDecls), (yyvsp[(9) - (13)].statements), (yyvsp[(11) - (13)].exp) ); }
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 117 "parser.y"
-    { (yyval.pval) = new CMethodDecl( static_cast<CType*>( (yyvsp[(2) - (12)].pval) ), (yyvsp[(3) - (12)].sval), static_cast<CFormalList*>( (yyvsp[(5) - (12)].pval) ), 0, static_cast<CStatementList*>( (yyvsp[(8) - (12)].pval) ), static_cast<IExp*>( (yyvsp[(10) - (12)].pval) ) ); }
+#line 155 "parser.y"
+    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (12)].type), (yyvsp[(3) - (12)].sval), (yyvsp[(5) - (12)].formalList), 0, (yyvsp[(8) - (12)].statements), (yyvsp[(10) - (12)].exp) ); }
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 118 "parser.y"
-    { (yyval.pval) = new CMethodDecl( static_cast<CType*>( (yyvsp[(2) - (10)].pval) ), (yyvsp[(3) - (10)].sval), 0, 0, 0, static_cast<IExp*>( (yyvsp[(8) - (10)].pval) ) ); }
+#line 156 "parser.y"
+    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (10)].type), (yyvsp[(3) - (10)].sval), 0, 0, 0, (yyvsp[(8) - (10)].exp) ); }
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 119 "parser.y"
-    { (yyval.pval) = new CMethodDecl( static_cast<CType*>( (yyvsp[(2) - (11)].pval) ), (yyvsp[(3) - (11)].sval), 0, static_cast<CVarDeclList*>( (yyvsp[(7) - (11)].pval) ), 0, static_cast<IExp*>( (yyvsp[(9) - (11)].pval) ) ); }
+#line 157 "parser.y"
+    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (11)].type), (yyvsp[(3) - (11)].sval), 0, (yyvsp[(7) - (11)].varDecls), 0, (yyvsp[(9) - (11)].exp) ); }
     break;
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 120 "parser.y"
-    { (yyval.pval) = new CMethodDecl( static_cast<CType*>( (yyvsp[(2) - (12)].pval) ), (yyvsp[(3) - (12)].sval), 0, static_cast<CVarDeclList*>( (yyvsp[(7) - (12)].pval) ), static_cast<CStatementList*>( (yyvsp[(8) - (12)].pval) ), static_cast<IExp*>( (yyvsp[(10) - (12)].pval) ) ); }
+#line 158 "parser.y"
+    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (12)].type), (yyvsp[(3) - (12)].sval), 0, (yyvsp[(7) - (12)].varDecls), (yyvsp[(8) - (12)].statements), (yyvsp[(10) - (12)].exp) ); }
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 121 "parser.y"
-    { (yyval.pval) = new CMethodDecl( static_cast<CType*>( (yyvsp[(2) - (11)].pval) ), (yyvsp[(3) - (11)].sval), 0, 0, static_cast<CStatementList*>( (yyvsp[(7) - (11)].pval) ), static_cast<IExp*>( (yyvsp[(9) - (11)].pval) ) ); }
+#line 159 "parser.y"
+    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (11)].type), (yyvsp[(3) - (11)].sval), 0, 0, (yyvsp[(7) - (11)].statements), (yyvsp[(9) - (11)].exp) ); }
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 124 "parser.y"
-    { (yyval.pval) = new CFormalList( 0, static_cast<CType*>( (yyvsp[(1) - (2)].pval) ), (yyvsp[(2) - (2)].sval) ); }
+#line 162 "parser.y"
+    { (yyval.formalList) = new CFormalList( 0, (yyvsp[(1) - (2)].type), (yyvsp[(2) - (2)].sval) ); }
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 125 "parser.y"
-    { (yyval.pval) = new CFormalList( static_cast<CFormalList*>( (yyvsp[(3) - (3)].pval) ), static_cast<CType*>( (yyvsp[(1) - (3)].pval) ), (yyvsp[(2) - (3)].sval) ); }
+#line 163 "parser.y"
+    { (yyval.formalList) = new CFormalList( (yyvsp[(3) - (3)].formalList), (yyvsp[(1) - (3)].type), (yyvsp[(2) - (3)].sval) ); }
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 128 "parser.y"
-    { (yyval.pval) = new CFormalList( 0, static_cast<CType*>( (yyvsp[(2) - (3)].pval) ), (yyvsp[(3) - (3)].sval) ); }
+#line 166 "parser.y"
+    { (yyval.formalList) = new CFormalList( 0, (yyvsp[(2) - (3)].type), (yyvsp[(3) - (3)].sval) ); }
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 129 "parser.y"
-    { (yyval.pval) = new CFormalList( static_cast<CFormalList*>( (yyvsp[(1) - (4)].pval) ), static_cast<CType*>( (yyvsp[(3) - (4)].pval) ), (yyvsp[(4) - (4)].sval) ); }
+#line 167 "parser.y"
+    { (yyval.formalList) = new CFormalList( (yyvsp[(1) - (4)].formalList), (yyvsp[(3) - (4)].type), (yyvsp[(4) - (4)].sval) ); }
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 132 "parser.y"
-    { (yyval.pval) = new CType( "int" ); }
+#line 170 "parser.y"
+    { (yyval.type) = new CType( "int" ); }
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 133 "parser.y"
-    { (yyval.pval) = new CType( "int[]" ); }
+#line 171 "parser.y"
+    { (yyval.type) = new CType( "int[]" ); }
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 134 "parser.y"
-    { (yyval.pval) = new CType( "boolean" ); }
+#line 172 "parser.y"
+    { (yyval.type) = new CType( "boolean" ); }
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 135 "parser.y"
-    { (yyval.pval) = new CType( (yyvsp[(1) - (1)].sval) ); }
+#line 173 "parser.y"
+    { (yyval.type) = new CType( (yyvsp[(1) - (1)].sval) ); }
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 138 "parser.y"
-    { (yyval.pval) = new CStatementList( 0, static_cast<IStatement*>( (yyvsp[(1) - (1)].pval) ) ); }
+#line 176 "parser.y"
+    { (yyval.statements) = new CStatementList( 0, (yyvsp[(1) - (1)].statement) ); }
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 139 "parser.y"
-    { (yyval.pval) = new CStatementList( static_cast<CStatementList*>( (yyvsp[(1) - (2)].pval) ), static_cast<IStatement*>( (yyvsp[(2) - (2)].pval) ) ); }
+#line 177 "parser.y"
+    { (yyval.statements) = new CStatementList( (yyvsp[(1) - (2)].statements), (yyvsp[(2) - (2)].statement) ); }
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 142 "parser.y"
-    { (yyval.pval) = new CAssignStatement( (yyvsp[(1) - (4)].sval), 0, static_cast<IExp*>( (yyvsp[(3) - (4)].pval) ) ); }
+#line 180 "parser.y"
+    { (yyval.statement) = new CAssignStatement( (yyvsp[(1) - (4)].sval), 0, (yyvsp[(3) - (4)].exp) ); }
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 143 "parser.y"
-    { (yyval.pval) = new CAssignStatement( (yyvsp[(1) - (7)].sval), static_cast<IExp*>( (yyvsp[(3) - (7)].pval) ), static_cast<IExp*>( (yyvsp[(6) - (7)].pval) ) ); }
+#line 181 "parser.y"
+    { (yyval.statement) = new CAssignStatement( (yyvsp[(1) - (7)].sval), (yyvsp[(3) - (7)].exp), (yyvsp[(6) - (7)].exp) ); }
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 144 "parser.y"
-    { (yyval.pval) = new CPrintStatement( static_cast<IExp*>( (yyvsp[(3) - (5)].pval) ) ); }
+#line 182 "parser.y"
+    { (yyval.statement) = new CPrintStatement( (yyvsp[(3) - (5)].exp) ); }
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 145 "parser.y"
-    { (yyval.pval) = new CCurlyBraceStatement( 0 ); }
+#line 183 "parser.y"
+    { (yyval.statement) = new CCurlyBraceStatement( 0 ); }
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 146 "parser.y"
-    { (yyval.pval) = new CCurlyBraceStatement( static_cast<IStatementList*>( (yyvsp[(2) - (3)].pval) ) ); }
+#line 184 "parser.y"
+    { (yyval.statement) = new CCurlyBraceStatement( (yyvsp[(2) - (3)].statements) ); }
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 147 "parser.y"
-    { (yyval.pval) = new CIfStatement( static_cast<IExp*>( (yyvsp[(3) - (7)].pval) ), static_cast<IStatement*>( (yyvsp[(5) - (7)].pval) ), static_cast<IStatement*>( (yyvsp[(7) - (7)].pval) ) ); }
+#line 185 "parser.y"
+    { (yyval.statement) = new CIfStatement( (yyvsp[(3) - (7)].exp), (yyvsp[(5) - (7)].statement), (yyvsp[(7) - (7)].statement) ); }
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 148 "parser.y"
-    { (yyval.pval) = new CWhileStatement( static_cast<IExp*>( (yyvsp[(3) - (5)].pval) ), static_cast<IStatement*>( (yyvsp[(5) - (5)].pval) ) ); }
+#line 186 "parser.y"
+    { (yyval.statement) = new CWhileStatement( (yyvsp[(3) - (5)].exp), (yyvsp[(5) - (5)].statement) ); }
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 149 "parser.y"
-    { *hasError = 1; std::cout << "Syntax error : incorrect statement in line :" << (yylsp[(1) - (2)]).first_line << std::endl; }
+#line 187 "parser.y"
+    { *hasError = 1; std::cout << "Syntax error : incorrect statement from " << (yylsp[(1) - (2)]).first_line << ":" << (yylsp[(1) - (2)]).first_column << " to " << (yylsp[(1) - (2)]).last_line << ":" << (yylsp[(1) - (2)]).last_column << std::endl; }
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 150 "parser.y"
-    { *hasError = 1; std::cout << "Syntax error : incorrect Println-statement in line : " << (yylsp[(2) - (3)]).first_line << std::endl; }
+#line 188 "parser.y"
+    { *hasError = 1; std::cout << "Syntax error : incorrect Println-statement from " << (yylsp[(2) - (3)]).first_line << ":" << (yylsp[(2) - (3)]).first_column << " to " << (yylsp[(2) - (3)]).last_line << ":" << (yylsp[(2) - (3)]).last_column << std::endl; }
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 154 "parser.y"
-    { (yyval.pval) = new CExpBinOpExp( static_cast<IExp*>( (yyvsp[(1) - (3)].pval) ), '*', static_cast<IExp*>( (yyvsp[(3) - (3)].pval) ) ); }
+#line 192 "parser.y"
+    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '*', (yyvsp[(3) - (3)].exp) ); }
     break;
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 155 "parser.y"
-    { (yyval.pval) = new CExpBinOpExp( static_cast<IExp*>( (yyvsp[(1) - (3)].pval) ), '+', static_cast<IExp*>( (yyvsp[(3) - (3)].pval) ) ); }
+#line 193 "parser.y"
+    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '+', (yyvsp[(3) - (3)].exp) ); }
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 156 "parser.y"
-    { (yyval.pval) = new CExpBinOpExp( static_cast<IExp*>( (yyvsp[(1) - (3)].pval) ), '/', static_cast<IExp*>( (yyvsp[(3) - (3)].pval) ) ); }
+#line 194 "parser.y"
+    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '/', (yyvsp[(3) - (3)].exp) ); }
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 157 "parser.y"
-    { (yyval.pval) = new CExpBinOpExp( static_cast<IExp*>( (yyvsp[(1) - (3)].pval) ), '-', static_cast<IExp*>( (yyvsp[(3) - (3)].pval) ) ); }
+#line 195 "parser.y"
+    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '-', (yyvsp[(3) - (3)].exp) ); }
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 158 "parser.y"
-    { (yyval.pval) = new CExpBinOpExp( static_cast<IExp*>( (yyvsp[(1) - (3)].pval) ), '<', static_cast<IExp*>( (yyvsp[(3) - (3)].pval) ) ); }
+#line 196 "parser.y"
+    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '<', (yyvsp[(3) - (3)].exp) ); }
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 159 "parser.y"
-    { (yyval.pval) = new CExpBinOpExp( static_cast<IExp*>( (yyvsp[(1) - (3)].pval) ), '&', static_cast<IExp*>( (yyvsp[(3) - (3)].pval) ) ); }
+#line 197 "parser.y"
+    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp) ); }
     break;
 
   case 55:
 /* Line 1792 of yacc.c  */
-#line 160 "parser.y"
-    { (yyval.pval) = new CUnMinExp( static_cast<IExp*>( (yyvsp[(2) - (2)].pval) ) ); }
+#line 198 "parser.y"
+    { (yyval.exp) = new CUnMinExp( (yyvsp[(2) - (2)].exp) ); }
     break;
 
   case 56:
 /* Line 1792 of yacc.c  */
-#line 161 "parser.y"
-    { (yyval.pval) = new CExpWithIndex( static_cast<IExp*>( (yyvsp[(1) - (4)].pval) ), static_cast<IExp*>( (yyvsp[(3) - (4)].pval) ) ); }
+#line 199 "parser.y"
+    { (yyval.exp) = new CExpWithIndex( (yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].exp) ); }
     break;
 
   case 57:
 /* Line 1792 of yacc.c  */
-#line 162 "parser.y"
-    { (yyval.pval) = new CExpDotLength( static_cast<IExp*>( (yyvsp[(1) - (3)].pval) ) ); }
+#line 200 "parser.y"
+    { (yyval.exp) = new CExpDotLength( (yyvsp[(1) - (3)].exp) ); }
     break;
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 163 "parser.y"
-    { (yyval.pval) = new CExpIdExpList( static_cast<IExp*>( (yyvsp[(1) - (6)].pval) ), (yyvsp[(3) - (6)].sval), static_cast<IExpList*>( (yyvsp[(5) - (6)].pval) ) ); }
+#line 201 "parser.y"
+    { (yyval.exp) = new CExpIdExpList( (yyvsp[(1) - (6)].exp), (yyvsp[(3) - (6)].sval), (yyvsp[(5) - (6)].expList) ); }
     break;
 
   case 59:
 /* Line 1792 of yacc.c  */
-#line 164 "parser.y"
-    { (yyval.pval) = new CExpIdVoidExpList( static_cast<IExp*>( (yyvsp[(1) - (5)].pval) ), (yyvsp[(3) - (5)].sval) ) ; }
+#line 202 "parser.y"
+    { (yyval.exp) = new CExpIdVoidExpList( (yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].sval) ) ; }
     break;
 
   case 60:
 /* Line 1792 of yacc.c  */
-#line 165 "parser.y"
-    { (yyval.pval) = new CIntegerLiteral( (yyvsp[(1) - (1)].ival) ); }
+#line 203 "parser.y"
+    { (yyval.exp) = new CIntegerLiteral( (yyvsp[(1) - (1)].ival) ); }
     break;
 
   case 61:
 /* Line 1792 of yacc.c  */
-#line 166 "parser.y"
-    { (yyval.pval) = new CTrue(); }
+#line 204 "parser.y"
+    { (yyval.exp) = new CTrue(); }
     break;
 
   case 62:
 /* Line 1792 of yacc.c  */
-#line 167 "parser.y"
-    { (yyval.pval) = new CFalse(); }
+#line 205 "parser.y"
+    { (yyval.exp) = new CFalse(); }
     break;
 
   case 63:
 /* Line 1792 of yacc.c  */
-#line 168 "parser.y"
-    { (yyval.pval) = new CId( (yyvsp[(1) - (1)].sval) ); }
+#line 206 "parser.y"
+    { (yyval.exp) = new CId( (yyvsp[(1) - (1)].sval) ); }
     break;
 
   case 64:
 /* Line 1792 of yacc.c  */
-#line 169 "parser.y"
-    { (yyval.pval) = new CThis(); }
+#line 207 "parser.y"
+    { (yyval.exp) = new CThis(); }
     break;
 
   case 65:
 /* Line 1792 of yacc.c  */
-#line 170 "parser.y"
-    { (yyval.pval) = new CNewIntExpIndex( static_cast<IExp*>( (yyvsp[(4) - (5)].pval) ) ); }
+#line 208 "parser.y"
+    { (yyval.exp) = new CNewIntExpIndex( (yyvsp[(4) - (5)].exp) ); }
     break;
 
   case 66:
 /* Line 1792 of yacc.c  */
-#line 171 "parser.y"
-    { (yyval.pval) = new CNewId( (yyvsp[(2) - (4)].sval) ); }
+#line 209 "parser.y"
+    { (yyval.exp) = new CNewId( (yyvsp[(2) - (4)].sval) ); }
     break;
 
   case 67:
 /* Line 1792 of yacc.c  */
-#line 172 "parser.y"
-    { (yyval.pval) = new CNotExp( static_cast<IExp*>( (yyvsp[(2) - (2)].pval) ) ); }
+#line 210 "parser.y"
+    { (yyval.exp) = new CNotExp( (yyvsp[(2) - (2)].exp) ); }
     break;
 
   case 68:
 /* Line 1792 of yacc.c  */
-#line 173 "parser.y"
-    { (yyval.pval) = new CExpInBrackets( static_cast<IExp*>( (yyvsp[(2) - (3)].pval) ) ); }
+#line 211 "parser.y"
+    { (yyval.exp) = new CExpInBrackets( (yyvsp[(2) - (3)].exp) ); }
     break;
 
   case 69:
 /* Line 1792 of yacc.c  */
-#line 176 "parser.y"
-    { (yyval.pval) = new CExpList( 0, static_cast<IExp*>( (yyvsp[(1) - (1)].pval) ) ); }
+#line 214 "parser.y"
+    { (yyval.expList) = new CExpList( 0, (yyvsp[(1) - (1)].exp) ); }
     break;
 
   case 70:
 /* Line 1792 of yacc.c  */
-#line 177 "parser.y"
-    { (yyval.pval) = new CExpList( static_cast<CExpList*>( (yyvsp[(2) - (2)].pval) ), static_cast<IExp*>( (yyvsp[(1) - (2)].pval) ) ); }
+#line 215 "parser.y"
+    { (yyval.expList) = new CExpList( (yyvsp[(2) - (2)].expList), (yyvsp[(1) - (2)].exp) ); }
     break;
 
   case 71:
 /* Line 1792 of yacc.c  */
-#line 180 "parser.y"
-    { (yyval.pval) = new CExpList( 0, static_cast<IExp*>( (yyvsp[(2) - (2)].pval) ) ); }
+#line 218 "parser.y"
+    { (yyval.expList) = new CExpList( 0, (yyvsp[(2) - (2)].exp) ); }
     break;
 
   case 72:
 /* Line 1792 of yacc.c  */
-#line 181 "parser.y"
-    { (yyval.pval) = new CExpList( static_cast<CExpList*>( (yyvsp[(1) - (3)].pval) ), static_cast<IExp*>( (yyvsp[(3) - (3)].pval) ) ); }
+#line 219 "parser.y"
+    { (yyval.expList) = new CExpList( (yyvsp[(1) - (3)].expList), (yyvsp[(3) - (3)].exp) ); }
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 2169 "parser.tab.cpp"
+#line 2187 "parser.tab.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2404,7 +2422,7 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 184 "parser.y"
+#line 222 "parser.y"
 
 
 void yyerror( void**, int*, const char* str )

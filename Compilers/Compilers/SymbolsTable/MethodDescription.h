@@ -23,9 +23,9 @@ namespace SymbolsTable {
 		// Локальные переменные метода.
 		std::vector<CVariableDescription> Locals;
 
-		CMethodDescription( const std::string& _Name, const CTypeIdentifier& _ReturnType )
-			: Name( _Name )
-			, ReturnType( _ReturnType )
+		CMethodDescription( const std::string& _name, const CTypeIdentifier& _returnType )
+			: Name( _name )
+			, ReturnType( _returnType )
 		{ }
 
 		// Превратить в невалидный объект.

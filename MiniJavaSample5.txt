@@ -14,13 +14,13 @@ class a {
 }
 
 class b extends a {
-	public int func {
+	public int func() {
 		return a+b;
 	}
 }
 
 class c extends a {
-	public int func {
+	public int func() {
 		return a*b;
 	}
 }

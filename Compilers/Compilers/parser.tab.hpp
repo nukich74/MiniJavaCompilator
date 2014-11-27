@@ -39,6 +39,13 @@
 #if YYDEBUG
 extern int yydebug;
 #endif
+/* "%code requires" blocks.  */
+/* Line 2058 of yacc.c  */
+#line 8 "parser.y"
+ #include <common.h> 
+
+/* Line 2058 of yacc.c  */
+#line 49 "parser.tab.hpp"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -80,11 +87,24 @@ typedef union YYSTYPE
 
 	int ival;
 	char sval[255];
-	void* pval;
+	CProgram* program;
+	CMainClass* mainClass;
+	CClassDeclList* classDecls;
+	CClassDecl* classDecl;
+	CStatementList* statements;
+	IStatement* statement;
+	CVarDeclList* varDecls;
+	CVarDecl* varDecl;
+	CMethodDeclList* methodDecls;
+	CMethodDecl* methodDecl;
+	CType* type;
+	CFormalList* formalList;
+	CExpList* expList;
+	IExp* exp;
 
 
 /* Line 2058 of yacc.c  */
-#line 88 "parser.tab.hpp"
+#line 108 "parser.tab.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
