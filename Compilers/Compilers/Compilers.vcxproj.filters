@@ -44,6 +44,7 @@
     <ClInclude Include="IRTree\IRTree.h" />
     <ClInclude Include="IRTree\IRExp.h" />
     <ClInclude Include="IRTree\IRHelpers.h" />
+    <ClInclude Include="IRTree\IRStm.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
