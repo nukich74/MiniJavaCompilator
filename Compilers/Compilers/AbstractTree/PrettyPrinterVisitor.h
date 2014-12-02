@@ -1,3 +1,7 @@
+// Автор: Воротилов Владислав
+
+#pragma once
+
 #include "Visitor.h"
 
 class CPrettyPrinterVisitor : public IVisitor {
