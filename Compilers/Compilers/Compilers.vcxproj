@@ -92,6 +92,7 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="IRTree\IRHelpers.h" />
     <ClInclude Include="IRTree\IRExp.h" />
+    <ClInclude Include="IRTree\IRStm.h" />
     <ClInclude Include="IRTree\IRTree.h" />
     <ClInclude Include="SubtreeWrapper.h" />
     <ClInclude Include="SymbolsTable\ClassDescription.h" />
