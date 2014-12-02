@@ -8,8 +8,10 @@
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
-    <ClCompile Include="Temp.cpp" />
     <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />
+    <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
+    <ClCompile Include="IRTree\Temp.cpp" />
+    <ClCompile Include="SubtreeWrapper.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -38,12 +40,14 @@
     <ClInclude Include="AbstractTree\VarDecl.h" />
     <ClInclude Include="AbstractTree\VarDeclList.h" />
     <ClInclude Include="Frame.h" />
-    <ClInclude Include="Temp.h" />
     <ClInclude Include="AbstractTree\ExpList.h" />
     <ClInclude Include="SymbolsTable\ErrorsAggregator.h" />
     <ClInclude Include="IRTree\IRTree.h" />
     <ClInclude Include="IRTree\IRExp.h" />
     <ClInclude Include="IRTree\IRHelpers.h" />
+    <ClInclude Include="IRTree\IRTreeVisitor.h" />
+    <ClInclude Include="IRTree\Temp.h" />
+    <ClInclude Include="SubtreeWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

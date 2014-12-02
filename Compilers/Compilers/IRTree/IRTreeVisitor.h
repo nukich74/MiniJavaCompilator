@@ -3,9 +3,15 @@
 
 #pragma once 
 #include "Visitor.h"
+#include "IRTree.h"
+
+namespace Translate {
 
 class CIRTreeVisitor : public IVisitor {
 public:
+
+	CIRTree
+
 	virtual void visit(const CExpBinOpExp& exp);
 	virtual void visit(const CUnMinExp& exp);
 	virtual void visit(const CExpWithIndex& exp);
@@ -39,3 +45,5 @@ public:
 	virtual void visit(const CWhileStatement& whileStatement);
 	virtual void visit(const CExpList& expList);
 };
+
+} // namespace Translate
