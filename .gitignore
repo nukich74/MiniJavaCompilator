@@ -7,6 +7,12 @@
 *.userosscache
 *.sln.docstates
 
+# Extra
+
+Compilers/Compilers/lexer.cpp
+Compilers/Compilers/parser.tab.cpp
+Compilers/Compilers/parser.tab.hpp
+
 # Build results
 [Dd]ebug/
 [Dd]ebugPublic/
