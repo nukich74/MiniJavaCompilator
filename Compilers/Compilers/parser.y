@@ -41,7 +41,7 @@ void yyerror( std::shared_ptr<CProgram>&, int*, const char *);
 
 %left '&'
 
-%left '<' '>' '='
+%left '<' '='
 
 %left '+' '-'
 

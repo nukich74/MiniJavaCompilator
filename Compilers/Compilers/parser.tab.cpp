@@ -66,12 +66,17 @@
 #line 1 "parser.y"
 
 #include <iostream>
+#include <memory>
+#include <common.h>
+#include <Location.h>
 extern "C" int yylex();
-void yyerror( void**, int*, const char *);
+using std::make_shared;
+using std::shared_ptr;
 
+void yyerror( std::shared_ptr<CProgram>&, int*, const char *);
 
 /* Line 371 of yacc.c  */
-#line 75 "parser.tab.cpp"
+#line 80 "parser.tab.cpp"
 
 # ifndef YY_NULL
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -102,11 +107,14 @@ extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
 /* Line 387 of yacc.c  */
-#line 8 "parser.y"
+#line 13 "parser.y"
  #include <common.h> 
+/* Line 387 of yacc.c  */
+#line 15 "parser.y"
+ #include <memory> 
 
 /* Line 387 of yacc.c  */
-#line 110 "parser.tab.cpp"
+#line 118 "parser.tab.cpp"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -144,7 +152,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 387 of yacc.c  */
-#line 16 "parser.y"
+#line 23 "parser.y"
 
 	int ival;
 	char sval[255];
@@ -165,7 +173,7 @@ typedef union YYSTYPE
 
 
 /* Line 387 of yacc.c  */
-#line 169 "parser.tab.cpp"
+#line 177 "parser.tab.cpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -195,7 +203,7 @@ int yyparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int yyparse (void** root, int* hasError);
+int yyparse (std::shared_ptr<CProgram>& root, int* hasError);
 #else
 int yyparse ();
 #endif
@@ -206,7 +214,7 @@ int yyparse ();
 /* Copy the second part of user declarations.  */
 
 /* Line 390 of yacc.c  */
-#line 210 "parser.tab.cpp"
+#line 218 "parser.tab.cpp"
 
 #ifdef short
 # undef short
@@ -542,14 +550,14 @@ static const yytype_int8 yyrhs[] =
 /* YYRLINE[YYN] -- source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,   119,   119,   120,   123,   124,   127,   128,   130,   131,
-     132,   133,   134,   135,   136,   137,   140,   141,   144,   145,
-     148,   149,   152,   153,   154,   155,   156,   157,   158,   159,
-     162,   163,   166,   167,   170,   171,   172,   173,   176,   177,
-     180,   181,   182,   183,   184,   185,   186,   187,   188,   192,
-     193,   194,   195,   196,   197,   198,   199,   200,   201,   202,
-     203,   204,   205,   206,   207,   208,   209,   210,   211,   214,
-     215,   218,   219
+       0,   126,   126,   127,   130,   131,   134,   135,   137,   138,
+     139,   140,   141,   142,   143,   144,   147,   148,   151,   152,
+     155,   156,   159,   160,   161,   162,   163,   164,   165,   166,
+     169,   170,   173,   174,   177,   178,   179,   180,   183,   184,
+     187,   188,   189,   190,   191,   192,   193,   194,   195,   199,
+     200,   201,   202,   203,   204,   205,   206,   207,   208,   209,
+     210,   211,   212,   213,   214,   215,   216,   217,   218,   221,
+     222,   225,   226
 };
 #endif
 
@@ -1007,7 +1015,7 @@ do {									  \
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, void** root, int* hasError)
+yy_symbol_value_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, std::shared_ptr<CProgram>& root, int* hasError)
 #else
 static void
 yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp, root, hasError)
@@ -1015,7 +1023,7 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp, root, hasError)
     int yytype;
     YYSTYPE const * const yyvaluep;
     YYLTYPE const * const yylocationp;
-    void** root;
+    std::shared_ptr<CProgram>& root;
     int* hasError;
 #endif
 {
@@ -1047,7 +1055,7 @@ yy_symbol_value_print (yyoutput, yytype, yyvaluep, yylocationp, root, hasError)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, void** root, int* hasError)
+yy_symbol_print (FILE *yyoutput, int yytype, YYSTYPE const * const yyvaluep, YYLTYPE const * const yylocationp, std::shared_ptr<CProgram>& root, int* hasError)
 #else
 static void
 yy_symbol_print (yyoutput, yytype, yyvaluep, yylocationp, root, hasError)
@@ -1055,7 +1063,7 @@ yy_symbol_print (yyoutput, yytype, yyvaluep, yylocationp, root, hasError)
     int yytype;
     YYSTYPE const * const yyvaluep;
     YYLTYPE const * const yylocationp;
-    void** root;
+    std::shared_ptr<CProgram>& root;
     int* hasError;
 #endif
 {
@@ -1109,14 +1117,14 @@ do {								\
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yy_reduce_print (YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule, void** root, int* hasError)
+yy_reduce_print (YYSTYPE *yyvsp, YYLTYPE *yylsp, int yyrule, std::shared_ptr<CProgram>& root, int* hasError)
 #else
 static void
 yy_reduce_print (yyvsp, yylsp, yyrule, root, hasError)
     YYSTYPE *yyvsp;
     YYLTYPE *yylsp;
     int yyrule;
-    void** root;
+    std::shared_ptr<CProgram>& root;
     int* hasError;
 #endif
 {
@@ -1419,7 +1427,7 @@ yysyntax_error (YYSIZE_T *yymsg_alloc, char **yymsg,
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 static void
-yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp, void** root, int* hasError)
+yydestruct (const char *yymsg, int yytype, YYSTYPE *yyvaluep, YYLTYPE *yylocationp, std::shared_ptr<CProgram>& root, int* hasError)
 #else
 static void
 yydestruct (yymsg, yytype, yyvaluep, yylocationp, root, hasError)
@@ -1427,7 +1435,7 @@ yydestruct (yymsg, yytype, yyvaluep, yylocationp, root, hasError)
     int yytype;
     YYSTYPE *yyvaluep;
     YYLTYPE *yylocationp;
-    void** root;
+    std::shared_ptr<CProgram>& root;
     int* hasError;
 #endif
 {
@@ -1496,11 +1504,11 @@ yyparse (YYPARSE_PARAM)
 #if (defined __STDC__ || defined __C99__FUNC__ \
      || defined __cplusplus || defined _MSC_VER)
 int
-yyparse (void** root, int* hasError)
+yyparse (std::shared_ptr<CProgram>& root, int* hasError)
 #else
 int
 yyparse (root, hasError)
-    void** root;
+    std::shared_ptr<CProgram>& root;
     int* hasError;
 #endif
 #endif
@@ -1757,433 +1765,433 @@ yyreduce:
     {
         case 2:
 /* Line 1792 of yacc.c  */
-#line 119 "parser.y"
-    { *root = new CProgram( (yyvsp[(1) - (1)].mainClass), 0 ); }
+#line 126 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); root = make_shared<CProgram>( (yyvsp[(1) - (1)].mainClass), nullptr, location ); }
     break;
 
   case 3:
 /* Line 1792 of yacc.c  */
-#line 120 "parser.y"
-    { *root = new CProgram( (yyvsp[(1) - (2)].mainClass), (yyvsp[(2) - (2)].classDecls) ); }
+#line 127 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); root = make_shared<CProgram>( (yyvsp[(1) - (2)].mainClass), (yyvsp[(2) - (2)].classDecls), location ); }
     break;
 
   case 4:
 /* Line 1792 of yacc.c  */
-#line 123 "parser.y"
-    { (yyval.classDecls) = new CClassDeclList( 0, (yyvsp[(1) - (1)].classDecl) ); }
+#line 130 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.classDecls) = new CClassDeclList( 0, (yyvsp[(1) - (1)].classDecl), location ); }
     break;
 
   case 5:
 /* Line 1792 of yacc.c  */
-#line 124 "parser.y"
-    { (yyval.classDecls) = new CClassDeclList( (yyvsp[(1) - (2)].classDecls), (yyvsp[(2) - (2)].classDecl) ); }
+#line 131 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.classDecls) = new CClassDeclList( (yyvsp[(1) - (2)].classDecls), (yyvsp[(2) - (2)].classDecl), location ); }
     break;
 
   case 6:
 /* Line 1792 of yacc.c  */
-#line 127 "parser.y"
-    { (yyval.mainClass) = new CMainClass( (yyvsp[(2) - (17)].sval), (yyvsp[(12) - (17)].sval), (yyvsp[(15) - (17)].statements) ); }
+#line 134 "parser.y"
+    { CLocation location( (yylsp[(1) - (17)]).first_line, (yylsp[(1) - (17)]).first_column, (yylsp[(17) - (17)]).last_line, (yylsp[(17) - (17)]).last_column ); (yyval.mainClass) = new CMainClass( (yyvsp[(2) - (17)].sval), (yyvsp[(12) - (17)].sval), (yyvsp[(15) - (17)].statements), location ); }
     break;
 
   case 7:
 /* Line 1792 of yacc.c  */
-#line 128 "parser.y"
+#line 135 "parser.y"
     { *hasError = 1; std::cout << "Syntax error : incorrect symbols in Main function from " << (yylsp[(16) - (18)]).first_line << ":" << (yylsp[(16) - (18)]).first_column << " to " << (yylsp[(16) - (18)]).last_line << ":" << (yylsp[(16) - (18)]).last_column << std::endl; }
     break;
 
   case 8:
 /* Line 1792 of yacc.c  */
-#line 130 "parser.y"
-    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (4)].sval), 0, 0, "" ); }
+#line 137 "parser.y"
+    { CLocation location( (yylsp[(1) - (4)]).first_line, (yylsp[(1) - (4)]).first_column, (yylsp[(4) - (4)]).last_line, (yylsp[(4) - (4)]).last_column ); (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (4)].sval), 0, 0, "", location ); }
     break;
 
   case 9:
 /* Line 1792 of yacc.c  */
-#line 131 "parser.y"
-    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (5)].sval), (yyvsp[(4) - (5)].varDecls), 0, "" ); }
+#line 138 "parser.y"
+    { CLocation location( (yylsp[(1) - (5)]).first_line, (yylsp[(1) - (5)]).first_column, (yylsp[(5) - (5)]).last_line, (yylsp[(5) - (5)]).last_column ); (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (5)].sval), (yyvsp[(4) - (5)].varDecls), 0, "", location ); }
     break;
 
   case 10:
 /* Line 1792 of yacc.c  */
-#line 132 "parser.y"
-    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (6)].sval), (yyvsp[(4) - (6)].varDecls), (yyvsp[(5) - (6)].methodDecls), "" ); }
+#line 139 "parser.y"
+    { CLocation location( (yylsp[(1) - (6)]).first_line, (yylsp[(1) - (6)]).first_column, (yylsp[(6) - (6)]).last_line, (yylsp[(6) - (6)]).last_column ); (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (6)].sval), (yyvsp[(4) - (6)].varDecls), (yyvsp[(5) - (6)].methodDecls), "", location ); }
     break;
 
   case 11:
 /* Line 1792 of yacc.c  */
-#line 133 "parser.y"
-    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (5)].sval), 0, (yyvsp[(4) - (5)].methodDecls), "" ); }
+#line 140 "parser.y"
+    { CLocation location( (yylsp[(1) - (5)]).first_line, (yylsp[(1) - (5)]).first_column, (yylsp[(5) - (5)]).last_line, (yylsp[(5) - (5)]).last_column ); (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (5)].sval), 0, (yyvsp[(4) - (5)].methodDecls), "", location ); }
     break;
 
   case 12:
 /* Line 1792 of yacc.c  */
-#line 134 "parser.y"
-    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (6)].sval), 0, 0, (yyvsp[(4) - (6)].sval) ); }
+#line 141 "parser.y"
+    { CLocation location( (yylsp[(1) - (6)]).first_line, (yylsp[(1) - (6)]).first_column, (yylsp[(6) - (6)]).last_line, (yylsp[(6) - (6)]).last_column ); (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (6)].sval), 0, 0, (yyvsp[(4) - (6)].sval), location ); }
     break;
 
   case 13:
 /* Line 1792 of yacc.c  */
-#line 135 "parser.y"
-    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (7)].sval), (yyvsp[(6) - (7)].varDecls), 0, (yyvsp[(4) - (7)].sval) ); }
+#line 142 "parser.y"
+    { CLocation location( (yylsp[(1) - (7)]).first_line, (yylsp[(1) - (7)]).first_column, (yylsp[(7) - (7)]).last_line, (yylsp[(7) - (7)]).last_column ); (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (7)].sval), (yyvsp[(6) - (7)].varDecls), 0, (yyvsp[(4) - (7)].sval), location ); }
     break;
 
   case 14:
 /* Line 1792 of yacc.c  */
-#line 136 "parser.y"
-    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (8)].sval), (yyvsp[(6) - (8)].varDecls), (yyvsp[(7) - (8)].methodDecls), (yyvsp[(4) - (8)].sval) ); }
+#line 143 "parser.y"
+    { CLocation location( (yylsp[(1) - (8)]).first_line, (yylsp[(1) - (8)]).first_column, (yylsp[(8) - (8)]).last_line, (yylsp[(8) - (8)]).last_column ); (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (8)].sval), (yyvsp[(6) - (8)].varDecls), (yyvsp[(7) - (8)].methodDecls), (yyvsp[(4) - (8)].sval), location ); }
     break;
 
   case 15:
 /* Line 1792 of yacc.c  */
-#line 137 "parser.y"
-    { (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (7)].sval), 0, (yyvsp[(6) - (7)].methodDecls), (yyvsp[(4) - (7)].sval) ); }
+#line 144 "parser.y"
+    { CLocation location( (yylsp[(1) - (7)]).first_line, (yylsp[(1) - (7)]).first_column, (yylsp[(7) - (7)]).last_line, (yylsp[(7) - (7)]).last_column ); (yyval.classDecl) = new CClassDecl( (yyvsp[(2) - (7)].sval), 0, (yyvsp[(6) - (7)].methodDecls), (yyvsp[(4) - (7)].sval), location ); }
     break;
 
   case 16:
 /* Line 1792 of yacc.c  */
-#line 140 "parser.y"
-    { (yyval.varDecls) = new CVarDeclList( 0, (yyvsp[(1) - (1)].varDecl) ); }
+#line 147 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.varDecls) = new CVarDeclList( 0, (yyvsp[(1) - (1)].varDecl), location ); }
     break;
 
   case 17:
 /* Line 1792 of yacc.c  */
-#line 141 "parser.y"
-    { (yyval.varDecls) = new CVarDeclList( (yyvsp[(1) - (2)].varDecls), (yyvsp[(2) - (2)].varDecl) ); }
+#line 148 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.varDecls) = new CVarDeclList( (yyvsp[(1) - (2)].varDecls), (yyvsp[(2) - (2)].varDecl), location ); }
     break;
 
   case 18:
 /* Line 1792 of yacc.c  */
-#line 144 "parser.y"
-    { (yyval.varDecl) = new CVarDecl( (yyvsp[(1) - (3)].type), (yyvsp[(2) - (3)].sval) ); }
+#line 151 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.varDecl) = new CVarDecl( (yyvsp[(1) - (3)].type), (yyvsp[(2) - (3)].sval), location ); }
     break;
 
   case 19:
 /* Line 1792 of yacc.c  */
-#line 145 "parser.y"
+#line 152 "parser.y"
     { *hasError = 1; std::cout << "Syntax error : incorrect variable definition from " << (yylsp[(2) - (3)]).first_line << ":" << (yylsp[(2) - (3)]).first_column << " to " << (yylsp[(2) - (3)]).last_line << ":" << (yylsp[(2) - (3)]).last_column << std::endl; }
     break;
 
   case 20:
 /* Line 1792 of yacc.c  */
-#line 148 "parser.y"
-    { (yyval.methodDecls) = new CMethodDeclList( 0, (yyvsp[(1) - (1)].methodDecl) ); }
+#line 155 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.methodDecls) = new CMethodDeclList( 0, (yyvsp[(1) - (1)].methodDecl), location ); }
     break;
 
   case 21:
 /* Line 1792 of yacc.c  */
-#line 149 "parser.y"
-    { (yyval.methodDecls) = new CMethodDeclList( (yyvsp[(1) - (2)].methodDecls), (yyvsp[(2) - (2)].methodDecl) ); }
+#line 156 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.methodDecls) = new CMethodDeclList( (yyvsp[(1) - (2)].methodDecls), (yyvsp[(2) - (2)].methodDecl), location ); }
     break;
 
   case 22:
 /* Line 1792 of yacc.c  */
-#line 152 "parser.y"
-    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (11)].type), (yyvsp[(3) - (11)].sval), (yyvsp[(5) - (11)].formalList), 0, 0, (yyvsp[(9) - (11)].exp) ); }
+#line 159 "parser.y"
+    { CLocation location( (yylsp[(1) - (11)]).first_line, (yylsp[(1) - (11)]).first_column, (yylsp[(11) - (11)]).last_line, (yylsp[(11) - (11)]).last_column ); (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (11)].type), (yyvsp[(3) - (11)].sval), (yyvsp[(5) - (11)].formalList), 0, 0, (yyvsp[(9) - (11)].exp), location ); }
     break;
 
   case 23:
 /* Line 1792 of yacc.c  */
-#line 153 "parser.y"
-    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (12)].type), (yyvsp[(3) - (12)].sval), (yyvsp[(5) - (12)].formalList), (yyvsp[(8) - (12)].varDecls), 0, (yyvsp[(10) - (12)].exp) ); }
+#line 160 "parser.y"
+    { CLocation location( (yylsp[(1) - (12)]).first_line, (yylsp[(1) - (12)]).first_column, (yylsp[(12) - (12)]).last_line, (yylsp[(12) - (12)]).last_column ); (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (12)].type), (yyvsp[(3) - (12)].sval), (yyvsp[(5) - (12)].formalList), (yyvsp[(8) - (12)].varDecls), 0, (yyvsp[(10) - (12)].exp), location ); }
     break;
 
   case 24:
 /* Line 1792 of yacc.c  */
-#line 154 "parser.y"
-    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (13)].type), (yyvsp[(3) - (13)].sval), (yyvsp[(5) - (13)].formalList), (yyvsp[(8) - (13)].varDecls), (yyvsp[(9) - (13)].statements), (yyvsp[(11) - (13)].exp) ); }
+#line 161 "parser.y"
+    { CLocation location( (yylsp[(1) - (13)]).first_line, (yylsp[(1) - (13)]).first_column, (yylsp[(13) - (13)]).last_line, (yylsp[(13) - (13)]).last_column ); (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (13)].type), (yyvsp[(3) - (13)].sval), (yyvsp[(5) - (13)].formalList), (yyvsp[(8) - (13)].varDecls), (yyvsp[(9) - (13)].statements), (yyvsp[(11) - (13)].exp), location ); }
     break;
 
   case 25:
 /* Line 1792 of yacc.c  */
-#line 155 "parser.y"
-    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (12)].type), (yyvsp[(3) - (12)].sval), (yyvsp[(5) - (12)].formalList), 0, (yyvsp[(8) - (12)].statements), (yyvsp[(10) - (12)].exp) ); }
+#line 162 "parser.y"
+    { CLocation location( (yylsp[(1) - (12)]).first_line, (yylsp[(1) - (12)]).first_column, (yylsp[(12) - (12)]).last_line, (yylsp[(12) - (12)]).last_column ); (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (12)].type), (yyvsp[(3) - (12)].sval), (yyvsp[(5) - (12)].formalList), 0, (yyvsp[(8) - (12)].statements), (yyvsp[(10) - (12)].exp), location ); }
     break;
 
   case 26:
 /* Line 1792 of yacc.c  */
-#line 156 "parser.y"
-    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (10)].type), (yyvsp[(3) - (10)].sval), 0, 0, 0, (yyvsp[(8) - (10)].exp) ); }
+#line 163 "parser.y"
+    { CLocation location( (yylsp[(1) - (10)]).first_line, (yylsp[(1) - (10)]).first_column, (yylsp[(10) - (10)]).last_line, (yylsp[(10) - (10)]).last_column ); (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (10)].type), (yyvsp[(3) - (10)].sval), 0, 0, 0, (yyvsp[(8) - (10)].exp), location ); }
     break;
 
   case 27:
 /* Line 1792 of yacc.c  */
-#line 157 "parser.y"
-    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (11)].type), (yyvsp[(3) - (11)].sval), 0, (yyvsp[(7) - (11)].varDecls), 0, (yyvsp[(9) - (11)].exp) ); }
+#line 164 "parser.y"
+    { CLocation location( (yylsp[(1) - (11)]).first_line, (yylsp[(1) - (11)]).first_column, (yylsp[(11) - (11)]).last_line, (yylsp[(11) - (11)]).last_column ); (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (11)].type), (yyvsp[(3) - (11)].sval), 0, (yyvsp[(7) - (11)].varDecls), 0, (yyvsp[(9) - (11)].exp), location ); }
     break;
 
   case 28:
 /* Line 1792 of yacc.c  */
-#line 158 "parser.y"
-    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (12)].type), (yyvsp[(3) - (12)].sval), 0, (yyvsp[(7) - (12)].varDecls), (yyvsp[(8) - (12)].statements), (yyvsp[(10) - (12)].exp) ); }
+#line 165 "parser.y"
+    { CLocation location( (yylsp[(1) - (12)]).first_line, (yylsp[(1) - (12)]).first_column, (yylsp[(12) - (12)]).last_line, (yylsp[(12) - (12)]).last_column ); (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (12)].type), (yyvsp[(3) - (12)].sval), 0, (yyvsp[(7) - (12)].varDecls), (yyvsp[(8) - (12)].statements), (yyvsp[(10) - (12)].exp), location ); }
     break;
 
   case 29:
 /* Line 1792 of yacc.c  */
-#line 159 "parser.y"
-    { (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (11)].type), (yyvsp[(3) - (11)].sval), 0, 0, (yyvsp[(7) - (11)].statements), (yyvsp[(9) - (11)].exp) ); }
+#line 166 "parser.y"
+    { CLocation location( (yylsp[(1) - (11)]).first_line, (yylsp[(1) - (11)]).first_column, (yylsp[(11) - (11)]).last_line, (yylsp[(11) - (11)]).last_column ); (yyval.methodDecl) = new CMethodDecl( (yyvsp[(2) - (11)].type), (yyvsp[(3) - (11)].sval), 0, 0, (yyvsp[(7) - (11)].statements), (yyvsp[(9) - (11)].exp), location ); }
     break;
 
   case 30:
 /* Line 1792 of yacc.c  */
-#line 162 "parser.y"
-    { (yyval.formalList) = new CFormalList( 0, (yyvsp[(1) - (2)].type), (yyvsp[(2) - (2)].sval) ); }
+#line 169 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.formalList) = new CFormalList( 0, (yyvsp[(1) - (2)].type), (yyvsp[(2) - (2)].sval), location ); }
     break;
 
   case 31:
 /* Line 1792 of yacc.c  */
-#line 163 "parser.y"
-    { (yyval.formalList) = new CFormalList( (yyvsp[(3) - (3)].formalList), (yyvsp[(1) - (3)].type), (yyvsp[(2) - (3)].sval) ); }
+#line 170 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.formalList) = new CFormalList( (yyvsp[(3) - (3)].formalList), (yyvsp[(1) - (3)].type), (yyvsp[(2) - (3)].sval), location ); }
     break;
 
   case 32:
 /* Line 1792 of yacc.c  */
-#line 166 "parser.y"
-    { (yyval.formalList) = new CFormalList( 0, (yyvsp[(2) - (3)].type), (yyvsp[(3) - (3)].sval) ); }
+#line 173 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.formalList) = new CFormalList( 0, (yyvsp[(2) - (3)].type), (yyvsp[(3) - (3)].sval), location ); }
     break;
 
   case 33:
 /* Line 1792 of yacc.c  */
-#line 167 "parser.y"
-    { (yyval.formalList) = new CFormalList( (yyvsp[(1) - (4)].formalList), (yyvsp[(3) - (4)].type), (yyvsp[(4) - (4)].sval) ); }
+#line 174 "parser.y"
+    { CLocation location( (yylsp[(1) - (4)]).first_line, (yylsp[(1) - (4)]).first_column, (yylsp[(4) - (4)]).last_line, (yylsp[(4) - (4)]).last_column ); (yyval.formalList) = new CFormalList( (yyvsp[(1) - (4)].formalList), (yyvsp[(3) - (4)].type), (yyvsp[(4) - (4)].sval), location ); }
     break;
 
   case 34:
 /* Line 1792 of yacc.c  */
-#line 170 "parser.y"
-    { (yyval.type) = new CType( "int" ); }
+#line 177 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.type) = new CType( "int", location ); }
     break;
 
   case 35:
 /* Line 1792 of yacc.c  */
-#line 171 "parser.y"
-    { (yyval.type) = new CType( "int[]" ); }
+#line 178 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.type) = new CType( "int[]", location ); }
     break;
 
   case 36:
 /* Line 1792 of yacc.c  */
-#line 172 "parser.y"
-    { (yyval.type) = new CType( "boolean" ); }
+#line 179 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.type) = new CType( "boolean", location ); }
     break;
 
   case 37:
 /* Line 1792 of yacc.c  */
-#line 173 "parser.y"
-    { (yyval.type) = new CType( (yyvsp[(1) - (1)].sval) ); }
+#line 180 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.type) = new CType( (yyvsp[(1) - (1)].sval), location ); }
     break;
 
   case 38:
 /* Line 1792 of yacc.c  */
-#line 176 "parser.y"
-    { (yyval.statements) = new CStatementList( 0, (yyvsp[(1) - (1)].statement) ); }
+#line 183 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.statements) = new CStatementList( 0, (yyvsp[(1) - (1)].statement), location ); }
     break;
 
   case 39:
 /* Line 1792 of yacc.c  */
-#line 177 "parser.y"
-    { (yyval.statements) = new CStatementList( (yyvsp[(1) - (2)].statements), (yyvsp[(2) - (2)].statement) ); }
+#line 184 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.statements) = new CStatementList( (yyvsp[(1) - (2)].statements), (yyvsp[(2) - (2)].statement), location ); }
     break;
 
   case 40:
 /* Line 1792 of yacc.c  */
-#line 180 "parser.y"
-    { (yyval.statement) = new CAssignStatement( (yyvsp[(1) - (4)].sval), 0, (yyvsp[(3) - (4)].exp) ); }
+#line 187 "parser.y"
+    { CLocation location( (yylsp[(1) - (4)]).first_line, (yylsp[(1) - (4)]).first_column, (yylsp[(4) - (4)]).last_line, (yylsp[(4) - (4)]).last_column ); (yyval.statement) = new CAssignStatement( (yyvsp[(1) - (4)].sval), 0, (yyvsp[(3) - (4)].exp), location ); }
     break;
 
   case 41:
 /* Line 1792 of yacc.c  */
-#line 181 "parser.y"
-    { (yyval.statement) = new CAssignStatement( (yyvsp[(1) - (7)].sval), (yyvsp[(3) - (7)].exp), (yyvsp[(6) - (7)].exp) ); }
+#line 188 "parser.y"
+    { CLocation location( (yylsp[(1) - (7)]).first_line, (yylsp[(1) - (7)]).first_column, (yylsp[(7) - (7)]).last_line, (yylsp[(7) - (7)]).last_column ); (yyval.statement) = new CAssignStatement( (yyvsp[(1) - (7)].sval), (yyvsp[(3) - (7)].exp), (yyvsp[(6) - (7)].exp), location ); }
     break;
 
   case 42:
 /* Line 1792 of yacc.c  */
-#line 182 "parser.y"
-    { (yyval.statement) = new CPrintStatement( (yyvsp[(3) - (5)].exp) ); }
+#line 189 "parser.y"
+    { CLocation location( (yylsp[(1) - (5)]).first_line, (yylsp[(1) - (5)]).first_column, (yylsp[(5) - (5)]).last_line, (yylsp[(5) - (5)]).last_column ); (yyval.statement) = new CPrintStatement( (yyvsp[(3) - (5)].exp), location ); }
     break;
 
   case 43:
 /* Line 1792 of yacc.c  */
-#line 183 "parser.y"
-    { (yyval.statement) = new CCurlyBraceStatement( 0 ); }
+#line 190 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.statement) = new CCurlyBraceStatement( 0, location ); }
     break;
 
   case 44:
 /* Line 1792 of yacc.c  */
-#line 184 "parser.y"
-    { (yyval.statement) = new CCurlyBraceStatement( (yyvsp[(2) - (3)].statements) ); }
+#line 191 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.statement) = new CCurlyBraceStatement( (yyvsp[(2) - (3)].statements), location ); }
     break;
 
   case 45:
 /* Line 1792 of yacc.c  */
-#line 185 "parser.y"
-    { (yyval.statement) = new CIfStatement( (yyvsp[(3) - (7)].exp), (yyvsp[(5) - (7)].statement), (yyvsp[(7) - (7)].statement) ); }
+#line 192 "parser.y"
+    { CLocation location( (yylsp[(1) - (7)]).first_line, (yylsp[(1) - (7)]).first_column, (yylsp[(7) - (7)]).last_line, (yylsp[(7) - (7)]).last_column ); (yyval.statement) = new CIfStatement( (yyvsp[(3) - (7)].exp), (yyvsp[(5) - (7)].statement), (yyvsp[(7) - (7)].statement), location ); }
     break;
 
   case 46:
 /* Line 1792 of yacc.c  */
-#line 186 "parser.y"
-    { (yyval.statement) = new CWhileStatement( (yyvsp[(3) - (5)].exp), (yyvsp[(5) - (5)].statement) ); }
+#line 193 "parser.y"
+    { CLocation location( (yylsp[(1) - (5)]).first_line, (yylsp[(1) - (5)]).first_column, (yylsp[(5) - (5)]).last_line, (yylsp[(5) - (5)]).last_column ); (yyval.statement) = new CWhileStatement( (yyvsp[(3) - (5)].exp), (yyvsp[(5) - (5)].statement), location ); }
     break;
 
   case 47:
 /* Line 1792 of yacc.c  */
-#line 187 "parser.y"
+#line 194 "parser.y"
     { *hasError = 1; std::cout << "Syntax error : incorrect statement from " << (yylsp[(1) - (2)]).first_line << ":" << (yylsp[(1) - (2)]).first_column << " to " << (yylsp[(1) - (2)]).last_line << ":" << (yylsp[(1) - (2)]).last_column << std::endl; }
     break;
 
   case 48:
 /* Line 1792 of yacc.c  */
-#line 188 "parser.y"
+#line 195 "parser.y"
     { *hasError = 1; std::cout << "Syntax error : incorrect Println-statement from " << (yylsp[(2) - (3)]).first_line << ":" << (yylsp[(2) - (3)]).first_column << " to " << (yylsp[(2) - (3)]).last_line << ":" << (yylsp[(2) - (3)]).last_column << std::endl; }
     break;
 
   case 49:
 /* Line 1792 of yacc.c  */
-#line 192 "parser.y"
-    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '*', (yyvsp[(3) - (3)].exp) ); }
+#line 199 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '*', (yyvsp[(3) - (3)].exp), location ); }
     break;
 
   case 50:
 /* Line 1792 of yacc.c  */
-#line 193 "parser.y"
-    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '+', (yyvsp[(3) - (3)].exp) ); }
+#line 200 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '+', (yyvsp[(3) - (3)].exp), location ); }
     break;
 
   case 51:
 /* Line 1792 of yacc.c  */
-#line 194 "parser.y"
-    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '/', (yyvsp[(3) - (3)].exp) ); }
+#line 201 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '/', (yyvsp[(3) - (3)].exp), location ); }
     break;
 
   case 52:
 /* Line 1792 of yacc.c  */
-#line 195 "parser.y"
-    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '-', (yyvsp[(3) - (3)].exp) ); }
+#line 202 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '-', (yyvsp[(3) - (3)].exp), location ); }
     break;
 
   case 53:
 /* Line 1792 of yacc.c  */
-#line 196 "parser.y"
-    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '<', (yyvsp[(3) - (3)].exp) ); }
+#line 203 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '<', (yyvsp[(3) - (3)].exp), location ); }
     break;
 
   case 54:
 /* Line 1792 of yacc.c  */
-#line 197 "parser.y"
-    { (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp) ); }
+#line 204 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.exp) = new CExpBinOpExp( (yyvsp[(1) - (3)].exp), '&', (yyvsp[(3) - (3)].exp), location ); }
     break;
 
   case 55:
 /* Line 1792 of yacc.c  */
-#line 198 "parser.y"
-    { (yyval.exp) = new CUnMinExp( (yyvsp[(2) - (2)].exp) ); }
+#line 205 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.exp) = new CUnMinExp( (yyvsp[(2) - (2)].exp), location ); }
     break;
 
   case 56:
 /* Line 1792 of yacc.c  */
-#line 199 "parser.y"
-    { (yyval.exp) = new CExpWithIndex( (yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].exp) ); }
+#line 206 "parser.y"
+    { CLocation location( (yylsp[(1) - (4)]).first_line, (yylsp[(1) - (4)]).first_column, (yylsp[(4) - (4)]).last_line, (yylsp[(4) - (4)]).last_column ); (yyval.exp) = new CExpWithIndex( (yyvsp[(1) - (4)].exp), (yyvsp[(3) - (4)].exp), location ); }
     break;
 
   case 57:
 /* Line 1792 of yacc.c  */
-#line 200 "parser.y"
-    { (yyval.exp) = new CExpDotLength( (yyvsp[(1) - (3)].exp) ); }
+#line 207 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.exp) = new CExpDotLength( (yyvsp[(1) - (3)].exp), location ); }
     break;
 
   case 58:
 /* Line 1792 of yacc.c  */
-#line 201 "parser.y"
-    { (yyval.exp) = new CExpIdExpList( (yyvsp[(1) - (6)].exp), (yyvsp[(3) - (6)].sval), (yyvsp[(5) - (6)].expList) ); }
+#line 208 "parser.y"
+    { CLocation location( (yylsp[(1) - (6)]).first_line, (yylsp[(1) - (6)]).first_column, (yylsp[(6) - (6)]).last_line, (yylsp[(6) - (6)]).last_column ); (yyval.exp) = new CExpIdExpList( (yyvsp[(1) - (6)].exp), (yyvsp[(3) - (6)].sval), (yyvsp[(5) - (6)].expList), location ); }
     break;
 
   case 59:
 /* Line 1792 of yacc.c  */
-#line 202 "parser.y"
-    { (yyval.exp) = new CExpIdVoidExpList( (yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].sval) ) ; }
+#line 209 "parser.y"
+    { CLocation location( (yylsp[(1) - (5)]).first_line, (yylsp[(1) - (5)]).first_column, (yylsp[(5) - (5)]).last_line, (yylsp[(5) - (5)]).last_column ); (yyval.exp) = new CExpIdVoidExpList( (yyvsp[(1) - (5)].exp), (yyvsp[(3) - (5)].sval), location ) ; }
     break;
 
   case 60:
 /* Line 1792 of yacc.c  */
-#line 203 "parser.y"
-    { (yyval.exp) = new CIntegerLiteral( (yyvsp[(1) - (1)].ival) ); }
+#line 210 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.exp) = new CIntegerLiteral( (yyvsp[(1) - (1)].ival), location ); }
     break;
 
   case 61:
 /* Line 1792 of yacc.c  */
-#line 204 "parser.y"
-    { (yyval.exp) = new CTrue(); }
+#line 211 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.exp) = new CTrue( location ); }
     break;
 
   case 62:
 /* Line 1792 of yacc.c  */
-#line 205 "parser.y"
-    { (yyval.exp) = new CFalse(); }
+#line 212 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.exp) = new CFalse( location ); }
     break;
 
   case 63:
 /* Line 1792 of yacc.c  */
-#line 206 "parser.y"
-    { (yyval.exp) = new CId( (yyvsp[(1) - (1)].sval) ); }
+#line 213 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.exp) = new CId( (yyvsp[(1) - (1)].sval), location ); }
     break;
 
   case 64:
 /* Line 1792 of yacc.c  */
-#line 207 "parser.y"
-    { (yyval.exp) = new CThis(); }
+#line 214 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.exp) = new CThis( location ); }
     break;
 
   case 65:
 /* Line 1792 of yacc.c  */
-#line 208 "parser.y"
-    { (yyval.exp) = new CNewIntExpIndex( (yyvsp[(4) - (5)].exp) ); }
+#line 215 "parser.y"
+    { CLocation location( (yylsp[(1) - (5)]).first_line, (yylsp[(1) - (5)]).first_column, (yylsp[(5) - (5)]).last_line, (yylsp[(5) - (5)]).last_column ); (yyval.exp) = new CNewIntExpIndex( (yyvsp[(4) - (5)].exp), location ); }
     break;
 
   case 66:
 /* Line 1792 of yacc.c  */
-#line 209 "parser.y"
-    { (yyval.exp) = new CNewId( (yyvsp[(2) - (4)].sval) ); }
+#line 216 "parser.y"
+    { CLocation location( (yylsp[(1) - (4)]).first_line, (yylsp[(1) - (4)]).first_column, (yylsp[(4) - (4)]).last_line, (yylsp[(4) - (4)]).last_column ); (yyval.exp) = new CNewId( (yyvsp[(2) - (4)].sval), location ); }
     break;
 
   case 67:
 /* Line 1792 of yacc.c  */
-#line 210 "parser.y"
-    { (yyval.exp) = new CNotExp( (yyvsp[(2) - (2)].exp) ); }
+#line 217 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.exp) = new CNotExp( (yyvsp[(2) - (2)].exp), location ); }
     break;
 
   case 68:
 /* Line 1792 of yacc.c  */
-#line 211 "parser.y"
-    { (yyval.exp) = new CExpInBrackets( (yyvsp[(2) - (3)].exp) ); }
+#line 218 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.exp) = new CExpInBrackets( (yyvsp[(2) - (3)].exp), location ); }
     break;
 
   case 69:
 /* Line 1792 of yacc.c  */
-#line 214 "parser.y"
-    { (yyval.expList) = new CExpList( 0, (yyvsp[(1) - (1)].exp) ); }
+#line 221 "parser.y"
+    { CLocation location( (yylsp[(1) - (1)]).first_line, (yylsp[(1) - (1)]).first_column, (yylsp[(1) - (1)]).last_line, (yylsp[(1) - (1)]).last_column ); (yyval.expList) = new CExpList( 0, (yyvsp[(1) - (1)].exp), location ); }
     break;
 
   case 70:
 /* Line 1792 of yacc.c  */
-#line 215 "parser.y"
-    { (yyval.expList) = new CExpList( (yyvsp[(2) - (2)].expList), (yyvsp[(1) - (2)].exp) ); }
+#line 222 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.expList) = new CExpList( (yyvsp[(2) - (2)].expList), (yyvsp[(1) - (2)].exp), location ); }
     break;
 
   case 71:
 /* Line 1792 of yacc.c  */
-#line 218 "parser.y"
-    { (yyval.expList) = new CExpList( 0, (yyvsp[(2) - (2)].exp) ); }
+#line 225 "parser.y"
+    { CLocation location( (yylsp[(1) - (2)]).first_line, (yylsp[(1) - (2)]).first_column, (yylsp[(2) - (2)]).last_line, (yylsp[(2) - (2)]).last_column ); (yyval.expList) = new CExpList( 0, (yyvsp[(2) - (2)].exp), location ); }
     break;
 
   case 72:
 /* Line 1792 of yacc.c  */
-#line 219 "parser.y"
-    { (yyval.expList) = new CExpList( (yyvsp[(1) - (3)].expList), (yyvsp[(3) - (3)].exp) ); }
+#line 226 "parser.y"
+    { CLocation location( (yylsp[(1) - (3)]).first_line, (yylsp[(1) - (3)]).first_column, (yylsp[(3) - (3)]).last_line, (yylsp[(3) - (3)]).last_column ); (yyval.expList) = new CExpList( (yyvsp[(1) - (3)].expList), (yyvsp[(3) - (3)].exp), location ); }
     break;
 
 
 /* Line 1792 of yacc.c  */
-#line 2187 "parser.tab.cpp"
+#line 2195 "parser.tab.cpp"
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -2422,10 +2430,10 @@ yyreturn:
 
 
 /* Line 2055 of yacc.c  */
-#line 222 "parser.y"
+#line 229 "parser.y"
 
 
-void yyerror( void**, int*, const char* str )
+void yyerror( std::shared_ptr<CProgram>&, int*, const char* str )
 {
 	std::cout << str << std::endl;
 }

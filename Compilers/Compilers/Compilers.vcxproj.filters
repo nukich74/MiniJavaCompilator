@@ -48,6 +48,8 @@
     <ClInclude Include="IRTree\IRTreeVisitor.h" />
     <ClInclude Include="IRTree\Temp.h" />
     <ClInclude Include="SubtreeWrapper.h" />
+    <ClInclude Include="IRTree\IRStm.h" />
+    <ClInclude Include="AbstractTree\Location.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

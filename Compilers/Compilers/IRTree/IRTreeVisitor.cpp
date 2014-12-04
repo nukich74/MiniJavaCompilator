@@ -6,162 +6,162 @@
 
 namespace Translate {
 
-void CIRTreeVisitor::visit(const CExpBinOpExp& exp)
+void CIRTreeVisitor::Visit(const CExpBinOpExp& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CUnMinExp& exp)
+void CIRTreeVisitor::Visit(const CUnMinExp& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CExpWithIndex& exp)
+void CIRTreeVisitor::Visit(const CExpWithIndex& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CExpDotLength& exp)
+void CIRTreeVisitor::Visit(const CExpDotLength& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CExpIdExpList& exp)
+void CIRTreeVisitor::Visit(const CExpIdExpList& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CExpIdVoidExpList& exp)
+void CIRTreeVisitor::Visit(const CExpIdVoidExpList& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CIntegerLiteral& exp)
+void CIRTreeVisitor::Visit(const CIntegerLiteral& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CTrue& exp)
+void CIRTreeVisitor::Visit(const CTrue& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CFalse& exp)
+void CIRTreeVisitor::Visit(const CFalse& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CId& exp)
+void CIRTreeVisitor::Visit(const CId& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CThis& exp)
+void CIRTreeVisitor::Visit(const CThis& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CNewIntExpIndex& exp)
+void CIRTreeVisitor::Visit(const CNewIntExpIndex& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CNewId& exp)
+void CIRTreeVisitor::Visit(const CNewId& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CNotExp& exp)
+void CIRTreeVisitor::Visit(const CNotExp& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CExpInBrackets& exp)
+void CIRTreeVisitor::Visit(const CExpInBrackets& exp)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CProgram& program)
+void CIRTreeVisitor::Visit(const CProgram& program)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CMainClass& mainClass)
+void CIRTreeVisitor::Visit(const CMainClass& mainClass)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CClassDeclList& classDeclList)
+void CIRTreeVisitor::Visit(const CClassDeclList& classDeclList)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CClassDecl& classDecl)
+void CIRTreeVisitor::Visit(const CClassDecl& classDecl)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CVarDeclList& varDeclList)
+void CIRTreeVisitor::Visit(const CVarDeclList& varDeclList)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CVarDecl& varDecl)
+void CIRTreeVisitor::Visit(const CVarDecl& varDecl)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CMethodDeclList& methodDeclList)
+void CIRTreeVisitor::Visit(const CMethodDeclList& methodDeclList)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CMethodDecl& methodDecl)
+void CIRTreeVisitor::Visit(const CMethodDecl& methodDecl)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CFormalList& formalList)
+void CIRTreeVisitor::Visit(const CFormalList& formalList)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CType& type)
+void CIRTreeVisitor::Visit(const CType& type)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CStatementList& statementList)
+void CIRTreeVisitor::Visit(const CStatementList& statementList)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CAssignStatement& assignStatement)
+void CIRTreeVisitor::Visit(const CAssignStatement& assignStatement)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CPrintStatement& printStatement)
+void CIRTreeVisitor::Visit(const CPrintStatement& printStatement)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CCurlyBraceStatement& curlyBraceStatement)
+void CIRTreeVisitor::Visit(const CCurlyBraceStatement& curlyBraceStatement)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CIfStatement& ifStatement)
+void CIRTreeVisitor::Visit(const CIfStatement& ifStatement)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CWhileStatement& whileStatement)
+void CIRTreeVisitor::Visit(const CWhileStatement& whileStatement)
 {
 
 }
 
-void CIRTreeVisitor::visit(const CExpList& expList)
+void CIRTreeVisitor::Visit(const CExpList& expList)
 {
 
 }

@@ -41,11 +41,14 @@ extern int yydebug;
 #endif
 /* "%code requires" blocks.  */
 /* Line 2058 of yacc.c  */
-#line 8 "parser.y"
+#line 13 "parser.y"
  #include <common.h> 
+/* Line 2058 of yacc.c  */
+#line 15 "parser.y"
+ #include <memory> 
 
 /* Line 2058 of yacc.c  */
-#line 49 "parser.tab.hpp"
+#line 52 "parser.tab.hpp"
 
 /* Tokens.  */
 #ifndef YYTOKENTYPE
@@ -83,7 +86,7 @@ extern int yydebug;
 typedef union YYSTYPE
 {
 /* Line 2058 of yacc.c  */
-#line 16 "parser.y"
+#line 23 "parser.y"
 
 	int ival;
 	char sval[255];
@@ -104,7 +107,7 @@ typedef union YYSTYPE
 
 
 /* Line 2058 of yacc.c  */
-#line 108 "parser.tab.hpp"
+#line 111 "parser.tab.hpp"
 } YYSTYPE;
 # define YYSTYPE_IS_TRIVIAL 1
 # define yystype YYSTYPE /* obsolescent; will be withdrawn */
@@ -134,7 +137,7 @@ int yyparse ();
 #endif
 #else /* ! YYPARSE_PARAM */
 #if defined __STDC__ || defined __cplusplus
-int yyparse (void** root, int* hasError);
+int yyparse (std::shared_ptr<CProgram>& root, int* hasError);
 #else
 int yyparse ();
 #endif
