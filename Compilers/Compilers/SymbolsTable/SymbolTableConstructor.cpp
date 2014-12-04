@@ -8,41 +8,41 @@
 
 using namespace SymbolsTable;
 
-void CSymbolTableConstructor::visit( const CProgram& program )
+void CSymbolTableConstructor::Visit( const CProgram& program )
 {
-	program.pMainClass->accept( *this );
-	if( program.pClassDeclList != 0 ) {
-		program.pClassDeclList->accept( *this );
+	program.MainClass()->Accept( *this );
+	if( program.ClassDeclList() != 0 ) {
+		program.ClassDeclList()->Accept( *this );
 	}
 }
 
-void CSymbolTableConstructor::visit( const CMainClass& mainClass )
+void CSymbolTableConstructor::Visit( const CMainClass& mainClass )
 {
-	curClass.Name = mainClass.id1;
+	curClass.Name = mainClass.MainClassName();
 	curClass.Methods.push_back( CMethodDescription( "main", CTypeIdentifier( "void" ) ) );
 	symbolTable.AddClass( curClass );
 	curClass.MakeZero();
 }
 
-void CSymbolTableConstructor::visit( const CClassDeclList& classDeclList )
+void CSymbolTableConstructor::Visit( const CClassDeclList& classDeclList )
 {
-	for( auto ptr = classDeclList.classDeclList.begin(); ptr != classDeclList.classDeclList.end(); ++ptr ) {
-		( *ptr )->accept( *this );
+	for( auto ptr = classDeclList.ClassDeclList().begin(); ptr != classDeclList.ClassDeclList().end(); ++ptr ) {
+		( *ptr )->Accept( *this );
 	}
 }
 
-void CSymbolTableConstructor::visit( const CClassDecl& classDecl )
+void CSymbolTableConstructor::Visit( const CClassDecl& classDecl )
 {
-	curClass.Name = classDecl.classId;
-	curClass.BaseClass = classDecl.parentId;
-	if( classDecl.pVarDeclList != 0 ) {
-		classDecl.pVarDeclList->accept( *this );
+	curClass.Name = classDecl.ClassId();
+	curClass.BaseClass = classDecl.ParendId();
+	if( classDecl.VarDeclList() != 0 ) {
+		classDecl.VarDeclList()->Accept( *this );
 	}
-	if( classDecl.pMethodDeclList != 0 ) {
-		classDecl.pMethodDeclList->accept( *this );
+	if( classDecl.MethodDeclList() != 0 ) {
+		classDecl.MethodDeclList()->Accept( *this );
 	}
-	if( symbolTable.Classes.find( classDecl.classId ) != symbolTable.Classes.end() ) {
-		errors.AddError( ET_Redefinition, ErrorPosition( classDecl.classId ) );
+	if( symbolTable.Classes.find( classDecl.ClassId() ) != symbolTable.Classes.end() ) {
+		errors.AddError( ET_Redefinition, ErrorPosition( classDecl.ClassId() ) );
 	} else {
 		symbolTable.AddClass( curClass );
 	}
@@ -50,76 +50,76 @@ void CSymbolTableConstructor::visit( const CClassDecl& classDecl )
 }
 
 
-void CSymbolTableConstructor::visit( const CVarDeclList& varDeclList )
+void CSymbolTableConstructor::Visit( const CVarDeclList& varDeclList )
 {
-	for( auto ptr = varDeclList.varDeclList.begin(); ptr != varDeclList.varDeclList.end(); ++ptr ) {
-		( *ptr )->accept( *this );
+	for( auto ptr = varDeclList.VarDeclList().begin(); ptr != varDeclList.VarDeclList().end(); ++ptr ) {
+		( *ptr )->Accept( *this );
 	}
 }
 
-void CSymbolTableConstructor::visit( const CVarDecl& varDecl )
+void CSymbolTableConstructor::Visit( const CVarDecl& varDecl )
 {
 	if( curMethod.IsZero() ) {
-		if( HasSuchNameInScope( curClass.Fields, varDecl.id ) ) {
-			errors.AddError( ET_Redefinition, ErrorPosition( curClass.Name, "", varDecl.id ) );
+		if( HasSuchNameInScope( curClass.Fields, varDecl.VarName() ) ) {
+			errors.AddError( ET_Redefinition, ErrorPosition( curClass.Name, "", varDecl.VarName() ) );
 		}
 		assert( curVariable.IsZero() );
-		curVariable.Name = varDecl.id;
-		varDecl.pType->accept( *this );
+		curVariable.Name = varDecl.VarName();
+		varDecl.VarType()->Accept( *this );
 		curClass.Fields.push_back( curVariable );
 		curVariable.MakeZero();
 	} else {
-		if( HasSuchNameInScope( curMethod.Locals, varDecl.id ) || HasSuchNameInScope( curMethod.Params, varDecl.id ) )
+		if( HasSuchNameInScope( curMethod.Locals, varDecl.VarName() ) || HasSuchNameInScope( curMethod.Params, varDecl.VarName() ) )
 		{
-			errors.AddError( ET_Redefinition, ErrorPosition( curClass.Name, curMethod.Name, varDecl.id ) );
+			errors.AddError( ET_Redefinition, ErrorPosition( curClass.Name, curMethod.Name, varDecl.VarName() ) );
 		}
 		assert( curVariable.IsZero() );
-		curVariable.Name = varDecl.id;
-		varDecl.pType->accept( *this );
+		curVariable.Name = varDecl.VarName();
+		varDecl.VarType()->Accept( *this );
 		curMethod.Locals.push_back( curVariable );
 		curVariable.MakeZero();
 	}
 }
 
-void CSymbolTableConstructor::visit( const CType& type )
+void CSymbolTableConstructor::Visit( const CType& type )
 {
 	if( curVariable.IsZero() ) {
 		assert( !curMethod.IsZero() );
-		curMethod.ReturnType = type.id;
+		curMethod.ReturnType = type.TypeName();
 	} else {
-		curVariable.Type = type.id;
+		curVariable.Type = type.TypeName();
 	}
 }
 
-void CSymbolTableConstructor::visit( const CMethodDeclList& methodDeclList )
+void CSymbolTableConstructor::Visit( const CMethodDeclList& methodDeclList )
 {
-	for( auto ptr = methodDeclList.methodDeclList.begin(); ptr != methodDeclList.methodDeclList.end(); ++ptr ) {
-		( *ptr )->accept( *this );
+	for( auto ptr = methodDeclList.MethodDeclList().begin(); ptr != methodDeclList.MethodDeclList().end(); ++ptr ) {
+		( *ptr )->Accept( *this );
 	}
 }
 
-void CSymbolTableConstructor::visit( const CMethodDecl& methodDecl )
+void CSymbolTableConstructor::Visit( const CMethodDecl& methodDecl )
 {
-	if( HasSuchNameInScope( curClass.Fields, methodDecl.id ) || HasSuchNameInScope( curClass.Methods, methodDecl.id ) ) {
-		errors.AddError( ET_Redefinition, ErrorPosition( curClass.Name, methodDecl.id ) );
+	if( HasSuchNameInScope( curClass.Fields, methodDecl.MethodName() ) || HasSuchNameInScope( curClass.Methods, methodDecl.MethodName() ) ) {
+		errors.AddError( ET_Redefinition, ErrorPosition( curClass.Name, methodDecl.MethodName() ) );
 	}
-	curMethod.Name = methodDecl.id;
-	methodDecl.pType->accept( *this );
-	if( methodDecl.pFormalList != 0 ) {
-		methodDecl.pFormalList->accept( *this );
+	curMethod.Name = methodDecl.MethodName();
+	methodDecl.ReturnedType()->Accept( *this );
+	if( methodDecl.FormalList() != 0 ) {
+		methodDecl.FormalList()->Accept( *this );
 	}
-	if( methodDecl.pVarDeclList != 0 ) {
-		methodDecl.pVarDeclList->accept( *this );
+	if( methodDecl.VarDeclList() != 0 ) {
+		methodDecl.VarDeclList()->Accept( *this );
 	}
 	curClass.Methods.push_back( curMethod );
 	curMethod.MakeZero();
 }
 
-void CSymbolTableConstructor::visit( const CFormalList& formalList )
+void CSymbolTableConstructor::Visit( const CFormalList& formalList )
 {
-	for( auto ptr = formalList.formalList.begin(); ptr != formalList.formalList.end(); ++ptr ) {
+	for( auto ptr = formalList.FormalList().begin(); ptr != formalList.FormalList().end(); ++ptr ) {
 		curVariable.Name = ptr->second;
-		ptr->first->accept( *this );
+		ptr->first->Accept( *this );
 		curMethod.Params.push_back( curVariable );
 		curVariable.MakeZero();
 	}

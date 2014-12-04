@@ -1,3 +1,5 @@
+﻿// Описание: Класс, описывающий вершину AST, отвечающую набору операторов.
+
 #pragma once
 
 #include <memory>
@@ -5,18 +7,20 @@
 #include "Grammar.h"
 #include "Visitor.h"
 
-class CStatementList : public IStatementList {
+class CStatementList : public IStatementList, public CLocationStorage {
 public:
-	CStatementList( CStatementList* pStatementList, IStatement* _pStatement )
+	CStatementList( CStatementList* pStatementList, IStatement* _pStatement, const CLocation& location ) : CLocationStorage( location )
 	{
-		if( pStatementList != 0 )
-		{
+		if( pStatementList != 0 ) {
 			statementList = pStatementList->statementList;
 		}
-		statementList.push_back( std::shared_ptr<IStatement>( _pStatement ) );
+		statementList.emplace_back( std::shared_ptr<IStatement>( _pStatement ) );
 	}
 
-	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
+	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
+	const std::list< std::shared_ptr<IStatement> >& StatmentList() const { return statementList; }
+
+private:
 	std::list< std::shared_ptr<IStatement> > statementList;
 };

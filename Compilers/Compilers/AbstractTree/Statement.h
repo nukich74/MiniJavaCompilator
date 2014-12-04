@@ -1,3 +1,5 @@
+﻿// Описание: Классы, описывающие вершины AST, отвечающие различным операторам.
+
 #pragma once
 
 #include <memory>
@@ -6,63 +8,97 @@
 #include <Exp.h>
 #include <Visitor.h>
 
-class CAssignStatement : public IStatement {
+class CAssignStatement : public IStatement, public CLocationStorage {
 public:
-	CAssignStatement( const std::string& _id, IExp* _pExp1, IExp* _pExp2 ) :
-		id( _id ),
-		pExp1( _pExp1 ),
-		pExp2( _pExp2 )
-		{}
+	CAssignStatement( const std::string& _leftId, IExp* _pIndexExp, IExp* _pRightExp, const CLocation& location ) 
+		: CLocationStorage( location )
+		, leftId( _leftId )
+		, pIndexExp( _pIndexExp )
+		, pRightExp( _pRightExp )
+	{ }
 
-	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
+	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
-	std::string id;
-	std::shared_ptr<IExp> pExp1;
-	std::shared_ptr<IExp> pExp2;
+	const std::string& LeftId() const { return leftId; }
+
+	const IExp* IndexExp() const { return pIndexExp.get(); }
+
+	const IExp* RightExp() const { return pRightExp.get(); }
+
+private:
+	std::string leftId;
+	std::shared_ptr<IExp> pIndexExp;
+	std::shared_ptr<IExp> pRightExp;
 };
 
-class CPrintStatement : public IStatement {
+class CPrintStatement : public IStatement, public CLocationStorage {
 public:
-	CPrintStatement( IExp* _pExp ) :
-		pExp( _pExp ) {}
+	CPrintStatement( IExp* _pExp, const CLocation& location )
+		: CLocationStorage( location )
+		, pExp( _pExp )
+	{ }
 
-	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
+	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
+	const IExp* Exp() const { return pExp.get(); }
+
+private:
 	std::shared_ptr<IExp> pExp;
 };
 
-class CCurlyBraceStatement : public IStatement {
+class CCurlyBraceStatement : public IStatement, public CLocationStorage {
 public:
-	CCurlyBraceStatement( IStatementList* _pStatementList ) :
-		pStatementList( _pStatementList ) {}
+	CCurlyBraceStatement( IStatementList* _pStatementList, const CLocation& location )
+		: CLocationStorage( location )
+		, pStatementList( _pStatementList )
+	{ }
 
-	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
+	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
+	const IStatementList* StatementList() const { return pStatementList.get(); }
+
+private:
 	std::shared_ptr<IStatementList> pStatementList;
 };
 
-class CIfStatement : public IStatement {
+class CIfStatement : public IStatement, public CLocationStorage {
 public:
-	CIfStatement( IExp* _pExp, IStatement* _pStatement1, IStatement* _pStatement2 ) :
-		pExp( _pExp ),
-		pStatement1( _pStatement1 ),
-		pStatement2( _pStatement2 ) {}
+	CIfStatement( IExp* _pExp, IStatement* _pIfStatement, IStatement* _pElseStatement, const CLocation& location )
+		: CLocationStorage( location )
+		, pExp( _pExp )
+		, pIfStatement( _pIfStatement )
+		, pElseStatement( _pElseStatement )
+	{ }
 
-	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
+	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
+	const IExp* Exp() const { return pExp.get(); }
+
+	const IStatement* IfStatement() const { return pIfStatement.get(); }
+
+	const IStatement* ElseStatement() const { return pElseStatement.get(); }
+
+private:
 	std::shared_ptr<IExp> pExp;
-	std::shared_ptr<IStatement> pStatement1;
-	std::shared_ptr<IStatement> pStatement2;
+	std::shared_ptr<IStatement> pIfStatement;
+	std::shared_ptr<IStatement> pElseStatement;
 };
 
-class CWhileStatement: public IStatement{
+class CWhileStatement: public IStatement, public CLocationStorage {
 public:
-	CWhileStatement( IExp* _pExp, IStatement* _pStatement ) :
-		pExp( _pExp ),
-		pStatement( _pStatement ) {}
+	CWhileStatement( IExp* _pExp, IStatement* _pStatement, const CLocation& location )
+		: CLocationStorage( location )
+		, pExp( _pExp )
+		, pStatement( _pStatement )
+	{ }
 
-	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
+	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
+	const IExp* Exp() const { return pExp.get(); }
+
+	const IStatement* Statement() const { return pStatement.get(); }
+
+private:
 	std::shared_ptr<IExp> pExp;
 	std::shared_ptr<IStatement> pStatement;
 };

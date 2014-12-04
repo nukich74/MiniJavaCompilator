@@ -15,38 +15,38 @@ public:
 	SymbolsTable::CSymbolTable symbolTable;
 	SymbolsTable::CErrorsAggregator errors;
 
-	virtual void visit( const CExpBinOpExp& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CUnMinExp& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CExpWithIndex& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CExpDotLength& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CExpIdExpList& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CExpIdVoidExpList& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CIntegerLiteral& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CTrue& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CFalse& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CId& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CThis& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CNewIntExpIndex& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CNewId& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CNotExp& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CExpInBrackets& exp ) { IVisitor::visit( exp ); }
-	virtual void visit( const CProgram& program );
-	virtual void visit( const CMainClass& mainClass );
-	virtual void visit( const CClassDeclList& classDeclList );
-	virtual void visit( const CClassDecl& classDecl );
-	virtual void visit( const CVarDeclList& varDeclList );
-	virtual void visit( const CVarDecl& varDecl );
-	virtual void visit( const CMethodDeclList& methodDeclList );
-	virtual void visit( const CMethodDecl& methodDecl );
-	virtual void visit( const CFormalList& formalList );
-	virtual void visit( const CType& type );
-	virtual void visit( const CStatementList& statementList ) { IVisitor::visit( statementList ); }
-	virtual void visit( const CAssignStatement& assignStatement ) { IVisitor::visit( assignStatement ); }
-	virtual void visit( const CPrintStatement& printStatement ) { IVisitor::visit( printStatement ); }
-	virtual void visit( const CCurlyBraceStatement& curlyBraceStatement ) { IVisitor::visit( curlyBraceStatement ); }
-	virtual void visit( const CIfStatement& ifStatement ) { IVisitor::visit( ifStatement ); }
-	virtual void visit( const CWhileStatement& whileStatement ) { IVisitor::visit( whileStatement ); }
-	virtual void visit( const CExpList& expList ) { IVisitor::visit( expList ); }
+	virtual void Visit( const CExpBinOpExp& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CUnMinExp& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CExpWithIndex& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CExpDotLength& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CExpIdExpList& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CExpIdVoidExpList& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CIntegerLiteral& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CTrue& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CFalse& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CId& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CThis& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CNewIntExpIndex& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CNewId& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CNotExp& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CExpInBrackets& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CProgram& program );
+	virtual void Visit( const CMainClass& mainClass );
+	virtual void Visit( const CClassDeclList& classDeclList );
+	virtual void Visit( const CClassDecl& classDecl );
+	virtual void Visit( const CVarDeclList& varDeclList );
+	virtual void Visit( const CVarDecl& varDecl );
+	virtual void Visit( const CMethodDeclList& methodDeclList );
+	virtual void Visit( const CMethodDecl& methodDecl );
+	virtual void Visit( const CFormalList& formalList );
+	virtual void Visit( const CType& type );
+	virtual void Visit( const CStatementList& statementList ) { IVisitor::Visit( statementList ); }
+	virtual void Visit( const CAssignStatement& assignStatement ) { IVisitor::Visit( assignStatement ); }
+	virtual void Visit( const CPrintStatement& printStatement ) { IVisitor::Visit( printStatement ); }
+	virtual void Visit( const CCurlyBraceStatement& curlyBraceStatement ) { IVisitor::Visit( curlyBraceStatement ); }
+	virtual void Visit( const CIfStatement& ifStatement ) { IVisitor::Visit( ifStatement ); }
+	virtual void Visit( const CWhileStatement& whileStatement ) { IVisitor::Visit( whileStatement ); }
+	virtual void Visit( const CExpList& expList ) { IVisitor::Visit( expList ); }
 
 private:
 	// Текущий класс в котором мы находимся.

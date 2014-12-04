@@ -1,5 +1,3 @@
-int yyparse( void**, int* );
-
 #include <fstream>
 #include <iostream>
 #include <common.h>
@@ -7,21 +5,21 @@ int yyparse( void**, int* );
 #include <PrettyPrinterVisitor.h>
 #include <SymbolTableConstructor.h>
 
+int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
+
 int main()
 {
-	void* ptr;
+	std::shared_ptr<CProgram> astRoot;
 	int hasError = 0;
 	
-	while( yyparse( &ptr, &hasError ) != 0 );
+	while( yyparse( astRoot, &hasError ) != 0 );
 
 	if( hasError == 0 ) {
-		std::unique_ptr<CProgram> astRoot( static_cast<CProgram*>( ptr ) );
-		
 		CPrettyPrinterVisitor printer;
-		astRoot->accept( printer );
+		astRoot->Accept( printer );
 		
 		CSymbolTableConstructor tableConstructor;
-		astRoot->accept( tableConstructor );
+		astRoot->Accept( tableConstructor );
 
 		if( !tableConstructor.errors.errors.empty() ) {
 			tableConstructor.errors.WriteErrors();

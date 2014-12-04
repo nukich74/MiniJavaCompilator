@@ -1,3 +1,5 @@
+﻿// Описание: Класс, описывающий вершину AST, отвечающую типу.
+
 #pragma once
 
 #include <memory>
@@ -5,17 +7,18 @@
 #include <Visitor.h>
 #include "TypeIdentifier.h"
 
-class CType : public IType {
+class CType : public IType, public CLocationStorage {
 public:
 
-	CType( const std::string& _id ) :
-		id( _id )
+	CType( const std::string& _typeName, const CLocation& location ) 
+		: CLocationStorage( location )
+		, typeName( _typeName )
 	{ }
 
-	void accept( IVisitor& visitor ) const
-	{
-		visitor.visit( *this );
-	}
+	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
-	std::string id;
+	const std::string& TypeName() const { return typeName; }
+
+private:
+	std::string typeName;
 };

@@ -1,3 +1,5 @@
+﻿// Описание: Класс, описывающий вершину AST, отвечающую набору описаний методов.
+
 #pragma once
 
 #include <memory>
@@ -5,18 +7,20 @@
 #include <Grammar.h>
 #include <Visitor.h>
 
-class CMethodDeclList : public IMethodDeclList {
+class CMethodDeclList : public IMethodDeclList, public CLocationStorage {
 public:
-	CMethodDeclList( CMethodDeclList* pMethodDeclList, IMethodDecl* _pMethodDecl ) 
+	CMethodDeclList( CMethodDeclList* pMethodDeclList, IMethodDecl* _pMethodDecl, const CLocation& location ) : CLocationStorage( location )
 	{ 
-		if( pMethodDeclList != 0 )
-		{
+		if( pMethodDeclList != 0 ) {
 			methodDeclList = pMethodDeclList->methodDeclList;
 		}
-		methodDeclList.push_back( std::shared_ptr<IMethodDecl>( _pMethodDecl ) ); 
+		methodDeclList.emplace_back( std::shared_ptr<IMethodDecl>( _pMethodDecl ) ); 
 	}
 
-	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
+	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
+	const std::list< std::shared_ptr<IMethodDecl> >& MethodDeclList() const { return methodDeclList; }
+
+private:
 	std::list< std::shared_ptr<IMethodDecl> > methodDeclList;
 };

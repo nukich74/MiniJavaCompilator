@@ -1,20 +1,30 @@
+﻿// Описание: Класс, описывающий вершину AST, отвечающую классу содержащему entry point.
+
 #pragma once
 
 #include <memory>
 #include <Grammar.h>
 #include <Visitor.h>
 
-class CMainClass : public IMainClass {
+class CMainClass : public IMainClass, public CLocationStorage {
 public:
-	CMainClass( const std::string& _id1, const std::string& _id2, IStatementList* _pStatementList ) :
-		id1( _id1 ),
-		id2( _id2 ),
-		pStatementList( _pStatementList )
-	{}
+	CMainClass( const std::string& _mainClassName, const std::string& _stringName, IStatementList* _pStatementList, const CLocation& location ) 
+		: CLocationStorage( location )
+		, mainClassName( _mainClassName )
+		, stringName( _stringName )
+		, pStatementList( _pStatementList )
+	{ }
 
-	void accept( IVisitor& visitor ) const { visitor.visit( *this ); }
+	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
+	const IStatementList* StatementList() const { return pStatementList.get(); }
+
+	const std::string& MainClassName() const { return mainClassName; }
+
+	const std::string& StringName() const { return stringName; }
+
+private:
+	std::string mainClassName;
+	std::string stringName;
 	std::shared_ptr<IStatementList> pStatementList;
-	std::string id1;
-	std::string id2;
 };
