@@ -16,7 +16,6 @@ void CErrorsAggregator::AddError( ErrorType type, ErrorPosition position )
 		default:
 			assert( false );
 	}
-	msg += position.GetPosition() + ".";
 	errors.push_back( msg );
 }
 

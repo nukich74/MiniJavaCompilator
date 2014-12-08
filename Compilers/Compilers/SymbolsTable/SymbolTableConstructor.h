@@ -50,9 +50,20 @@ public:
 
 private:
 	// Текущий класс в котором мы находимся.
-	SymbolsTable::CClassDescription curClass;
-	// Текущий метод в котором мы находимся. 0( IsZero == 0 ), если вне методов.
-	SymbolsTable::CMethodDescription curMethod;
+	SymbolsTable::CClassDescriptor* curClass;
+	// Текущий метод в котором мы находимся.
+	SymbolsTable::CMethodDescriptor* curMethod;
 	// Текущая переменная, которую мы конструируем. 
-	SymbolsTable::CVariableDescription curVariable;
+	SymbolsTable::CVariableDescriptor* curVariable;
+
+	template <class T>
+	bool hasSuchNameInScope( const std::vector<T>& descriptors, const std::string& name )
+	{
+		for( auto& descriptor : descriptors ) {
+			if( descriptor.Name() == name ) {
+				return true;
+			}
+		}
+		return false;
+	}
 };

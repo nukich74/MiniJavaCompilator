@@ -5,20 +5,17 @@
 #pragma once
 
 #include <string>
-#include "TypeIdentifier.h"
+#include <TypeIdentifier.h>
+#include <ItemDescriptor.h>
 
 namespace SymbolsTable {
-	struct CVariableDescription {
+	class CVariableDescriptor: public CItemDescriptor {
 	public:
-		CVariableDescription() { }
+		CVariableDescriptor( const std::string& name )
+			: CItemDescriptor( name )
+		{ }
 
-		// Имя переменной.
-		std::string Name;
 		// Тип переменной.
 		CTypeIdentifier Type;
-
-		void MakeZero() { Name = ""; }
-
-		bool IsZero() const { return Name == ""; }
 	};
 }

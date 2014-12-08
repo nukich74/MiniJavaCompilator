@@ -4,10 +4,10 @@
 
 namespace SymbolsTable {
 	// Добавление нового класса в таблицу.
-	void CSymbolTable::AddClass( const CClassDescription& newClass ) 
+	void CSymbolTable::AddClass( const CClassDescriptor& newClass ) 
 	{ 
-		if( Classes.find( newClass.Name ) == Classes.end() ) {
-			Classes.insert( std::pair< std::string, CClassDescription>( newClass.Name, newClass ) );
+		if( classes.find( newClass.Name() ) == classes.end() ) {
+			classes.insert( std::pair< std::string, CClassDescriptor>( newClass.Name(), newClass ) );
 		}
 	}
 }

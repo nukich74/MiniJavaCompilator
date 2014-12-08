@@ -5,32 +5,23 @@
 
 #pragma once
 
-#include "VariableDescription.h"
+#include <ItemDescriptor.h>
+#include "VariableDescriptor.h"
 #include <string>
 #include <vector>
 
 namespace SymbolsTable {
-	class CMethodDescription {
+	class CMethodDescriptor : public CItemDescriptor {
 	public:
-		CMethodDescription() { }
+		CMethodDescriptor( const std::string& name )
+			: CItemDescriptor( name )
+		{ }
 
-		// Имя метода.
-		std::string Name;
 		// Возвращаемое значение.
 		CTypeIdentifier ReturnType;
 		// Входные параметры метода.
-		std::vector<CVariableDescription> Params;
+		std::vector<CVariableDescriptor> Params;
 		// Локальные переменные метода.
-		std::vector<CVariableDescription> Locals;
-
-		CMethodDescription( const std::string& _name, const CTypeIdentifier& _returnType )
-			: Name( _name )
-			, ReturnType( _returnType )
-		{ }
-
-		// Превратить в невалидный объект.
-		void MakeZero() { Name = ""; Params.clear(); Locals.clear(); }
-
-		bool IsZero() const { return Name == ""; }
+		std::vector<CVariableDescriptor> Locals;
 	};
 }

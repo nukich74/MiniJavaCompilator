@@ -4,30 +4,23 @@
 
 #pragma once
 
-#include "MethodDescription.h"
+#include <MethodDescriptor.h>
+#include <ItemDescriptor.h>
 #include <string>
 #include <vector>
 
 namespace SymbolsTable {
-	class CClassDescription {
+	class CClassDescriptor: public CItemDescriptor  {
 	public:
-		// Имя класса.
-		std::string Name;
-		// Информация о методах.
-		std::vector<CMethodDescription> Methods;
-		// Информация о полях.
-		std::vector<CVariableDescription> Fields;
-		// Базовый класс. - Если отсутствует, то пустая строка.
-		std::string BaseClass;
-
-		CClassDescription() { }
-
-		explicit CClassDescription( const std::string& _Name )
-			: Name( _Name )
+		explicit CClassDescriptor( const std::string& name )
+			: CItemDescriptor( name )
 		{ }
 
-		bool IsZero() const { return Name == ""; }
-
-		void MakeZero() { Name = ""; Fields.clear(); Methods.clear(); BaseClass = ""; }
+		// Информация о методах.
+		std::vector<CMethodDescriptor> Methods;
+		// Информация о полях.
+		std::vector<CVariableDescriptor> Fields;
+		// Базовый класс. - Если отсутствует, то пустая строка.
+		std::string BaseClass;
 	};
 }

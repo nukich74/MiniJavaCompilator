@@ -15,13 +15,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
-    <ClInclude Include="SymbolsTable\ClassDescription.h" />
-    <ClInclude Include="SymbolsTable\MethodDescription.h" />
-    <ClInclude Include="SymbolsTable\SymbolsTableUtils.h" />
     <ClInclude Include="SymbolsTable\SymbolTable.h" />
     <ClInclude Include="SymbolsTable\SymbolTableConstructor.h" />
-    <ClInclude Include="SymbolsTable\VariableDescription.h" />
-    <ClInclude Include="SymbolsTable\TypeIdentifier.h" />
     <ClInclude Include="parser.tab.hpp" />
     <ClInclude Include="common.h" />
     <ClInclude Include="AbstractTree\ClassDecl.h" />
@@ -50,6 +45,11 @@
     <ClInclude Include="SubtreeWrapper.h" />
     <ClInclude Include="IRTree\IRStm.h" />
     <ClInclude Include="AbstractTree\Location.h" />
+    <ClInclude Include="SymbolsTable\ItemDescriptor.h" />
+    <ClInclude Include="SymbolsTable\ClassDescriptor.h" />
+    <ClInclude Include="SymbolsTable\MethodDescriptor.h" />
+    <ClInclude Include="SymbolsTable\TypeIdentifier.h" />
+    <ClInclude Include="SymbolsTable\VariableDescriptor.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

@@ -4,17 +4,20 @@
 
 #pragma once
 
-#include "ClassDescription.h"
+#include "ClassDescriptor.h"
 #include <map>
 #include <string>
 
 namespace SymbolsTable {
 	struct CSymbolTable {
 	public:
-		// Все определенные в программе классы.
-		std::map< std::string, CClassDescription > Classes;
+		const std::map< std::string, CClassDescriptor >& Classes() const { return classes; }
 
 		// Добавление нового класса в таблицу.
-		void AddClass( const CClassDescription& newClass );
+		void AddClass( const CClassDescriptor& newClass );
+
+	private:
+		// Все определенные в программе классы.
+		std::map< std::string, CClassDescriptor > classes;
 	};
 }
