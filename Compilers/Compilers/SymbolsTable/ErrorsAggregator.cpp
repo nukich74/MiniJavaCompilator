@@ -6,22 +6,11 @@
 
 using namespace SymbolsTable;
 
-void CErrorsAggregator::AddError( ErrorType type, ErrorPosition position )
-{
-	std::string msg;
-	switch( type ) {
-		case ET_Redefinition:
-			msg += "Redefinition of ";
-			break;
-		default:
-			assert( false );
-	}
-	errors.push_back( msg );
-}
+const std::string CRedefinitionError::baseRedefinitionMessage = "Error. Redefinition of ";
 
 void CErrorsAggregator::WriteErrors() const
 {
-	for( int i = 0; i < static_cast<int>( errors.size() ); ++i ) {
-		std::cout << errors[i] << std::endl;
+	for( auto& error : semanticErrors ) {
+		std::cout << error->What() << std::endl;
 	}
 }

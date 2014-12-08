@@ -6,26 +6,43 @@
 
 #include <vector>
 #include <string>
-#include <cassert>
+#include <memory>
+#include <Location.h>
 
 namespace SymbolsTable {
-	enum ErrorType {
-		ET_Redefinition
+	class CSemanticError {
+	public:
+		CSemanticError( const std::string& _errorMsg )
+			: errorMsg( _errorMsg )
+		{ }
+
+		const std::string& What() const { return errorMsg; }
+
+	protected:
+		std::string errorMsg;
 	};
 
-	struct ErrorPosition {
+	class CRedefinitionError: public CSemanticError {
 	public:
-		ErrorPosition( const std::string& _className, const std::string& _methodName = "", const std::string& _varName = "" )
-		{ }
+		CRedefinitionError( const std::string& redefinedName, const CLocation& location )
+			: CSemanticError( baseRedefinitionMessage )
+		{
+			errorMsg += redefinedName + " in positions " + std::to_string( location.startLine ) + ":" + std::to_string( location.startColumn )
+				+ " - " + std::to_string( location.endLine ) + ":" + std::to_string( location.startColumn );
+		}
+
 	private:
+		static const std::string baseRedefinitionMessage;
 	};
 
 	class CErrorsAggregator {
 	public:
-		std::vector<std::string> errors;
+		void AddError( const std::shared_ptr<CSemanticError> newError ) { semanticErrors.push_back( newError ); }
 
-		void AddError( ErrorType type, ErrorPosition position );
+		bool HasErrors() const { return !semanticErrors.empty(); }
 
 		void WriteErrors() const;
+	private:
+		std::vector< std::shared_ptr<CSemanticError> > semanticErrors;
 	};
 }

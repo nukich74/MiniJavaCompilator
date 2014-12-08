@@ -21,11 +21,11 @@ int main()
 		CSymbolTableConstructor tableConstructor;
 		astRoot->Accept( tableConstructor );
 
-		if( !tableConstructor.errors.errors.empty() ) {
+		if( tableConstructor.errors.HasErrors() ) {
 			tableConstructor.errors.WriteErrors();
 			return 0;
 		}
 	}
-	
+
 	return 0;
 }
