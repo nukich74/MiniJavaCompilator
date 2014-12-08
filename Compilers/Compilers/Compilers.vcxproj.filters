@@ -2,20 +2,19 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="SymbolsTable\SymbolTable.cpp" />
     <ClCompile Include="SymbolsTable\SymbolTableConstructor.cpp" />
     <ClCompile Include="SymbolsTable\TypeIdentifier.cpp" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
     <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />
-    <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
     <ClCompile Include="IRTree\Temp.cpp" />
     <ClCompile Include="SubtreeWrapper.cpp" />
+    <ClCompile Include="SymbolsTable\TypeChecker.cpp" />
+    <ClCompile Include="SymbolsTable\SymbolsTable.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
-    <ClInclude Include="SymbolsTable\SymbolTable.h" />
     <ClInclude Include="SymbolsTable\SymbolTableConstructor.h" />
     <ClInclude Include="parser.tab.hpp" />
     <ClInclude Include="common.h" />
@@ -40,7 +39,6 @@
     <ClInclude Include="IRTree\IRTree.h" />
     <ClInclude Include="IRTree\IRExp.h" />
     <ClInclude Include="IRTree\IRHelpers.h" />
-    <ClInclude Include="IRTree\IRTreeVisitor.h" />
     <ClInclude Include="IRTree\Temp.h" />
     <ClInclude Include="SubtreeWrapper.h" />
     <ClInclude Include="IRTree\IRStm.h" />
@@ -50,6 +48,8 @@
     <ClInclude Include="SymbolsTable\MethodDescriptor.h" />
     <ClInclude Include="SymbolsTable\TypeIdentifier.h" />
     <ClInclude Include="SymbolsTable\VariableDescriptor.h" />
+    <ClInclude Include="SymbolsTable\TypeChecker.h" />
+    <ClInclude Include="SymbolsTable\SymbolsTable.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

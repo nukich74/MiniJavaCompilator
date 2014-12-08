@@ -9,7 +9,7 @@
 #include <string>
 
 namespace SymbolsTable {
-	struct CSymbolTable {
+	struct CSymbolsTable {
 	public:
 		const std::map< std::string, CClassDescriptor >& Classes() const { return classes; }
 

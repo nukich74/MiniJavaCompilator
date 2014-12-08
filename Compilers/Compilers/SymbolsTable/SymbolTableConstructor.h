@@ -5,14 +5,14 @@
 #pragma once
 
 #include <Visitor.h>
-#include <SymbolTable.h>
+#include <SymbolsTable.h>
 #include <ErrorsAggregator.h>
 
 class CSymbolTableConstructor : public IVisitor {
 public:
 	CSymbolTableConstructor() { }
 
-	SymbolsTable::CSymbolTable symbolTable;
+	SymbolsTable::CSymbolsTable symbolTable;
 	SymbolsTable::CErrorsAggregator errors;
 
 	virtual void Visit( const CExpBinOpExp& exp ) { IVisitor::Visit( exp ); }
