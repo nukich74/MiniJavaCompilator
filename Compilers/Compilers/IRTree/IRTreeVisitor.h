@@ -4,6 +4,7 @@
 #pragma once 
 #include "Visitor.h"
 #include "IRTree.h"
+#include <list>
 
 namespace Translate {
 
@@ -42,6 +43,9 @@ public:
 	virtual void Visit(const CIfStatement& ifStatement);
 	virtual void Visit(const CWhileStatement& whileStatement);
 	virtual void Visit(const CExpList& expList);
+
+private:
+	std::list<>
 };
 
 } // namespace Translate
