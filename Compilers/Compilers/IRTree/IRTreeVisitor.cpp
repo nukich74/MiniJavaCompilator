@@ -9,6 +9,7 @@
 #include <cassert>
 #include <common.h>
 #include <Visitor.h>
+#include "ExpConverter.h"
 
 namespace Translate {
 
@@ -256,18 +257,21 @@ void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 {
 	ifStatement.Exp()->Accept( *this );
 	IRTree::IIRExp* ifExpr = lastReturnedExp;
-	IRTree::CIRLabel* trueLabel = new IRTree::CIRLabel( new Temp::CLabel() );
-	IRTree::CIRLabel* falseLabel = new IRTree::CIRLabel( new Temp::CLabel() );
-	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel( new Temp::CLabel() );
+	Temp::CLabel* trueLabelTemp = new Temp::CLabel();
+	Temp::CLabel* falseLabelTemp = new Temp::CLabel();
+	Temp::CLabel* endLabelTemp = new Temp::CLabel();
+	IRTree::CIRLabel* trueLabel = new IRTree::CIRLabel( trueLabelTemp );
+	IRTree::CIRLabel* falseLabel = new IRTree::CIRLabel( falseLabelTemp );
+	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel( endLabelTemp );
 	ifStatement.IfStatement()->Accept( *this );
-	IRTree::IIRStm* trueStm = new IRTree::CIRSeq( trueLabel, new IRTree::CIRSeq( lastReturnedStm, endLabel ) );
+	IRTree::IIRStm* trueStm = new IRTree::CIRSeq( trueLabel, lastReturnedStm, endLabel );
 	IRTree::IIRStm* falseStm = 0;
 	if( ifStatement.ElseStatement() != 0 ) {
 		ifStatement.ElseStatement()->Accept( *this );
-		falseStm = new IRTree::CIRSeq( falseLabel, new IRTree::CIRSeq( lastReturnedStm, endLabel ) );
+		falseStm = new IRTree::CIRSeq( falseLabel, lastReturnedStm, endLabel );
 	}
-	// вызываем враппер 
-	// lastReturnedStm = seq(wrapper.ToConditional, trueLabel, falseLabel)
+	Translate::CExpConverter converter( ifExpr );
+	lastReturnedStm = converter.ToConditional( trueLabelTemp, falseLabelTemp );
 }
 
 void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
