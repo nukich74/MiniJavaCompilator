@@ -21,7 +21,7 @@ public:
 	virtual void Visit( const CExpWithIndex& exp );
 	virtual void Visit( const CExpDotLength& exp );
 	virtual void Visit( const CExpIdExpList& exp );
-	virtual void Visit( const CExpIdVoidExpList& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CExpIdVoidExpList& exp );
 	virtual void Visit( const CIntegerLiteral& exp );
 	virtual void Visit( const CTrue& exp );
 	virtual void Visit( const CFalse& exp );
@@ -56,8 +56,10 @@ private:
 	mutable std::set<std::string> classesWithCycleExtends;
 	mutable std::set<std::string> classesWithoutCycleExtends;
 	mutable SymbolsTable::CTypeIdentifier lastType;
-
+	const std::vector<CVariableDescriptor>* expectedArgs;
 	bool setLastVarTypeByIdentifier( const std::string& id ) const;
+
+	const CMethodDescriptor*  getMethodFromClassById( CClassDescriptor class, const std::string& id ) const;
 
 	bool isClassCycled( const std::string& ) const;
 

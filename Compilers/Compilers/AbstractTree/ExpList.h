@@ -4,7 +4,7 @@
 
 #include "Grammar.h"
 #include <memory>
-#include <list>
+#include <vector>
 
 class CExpList : public IExpList, public CLocationStorage {
 public:
@@ -18,8 +18,8 @@ public:
 
 	void Accept( IVisitor& visitor ) const { visitor.Visit( *this ); }
 
-	const std::list< std::shared_ptr<IExp> >& ExpList() const { return expList; }
+	const std::vector< std::shared_ptr<IExp> >& ExpList() const { return expList; }
 
 private:
-	std::list< std::shared_ptr<IExp> > expList;
+	std::vector< std::shared_ptr<IExp> > expList;
 };

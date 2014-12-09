@@ -65,7 +65,6 @@ void CTypeChecker::Visit( const CAssignStatement& assignStatement )
 	}
 }
 
-
 void CTypeChecker::Visit( const CPrintStatement& printStatement )
 {
 	printStatement.Exp()->Accept( *this );
@@ -100,8 +99,16 @@ void CTypeChecker::Visit( const CWhileStatement& whileStatement )
 
 void CTypeChecker::Visit( const CExpList& expList )
 {
-	for( auto& exp : expList.ExpList() ) {
-		exp->Accept( *this );
+	assert( expectedArgs != 0 );
+	if( expectedArgs->size() != expList.ExpList().size() ) {
+		// Ошибка - количество аргументов не соответствует действительности.
+		return;
+	}
+	for( size_t i = 0; i < expList.ExpList; ++i ) {
+		expList.ExpList()[i]->Accept( *this );
+		if( ( *expectedArgs )[i].Type != lastType ) {
+			// Ошибка - в аргументе i несовпадение типов.
+		}
 	}
 }
 
@@ -161,15 +168,48 @@ void CTypeChecker::Visit( const CExpDotLength& exp )
 	lastType = BT_Int;
 }
 
-
-// TODO!
 void CTypeChecker::Visit( const CExpIdExpList& exp )
 {
 	exp.Exp()->Accept( *this );
-	if( symbolsTable.Classes().find( lastType.UserDefinedName ) == symbolsTable.Classes().end() ) {
+
+	if( lastType.Base != BT_UserDefined ) {
+		// Ошибка - вызов метода у базового типа.
+	} else if( !haveClassInTable( lastType.UserDefinedName ) ) {
 		// Ошибка - не существует вызывающего класса.
 	}
-	const CClassDescriptor* callingClass = &symbolsTable.Classes().at( lastType.UserDefinedName );
+
+	const CMethodDescriptor* calledMethod = getMethodFromClassById( lastType.UserDefinedName, exp.Id );
+	if( calledMethod == 0 ) {
+		// Ошибка - у данного класса нет такого метода.
+	} else {
+		expectedArgs = &calledMethod->Params;
+		exp.ExpList()->Accept( *this );
+		expectedArgs = 0;
+		lastType = calledMethod->ReturnType;
+	}
+}
+
+void CTypeChecker::Visit( const CExpIdVoidExpList& exp )
+{
+	exp.Exp()->Accept( *this );
+
+	if( lastType.Base != BT_UserDefined ) {
+		// Ошибка - вызов метода у базового типа.
+	} else if( !haveClassInTable( lastType.UserDefinedName ) ) {
+		// Ошибка - не существует вызывающего класса.
+	}
+
+	const CMethodDescriptor* calledMethod = getMethodFromClassById( lastType.UserDefinedName, exp.Id );
+	if( calledMethod == 0 ) {
+		// Ошибка - у данного класса нет такого метода.
+	} else {
+		expectedArgs = &calledMethod->Params;
+		if( !expectedArgs->empty() ) {
+			// Ошибка - функция ожидает аргументы.
+		}
+		expectedArgs = 0;
+		lastType = calledMethod->ReturnType;
+	}
 }
 
 void CTypeChecker::Visit( const CIntegerLiteral& exp )
@@ -230,7 +270,6 @@ void CTypeChecker::Visit( const CExpInBrackets& exp )
 	exp.Exp()->Accept( *this );
 }
 
-
 void CTypeChecker::Visit( const CClassDeclList& classDeclList )
 {
 	for( auto& classDecl : classDeclList.ClassDeclList() ) {
@@ -244,16 +283,23 @@ void CTypeChecker::Visit( const CClassDecl& classDecl )
 		if( symbolsTable.Classes().find( classDecl.ParendId() ) == symbolsTable.Classes().end() ) {
 			// Ошибка родительского класса не существует.
 		} else {
-			std::set<std::string> inheritCircleNames;
+			std::set<std::string> inheritCycleNames;
 			const CClassDescriptor* tmp = &symbolsTable.Classes().at( classDecl.ClassId() );
 			while( tmp->BaseClass != "" ) {
-				if( inheritCircleNames.find( tmp->Name() ) != inheritCircleNames.end() ) {
+				if( inheritCycleNames.find( tmp->Name() ) != inheritCycleNames.end() ) {
 					// Ошибка - повтор в цепи наследования.
+					classesWithCycleExtends.insert( inheritCycleNames.begin(), inheritCycleNames.end() );
 					break;
 				} else if( symbolsTable.Classes().find( tmp->BaseClass ) != symbolsTable.Classes().end() ) {
-					inheritCircleNames.insert( tmp->Name() );
+					inheritCycleNames.insert( tmp->Name() );
 					tmp = &symbolsTable.Classes().at( tmp->BaseClass );
+				} else {
+					classesWithoutCycleExtends.insert( inheritCycleNames.begin(), inheritCycleNames.end() );
+					break;
 				}
+			}
+			if( tmp->BaseClass == "" ) {
+				classesWithoutCycleExtends.insert( inheritCycleNames.begin(), inheritCycleNames.end() );
 			}
 		}
 	}
@@ -318,12 +364,14 @@ void CTypeChecker::Visit( const CVarDeclList& varDeclList )
 
 void CTypeChecker::Visit( const CVarDecl& varDecl )
 {
-
+	varDecl.VarType()->Accept( *this );
 }
 
 void CTypeChecker::Visit( const CFormalList& formalList )
 {
-
+	for( auto& arg : formalList.FormalList() ) {
+		arg.first->Accept( *this );
+	}
 }
 
 bool CTypeChecker::setLastVarTypeByIdentifier( const std::string& id ) const
