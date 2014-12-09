@@ -276,16 +276,18 @@ void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 
 void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
 {
+	Temp::CLabel* beforeConditionLabelTemp = new Temp::CLabel();
+	Temp::CLabel* inLoopLabelTemp = new Temp::CLabel();
+	Temp::CLabel* endLabelTemp = new Temp::CLabel();
 	IRTree::CIRLabel* beforeConditionLabel = new IRTree::CIRLabel(new Temp::CLabel());
 	IRTree::CIRLabel* inLoopLabel = new IRTree::CIRLabel(new Temp::CLabel());
 	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel(new Temp::CLabel());
 	whileStatement.Exp()->Accept( *this );
-	IRTree::IIRExp* whileExpr = lastReturnedExp;
-	// Вместо whileExpr должен быть StmWrapper toConditional( inLoopLabel, endLabel)
-	// jump перед inLoopLabel
-	//IRTree::IIRStm* conditionStm = new IRTree::CIRSeq( beforeConditionLabel, new IRTree::CIRSeq( whileExpr, inLoopLabel ) );
+	Translate::CExpConverter converter( lastReturnedExp );
+	IRTree::IIRStm* whileStm = converter.ToConditional( inLoopLabelTemp, endLabelTemp );
+	IRTree::IIRStm* conditionStm = new IRTree::CIRSeq( beforeConditionLabel, whileStm, inLoopLabel );
 	whileStatement.Statement()->Accept( *this );
-	//lastReturnedStm = new IRTree::CIRSeq(conditionStm, new IRTree::CIRSeq(lastReturnedStm, endLabel));
+	lastReturnedStm = new IRTree::CIRSeq( conditionStm, lastReturnedStm, new IRTree::CIRJump( beforeConditionLabelTemp ), endLabel );
 }
 
 void CIRTreeVisitor::Visit( const CExpList& expList )
