@@ -1,5 +1,5 @@
-// Автор: Азат Давлетшин
-// Описание: Вспомогательные классы и константы
+// РђРІС‚РѕСЂ: РђР·Р°С‚ Р”Р°РІР»РµС‚С€РёРЅ
+// РћРїРёСЃР°РЅРёРµ: Р’СЃРїРѕРјРѕРіР°С‚РµР»СЊРЅС‹Рµ РєР»Р°СЃСЃС‹ Рё РєРѕРЅСЃС‚Р°РЅС‚С‹
 #pragma once
 
 #include <IRExp.h>
@@ -26,16 +26,19 @@ class CIRStmList {
 	std::shared_ptr<const CIRStmList> tail;
 };
 
-// Арифметика
+// РђСЂРёС„РјРµС‚РёРєР°
 enum TBinop {
 	B_Plus,
 	B_Minus,
 	B_Mul
 };
 
-// Логическое
+// Р›РѕРіРёС‡РµСЃРєРѕРµ
 enum TCJump {
-	CJ_Less
+	CJ_Less,
+	CJ_Greater,
+	CJ_EqLess,
+	CJ_EqGreater
 };
 
 } // namespace IRTree 
