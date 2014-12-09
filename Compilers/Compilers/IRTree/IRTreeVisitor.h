@@ -4,6 +4,9 @@
 #pragma once 
 #include "Visitor.h"
 #include "IRTree.h"
+#include "IRExp.h"
+#include "IRStm.h"
+#include "IRHelpers.h"
 #include <list>
 
 namespace Translate {
@@ -45,7 +48,10 @@ public:
 	virtual void Visit(const CExpList& expList);
 
 private:
-	std::list<>
+	std::list<IRTree::IIRExp *> functions;
+
+	IRTree::IIRExp* lastReturnedExp;
+	IRTree::IIRStm* lastReturnedStm;
 };
 
 } // namespace Translate
