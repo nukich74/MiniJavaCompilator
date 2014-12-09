@@ -10,7 +10,9 @@ using namespace SymbolsTable;
 void CTypeChecker::Visit( const CProgram& program )
 {
 	program.MainClass()->Accept( *this );
-	program.ClassDeclList()->Accept( *this );
+	if( program.ClassDeclList() != 0 ) {
+		program.ClassDeclList()->Accept( *this );
+	}
 }
 
 void CTypeChecker::Visit( const CMainClass& mainClass )
@@ -174,11 +176,9 @@ void CTypeChecker::Visit( const CExpIdExpList& exp )
 
 	if( lastType.Base != BT_UserDefined ) {
 		// Ошибка - вызов метода у базового типа.
-	} else if( !haveClassInTable( lastType.UserDefinedName ) ) {
-		// Ошибка - не существует вызывающего класса.
 	}
 
-	const CMethodDescriptor* calledMethod = getMethodFromClassById( symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
+	const CMethodDescriptor* calledMethod = getMethodFromClassById( &symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
 	if( calledMethod == 0 ) {
 		// Ошибка - у данного класса нет такого метода.
 	} else {
@@ -195,11 +195,9 @@ void CTypeChecker::Visit( const CExpIdVoidExpList& exp )
 
 	if( lastType.Base != BT_UserDefined ) {
 		// Ошибка - вызов метода у базового типа.
-	} else if( !haveClassInTable( lastType.UserDefinedName ) ) {
-		// Ошибка - не существует вызывающего класса.
 	}
 
-	const CMethodDescriptor* calledMethod = getMethodFromClassById( symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
+	const CMethodDescriptor* calledMethod = getMethodFromClassById( &symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
 	if( calledMethod == 0 ) {
 		// Ошибка - у данного класса нет такого метода.
 	} else {
@@ -418,8 +416,27 @@ bool CTypeChecker::setLastVarTypeByIdentifier( const std::string& id ) const
 	return false;
 }
 
-const CMethodDescriptor* CTypeChecker::getMethodFromClassById( CClassDescriptor inClass, const std::string& id ) const
+const CMethodDescriptor* CTypeChecker::getMethodFromClassById( const CClassDescriptor* inClass, const std::string& id ) const
 {
+	for( auto& method : inClass->Methods ) {
+		if( method.Name() == id ) {
+			return &method;
+		}
+	}
+	if( inClass->BaseClass != "" && !isClassCycled( inClass->Name() ) ) {
+		while( inClass->BaseClass != "" ) {
+			if( haveClassInTable( inClass->BaseClass ) ) {
+				inClass = &symbolsTable.Classes().at( inClass->BaseClass );
+				for( auto& method : inClass->Methods ) {
+					if( method.Name() == id ) {
+						return &method;
+					}
+				}
+			} else {
+				return 0;
+			}
+		}
+	}
 	return 0;
 }
 

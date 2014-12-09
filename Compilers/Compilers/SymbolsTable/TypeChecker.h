@@ -63,7 +63,7 @@ private:
 
 	bool setLastVarTypeByIdentifier( const std::string& id ) const;
 
-	const SymbolsTable::CMethodDescriptor* getMethodFromClassById( SymbolsTable::CClassDescriptor inClass, const std::string& id ) const;
+	const SymbolsTable::CMethodDescriptor* getMethodFromClassById( const SymbolsTable::CClassDescriptor* inClass, const std::string& id ) const;
 
 	bool isClassCycled( const std::string& ) const;
 
