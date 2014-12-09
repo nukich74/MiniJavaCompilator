@@ -104,7 +104,7 @@ void CTypeChecker::Visit( const CExpList& expList )
 		// Ошибка - количество аргументов не соответствует действительности.
 		return;
 	}
-	for( size_t i = 0; i < expList.ExpList; ++i ) {
+	for( size_t i = 0; i < expList.ExpList().size(); ++i ) {
 		expList.ExpList()[i]->Accept( *this );
 		if( ( *expectedArgs )[i].Type != lastType ) {
 			// Ошибка - в аргументе i несовпадение типов.
@@ -178,7 +178,7 @@ void CTypeChecker::Visit( const CExpIdExpList& exp )
 		// Ошибка - не существует вызывающего класса.
 	}
 
-	const CMethodDescriptor* calledMethod = getMethodFromClassById( lastType.UserDefinedName, exp.Id );
+	const CMethodDescriptor* calledMethod = getMethodFromClassById( symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
 	if( calledMethod == 0 ) {
 		// Ошибка - у данного класса нет такого метода.
 	} else {
@@ -199,7 +199,7 @@ void CTypeChecker::Visit( const CExpIdVoidExpList& exp )
 		// Ошибка - не существует вызывающего класса.
 	}
 
-	const CMethodDescriptor* calledMethod = getMethodFromClassById( lastType.UserDefinedName, exp.Id );
+	const CMethodDescriptor* calledMethod = getMethodFromClassById( symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
 	if( calledMethod == 0 ) {
 		// Ошибка - у данного класса нет такого метода.
 	} else {
@@ -418,10 +418,17 @@ bool CTypeChecker::setLastVarTypeByIdentifier( const std::string& id ) const
 	return false;
 }
 
+const CMethodDescriptor* CTypeChecker::getMethodFromClassById( CClassDescriptor inClass, const std::string& id ) const
+{
+	return 0;
+}
+
+
 bool CTypeChecker::inCycled( const std::string& name ) const
 {
 	return classesWithCycleExtends.find( name ) != classesWithCycleExtends.end();
 }
+
 
 bool CTypeChecker::inNotCycled( const std::string& name ) const
 {

@@ -6,9 +6,11 @@
 
 #include <Visitor.h>
 #include <ClassDescriptor.h>
+#include <MethodDescriptor.h>
 #include <TypeIdentifier.h>
 #include <SymbolsTable.h>
 #include <set>
+#include <vector>
 
 class CTypeChecker : public IVisitor {
 public:
@@ -56,10 +58,12 @@ private:
 	mutable std::set<std::string> classesWithCycleExtends;
 	mutable std::set<std::string> classesWithoutCycleExtends;
 	mutable SymbolsTable::CTypeIdentifier lastType;
-	const std::vector<CVariableDescriptor>* expectedArgs;
+
+	const std::vector<SymbolsTable::CVariableDescriptor>* expectedArgs;
+
 	bool setLastVarTypeByIdentifier( const std::string& id ) const;
 
-	const CMethodDescriptor*  getMethodFromClassById( CClassDescriptor class, const std::string& id ) const;
+	const SymbolsTable::CMethodDescriptor* getMethodFromClassById( SymbolsTable::CClassDescriptor inClass, const std::string& id ) const;
 
 	bool isClassCycled( const std::string& ) const;
 
