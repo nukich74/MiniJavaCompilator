@@ -3,13 +3,16 @@
 #include <TypeChecker.h>
 #include <common.h>
 #include <set>
+#include <cassert>
 
 using namespace SymbolsTable;
 
 void CTypeChecker::Visit( const CProgram& program )
 {
 	program.MainClass()->Accept( *this );
-	program.ClassDeclList()->Accept( *this );
+	if( program.ClassDeclList() != 0 ) {
+		program.ClassDeclList()->Accept( *this );
+	}
 }
 
 void CTypeChecker::Visit( const CMainClass& mainClass )
@@ -31,7 +34,7 @@ void CTypeChecker::Visit( const CStatementList& statementList )
 void CTypeChecker::Visit( const CAssignStatement& assignStatement )
 {
 	if( assignStatement.IndexExp() == 0 ) {
-		if( !setLastTypeByIdentifier( assignStatement.LeftId() ) ) {
+		if( !setLastVarTypeByIdentifier( assignStatement.LeftId() ) ) {
 			// Ошибка - правая часть неопределена.
 			return;
 		}
@@ -48,7 +51,7 @@ void CTypeChecker::Visit( const CAssignStatement& assignStatement )
 			// Ошибка - индекс не является целочисленным.
 			return;
 		}
-		if( !setLastTypeByIdentifier( assignStatement.LeftId() ) ) {
+		if( !setLastVarTypeByIdentifier( assignStatement.LeftId() ) ) {
 			// Ошибка - правая часть не определена.
 			return;
 		}
@@ -63,7 +66,6 @@ void CTypeChecker::Visit( const CAssignStatement& assignStatement )
 		}
 	}
 }
-
 
 void CTypeChecker::Visit( const CPrintStatement& printStatement )
 {
@@ -99,8 +101,16 @@ void CTypeChecker::Visit( const CWhileStatement& whileStatement )
 
 void CTypeChecker::Visit( const CExpList& expList )
 {
-	for( auto& exp : expList.ExpList() ) {
-		exp->Accept( *this );
+	assert( expectedArgs != 0 );
+	if( expectedArgs->size() != expList.ExpList().size() ) {
+		// Ошибка - количество аргументов не соответствует действительности.
+		return;
+	}
+	for( size_t i = 0; i < expList.ExpList().size(); ++i ) {
+		expList.ExpList()[i]->Accept( *this );
+		if( ( *expectedArgs )[i].Type != lastType ) {
+			// Ошибка - в аргументе i несовпадение типов.
+		}
 	}
 }
 
@@ -163,10 +173,99 @@ void CTypeChecker::Visit( const CExpDotLength& exp )
 void CTypeChecker::Visit( const CExpIdExpList& exp )
 {
 	exp.Exp()->Accept( *this );
-	if( symbolsTable.Classes().find( lastType.UserDefinedName ) == symbolsTable.Classes().end() ) {
-		// Ошибка - не существует вызывающего класса.
+
+	if( lastType.Base != BT_UserDefined ) {
+		// Ошибка - вызов метода у базового типа.
 	}
-	const CClassDescriptor* callingClass = &symbolsTable.Classes().at( lastType.UserDefinedName );
+
+	const CMethodDescriptor* calledMethod = getMethodFromClassById( &symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
+	if( calledMethod == 0 ) {
+		// Ошибка - у данного класса нет такого метода.
+	} else {
+		expectedArgs = &calledMethod->Params;
+		exp.ExpList()->Accept( *this );
+		expectedArgs = 0;
+		lastType = calledMethod->ReturnType;
+	}
+}
+
+void CTypeChecker::Visit( const CExpIdVoidExpList& exp )
+{
+	exp.Exp()->Accept( *this );
+
+	if( lastType.Base != BT_UserDefined ) {
+		// Ошибка - вызов метода у базового типа.
+	}
+
+	const CMethodDescriptor* calledMethod = getMethodFromClassById( &symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
+	if( calledMethod == 0 ) {
+		// Ошибка - у данного класса нет такого метода.
+	} else {
+		expectedArgs = &calledMethod->Params;
+		if( !expectedArgs->empty() ) {
+			// Ошибка - функция ожидает аргументы.
+		}
+		expectedArgs = 0;
+		lastType = calledMethod->ReturnType;
+	}
+}
+
+void CTypeChecker::Visit( const CIntegerLiteral& exp )
+{
+	lastType = BT_Int;
+}
+
+void CTypeChecker::Visit( const CTrue& exp )
+{
+	lastType = BT_Bool;
+}
+
+void CTypeChecker::Visit( const CFalse& exp )
+{
+	lastType = BT_Bool;
+};
+
+void CTypeChecker::Visit( const CId& exp )
+{
+	if( !setLastVarTypeByIdentifier( exp.Id() ) ) {
+		// Ошибка - нет такой переменной.
+	}
+}
+
+void CTypeChecker::Visit( const CNewIntExpIndex& exp )
+{
+	exp.Exp()->Accept( *this );
+	if( lastType != BT_Int ) {
+		// Ошибка - индекс не целочисленный
+	}
+	lastType = BT_IntArr;
+}
+
+void CTypeChecker::Visit( const CNewId& exp )
+{
+	if( symbolsTable.Classes().find( exp.TypeId() ) == symbolsTable.Classes().end() ) {
+		// Ошибка - нет создаваемого класса.
+	}
+	lastType = exp.TypeId();
+}
+
+void CTypeChecker::Visit( const CThis& exp )
+{
+	lastType = currentClass->Name();
+}
+
+void CTypeChecker::Visit( const CNotExp& exp )
+{
+	exp.Exp()->Accept( *this );
+	if( lastType != BT_Bool ) {
+		// Ошибка - отрицание не к булевому значению.
+	}
+	lastType = BT_Bool;
+}
+
+void CTypeChecker::Visit( const CExpInBrackets& exp )
+{
+	exp.Exp()->Accept( *this );
 }
 
 void CTypeChecker::Visit( const CClassDeclList& classDeclList )
@@ -182,48 +281,213 @@ void CTypeChecker::Visit( const CClassDecl& classDecl )
 		if( symbolsTable.Classes().find( classDecl.ParendId() ) == symbolsTable.Classes().end() ) {
 			// Ошибка родительского класса не существует.
 		} else {
-			std::set<std::string> inheritCircleNames;
+			std::set<std::string> inheritCycleNames;
 			const CClassDescriptor* tmp = &symbolsTable.Classes().at( classDecl.ClassId() );
 			while( tmp->BaseClass != "" ) {
-				if( inheritCircleNames.find( tmp->Name() ) != inheritCircleNames.end() ) {
+				if( inheritCycleNames.find( tmp->Name() ) != inheritCycleNames.end() ) {
 					// Ошибка - повтор в цепи наследования.
+					classesWithCycleExtends.insert( inheritCycleNames.begin(), inheritCycleNames.end() );
 					break;
 				} else if( symbolsTable.Classes().find( tmp->BaseClass ) != symbolsTable.Classes().end() ) {
-					inheritCircleNames.insert( tmp->Name() );
+					inheritCycleNames.insert( tmp->Name() );
 					tmp = &symbolsTable.Classes().at( tmp->BaseClass );
+				} else {
+					classesWithoutCycleExtends.insert( inheritCycleNames.begin(), inheritCycleNames.end() );
+					break;
 				}
+			}
+			if( tmp->BaseClass == "" ) {
+				classesWithoutCycleExtends.insert( inheritCycleNames.begin(), inheritCycleNames.end() );
 			}
 		}
 	}
 	currentClass = &( symbolsTable.Classes().at( classDecl.ClassId() ) );
-	classDecl.VarDeclList()->Accept( *this );
-	classDecl.MethodDeclList()->Accept( *this );
+	if( classDecl.VarDeclList() != 0 ) {
+		classDecl.VarDeclList()->Accept( *this );
+	}
+	if( classDecl.MethodDeclList() != 0 ) {
+		classDecl.MethodDeclList()->Accept( *this );
+	}
 	currentClass = 0;
 }
 
-bool CTypeChecker::setLastTypeByIdentifier( const std::string& id ) const
+void CTypeChecker::Visit( const CMethodDeclList& methodDeclList )
+{
+	for( auto& methodDecl : methodDeclList.MethodDeclList() ) {
+		methodDecl->Accept( *this );
+	}
+}
+
+void CTypeChecker::Visit( const CMethodDecl& methodDecl )
+{
+	for( auto& method : currentClass->Methods ) {
+		if( methodDecl.MethodName() == method.Name() ) {
+			currentMethod = &method;
+			break;
+		}
+	}
+	if( methodDecl.FormalList() != 0 ) {
+		methodDecl.FormalList()->Accept( *this );
+	}
+	if( methodDecl.VarDeclList() != 0 ) {
+		methodDecl.VarDeclList()->Accept( *this );
+	}
+	if( methodDecl.StatementList() != 0 ) {
+		methodDecl.StatementList()->Accept( *this );
+	}
+	methodDecl.ReturnedExp()->Accept( *this );
+	CTypeIdentifier retType = lastType;
+	methodDecl.ReturnedType()->Accept( *this );
+	if( lastType != retType ) {
+		// Ошибка - возвращаемое значение имеет не тот тип.
+	}
+}
+
+void CTypeChecker::Visit( const CType& type )
+{
+	lastType = type.TypeName();
+	if( lastType == BT_UserDefined 
+		&& symbolsTable.Classes().find( lastType.UserDefinedName ) == symbolsTable.Classes().end() )
+	{
+		// Ошибка - тип не определен.
+	}
+}
+
+void CTypeChecker::Visit( const CVarDeclList& varDeclList )
+{
+	for( auto& varDecl : varDeclList.VarDeclList() ) {
+		varDecl->Accept( *this );
+	}
+}
+
+void CTypeChecker::Visit( const CVarDecl& varDecl )
+{
+	varDecl.VarType()->Accept( *this );
+}
+
+void CTypeChecker::Visit( const CFormalList& formalList )
+{
+	for( auto& arg : formalList.FormalList() ) {
+		arg.first->Accept( *this );
+	}
+}
+
+bool CTypeChecker::setLastVarTypeByIdentifier( const std::string& id ) const
 {
 	if( currentMethod != 0 ) {
-		for( auto& localVariable : currentMethod->Locals ) {
-			if( localVariable.Name() == id ) {
-				lastType = localVariable.Type;
+		for( auto& local : currentMethod->Locals ) {
+			if( local.Name() == id ) {
+				lastType = local.Type;
 				return true;
 			}
 		}
-		for( auto& paramVariable : currentMethod->Params ) {
-			if( paramVariable.Name() == id ) {
-				lastType = paramVariable.Type;
+
+		for( auto& param : currentMethod->Params ) {
+			if( param.Name() == id ) {
+				lastType = param.Type;
 				return true;
 			}
 		}
 	}
-	if( currentClass != 0 ) {
-		for( auto& fieldVariable : currentClass->Fields ) {
-			if( fieldVariable.Name() == id ) {
-				lastType = fieldVariable.Type;
-				return true;
+
+	for( auto& field : currentClass->Fields ) {
+		if( field.Name() == id ) {
+			lastType = field.Type;
+			return true;
+		}
+	}
+
+	if( !isClassCycled( currentClass->Name() ) ) {
+		CClassDescriptor curClass = *currentClass;
+		while( curClass.BaseClass != "" ) {
+			if( haveClassInTable( curClass.BaseClass ) ) {
+				curClass = symbolsTable.Classes().at( curClass.BaseClass );
+				for( auto& field : curClass.Fields ) {
+					if( field.Name() == id ) {
+						lastType = field.Type;
+						return true;
+					}
+				}
+			} else {
+				return false;
 			}
 		}
 	}
 	return false;
+}
+
+const CMethodDescriptor* CTypeChecker::getMethodFromClassById( const CClassDescriptor* inClass, const std::string& id ) const
+{
+	for( auto& method : inClass->Methods ) {
+		if( method.Name() == id ) {
+			return &method;
+		}
+	}
+	if( inClass->BaseClass != "" && !isClassCycled( inClass->Name() ) ) {
+		while( inClass->BaseClass != "" ) {
+			if( haveClassInTable( inClass->BaseClass ) ) {
+				inClass = &symbolsTable.Classes().at( inClass->BaseClass );
+				for( auto& method : inClass->Methods ) {
+					if( method.Name() == id ) {
+						return &method;
+					}
+				}
+			} else {
+				return 0;
+			}
+		}
+	}
+	return 0;
+}
+
+bool CTypeChecker::inCycled( const std::string& name ) const
+{
+	return classesWithCycleExtends.find( name ) != classesWithCycleExtends.end();
+}
+
+bool CTypeChecker::inNotCycled( const std::string& name ) const
+{
+	return classesWithCycleExtends.find( name ) != classesWithCycleExtends.end();
+}
+
+bool CTypeChecker::haveClassInTable( const std::string& name ) const
+{
+	return symbolsTable.Classes().find( name ) != symbolsTable.Classes().end();
+}
+
+bool CTypeChecker::isClassCycled( const std::string& className ) const
+{
+	if( inCycled( className ) ) {
+		return true;
+	}
+	if( inNotCycled( className ) ) {
+		return false;
+	}
+	if( haveClassInTable( className ) ) {
+		CClassDescriptor currentClass = symbolsTable.Classes().at( className );
+		std::set<std::string> visitedClasses;
+		visitedClasses.insert( className );
+		while( currentClass.BaseClass != "" ) {
+			if( haveClassInTable( currentClass.BaseClass ) ) {
+				currentClass = symbolsTable.Classes().at( currentClass.BaseClass );
+				if( inCycled( currentClass.Name() ) || visitedClasses.find( currentClass.Name() ) != visitedClasses.end() ) {
+					classesWithCycleExtends.insert( visitedClasses.begin(), visitedClasses.end() );
+					return true;
+				}
+				if( inNotCycled( currentClass.Name() ) ) {
+					classesWithoutCycleExtends.insert( visitedClasses.begin(), visitedClasses.end() );
+					return false;
+				}
+			} else {
+				classesWithoutCycleExtends.insert( visitedClasses.begin(), visitedClasses.end() );
+				return false;
+			}
+		}
+		classesWithoutCycleExtends.insert( visitedClasses.begin(), visitedClasses.end() );
+		return false;
+	} else {
+		// Не должны применять функцию к классам, которые не определены вообще.
+		assert( false );
+		return false;
+	}
 }

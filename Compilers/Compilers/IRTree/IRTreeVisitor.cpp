@@ -9,6 +9,7 @@
 #include <cassert>
 #include <common.h>
 #include <Visitor.h>
+#include "ExpConverter.h"
 
 namespace Translate {
 
@@ -256,26 +257,35 @@ void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 {
 	ifStatement.Exp()->Accept( *this );
 	IRTree::IIRExp* ifExpr = lastReturnedExp;
-	IRTree::CIRLabel* trueLabel = new IRTree::CIRLabel( new Temp::CLabel() );
-	IRTree::CIRLabel* falseLabel = new IRTree::CIRLabel( new Temp::CLabel() );
-	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel( new Temp::CLabel() );
+	Temp::CLabel* trueLabelTemp = new Temp::CLabel();
+	Temp::CLabel* falseLabelTemp = new Temp::CLabel();
+	Temp::CLabel* endLabelTemp = new Temp::CLabel();
+	IRTree::CIRLabel* trueLabel = new IRTree::CIRLabel( trueLabelTemp );
+	IRTree::CIRLabel* falseLabel = new IRTree::CIRLabel( falseLabelTemp );
+	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel( endLabelTemp );
 	ifStatement.IfStatement()->Accept( *this );
-	IRTree::IIRStm* trueStm = new IRTree::CIRSeq( trueLabel, new IRTree::CIRSeq( lastReturnedStm, endLabel ) );
+	IRTree::IIRStm* trueStm = new IRTree::CIRSeq( trueLabel, lastReturnedStm, endLabel );
 	IRTree::IIRStm* falseStm = 0;
 	if( ifStatement.ElseStatement() != 0 ) {
 		ifStatement.ElseStatement()->Accept( *this );
-		falseStm = new IRTree::CIRSeq( falseLabel, new IRTree::CIRSeq( lastReturnedStm, endLabel ) );
+		falseStm = new IRTree::CIRSeq( falseLabel, lastReturnedStm, endLabel );
 	}
-	// вызываем враппер 
-	// lastReturnedStm = wrapper.ToConditional
+	Translate::CExpConverter converter( ifExpr );
+	lastReturnedStm = converter.ToConditional( trueLabelTemp, falseLabelTemp );
 }
 
 void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
 {
-	std::cout << "while( ";
+	IRTree::CIRLabel* beforeConditionLabel = new IRTree::CIRLabel(new Temp::CLabel());
+	IRTree::CIRLabel* inLoopLabel = new IRTree::CIRLabel(new Temp::CLabel());
+	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel(new Temp::CLabel());
 	whileStatement.Exp()->Accept( *this );
-	std::cout << " )" << std::endl;
+	IRTree::IIRExp* whileExpr = lastReturnedExp;
+	// Вместо whileExpr должен быть StmWrapper toConditional( inLoopLabel, endLabel)
+	// jump перед inLoopLabel
+	//IRTree::IIRStm* conditionStm = new IRTree::CIRSeq( beforeConditionLabel, new IRTree::CIRSeq( whileExpr, inLoopLabel ) );
 	whileStatement.Statement()->Accept( *this );
+	//lastReturnedStm = new IRTree::CIRSeq(conditionStm, new IRTree::CIRSeq(lastReturnedStm, endLabel));
 }
 
 void CIRTreeVisitor::Visit( const CExpList& expList )

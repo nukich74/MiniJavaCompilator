@@ -6,8 +6,11 @@
 
 #include <Visitor.h>
 #include <ClassDescriptor.h>
+#include <MethodDescriptor.h>
 #include <TypeIdentifier.h>
 #include <SymbolsTable.h>
+#include <set>
+#include <vector>
 
 class CTypeChecker : public IVisitor {
 public:
@@ -20,16 +23,16 @@ public:
 	virtual void Visit( const CExpWithIndex& exp );
 	virtual void Visit( const CExpDotLength& exp );
 	virtual void Visit( const CExpIdExpList& exp );
-	virtual void Visit( const CExpIdVoidExpList& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CIntegerLiteral& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CTrue& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CFalse& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CId& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CThis& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CNewIntExpIndex& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CNewId& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CNotExp& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CExpInBrackets& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CExpIdVoidExpList& exp );
+	virtual void Visit( const CIntegerLiteral& exp );
+	virtual void Visit( const CTrue& exp );
+	virtual void Visit( const CFalse& exp );
+	virtual void Visit( const CId& exp );
+	virtual void Visit( const CThis& exp );
+	virtual void Visit( const CNewIntExpIndex& exp );
+	virtual void Visit( const CNewId& exp );
+	virtual void Visit( const CNotExp& exp );
+	virtual void Visit( const CExpInBrackets& exp );
 	virtual void Visit( const CProgram& program );
 	virtual void Visit( const CMainClass& mainClass );
 	virtual void Visit( const CClassDeclList& classDeclList );
@@ -52,7 +55,21 @@ private:
 	const SymbolsTable::CSymbolsTable& symbolsTable;
 	const SymbolsTable::CClassDescriptor* currentClass;
 	const SymbolsTable::CMethodDescriptor* currentMethod;
+	mutable std::set<std::string> classesWithCycleExtends;
+	mutable std::set<std::string> classesWithoutCycleExtends;
 	mutable SymbolsTable::CTypeIdentifier lastType;
 
-	bool setLastTypeByIdentifier( const std::string& id ) const;
+	const std::vector<SymbolsTable::CVariableDescriptor>* expectedArgs;
+
+	bool setLastVarTypeByIdentifier( const std::string& id ) const;
+
+	const SymbolsTable::CMethodDescriptor* getMethodFromClassById( const SymbolsTable::CClassDescriptor* inClass, const std::string& id ) const;
+
+	bool isClassCycled( const std::string& ) const;
+
+	bool haveClassInTable( const std::string& ) const;
+
+	bool inCycled( const std::string& ) const;
+
+	bool inNotCycled( const std::string& ) const;
 };

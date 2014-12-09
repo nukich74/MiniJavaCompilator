@@ -85,10 +85,19 @@ public:
 // Последовательно исполняет left, right
 class CIRSeq : public IIRStm {
 public:
-	CIRSeq( const IIRStm* const _left, const IIRStm* const _right ) :
-		left( _left ),
-		right( _right )
-	{}
+	CIRSeq( const IIRStm* const _left, const IIRStm* const _right ) : left( _left ), right( _right ) {}
+
+	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3 ) : left( arg1 ), right( new CIRSeq( arg2, arg3 ) ) {}
+
+	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3, const IIRStm* const arg4 ) : 
+		left( arg1 ), right( new CIRSeq( arg2, arg3, arg4 ) ) {}
+
+	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3, const IIRStm* const arg4, const IIRStm* const arg5 ) : 
+		left( arg1 ), right( new CIRSeq( arg2, arg3, arg4, arg5 ) ) {}
+
+	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3, const IIRStm* const arg4, 
+			const IIRStm* const arg5, const IIRStm* const arg6) : 
+		left(arg1), right( new CIRSeq( arg2, arg3, arg4, arg5, arg6 ) ) {}
 
 	virtual void Print( CPrinter& printer ) const
 	{
