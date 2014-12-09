@@ -267,15 +267,21 @@ void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 		falseStm = new IRTree::CIRSeq( falseLabel, new IRTree::CIRSeq( lastReturnedStm, endLabel ) );
 	}
 	// вызываем враппер 
-	// lastReturnedStm = wrapper.ToConditional
+	// lastReturnedStm = seq(wrapper.ToConditional, trueLabel, falseLabel)
 }
 
 void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
 {
-	std::cout << "while( ";
+	IRTree::CIRLabel* beforeConditionLabel = new IRTree::CIRLabel(new Temp::CLabel());
+	IRTree::CIRLabel* inLoopLabel = new IRTree::CIRLabel(new Temp::CLabel());
+	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel(new Temp::CLabel());
 	whileStatement.Exp()->Accept( *this );
-	std::cout << " )" << std::endl;
+	IRTree::IIRExp* whileExpr = lastReturnedExp;
+	// Вместо whileExpr должен быть StmWrapper toConditional( inLoopLabel, endLabel)
+	// jump перед inLoopLabel
+	//IRTree::IIRStm* conditionStm = new IRTree::CIRSeq( beforeConditionLabel, new IRTree::CIRSeq( whileExpr, inLoopLabel ) );
 	whileStatement.Statement()->Accept( *this );
+	//lastReturnedStm = new IRTree::CIRSeq(conditionStm, new IRTree::CIRSeq(lastReturnedStm, endLabel));
 }
 
 void CIRTreeVisitor::Visit( const CExpList& expList )

@@ -9,8 +9,6 @@
 
 namespace Translate {
 
-class CExpConverter;
-
 class CStmConverter : public ISubtreeWrapper {
 public:
 	CStmConverter(const IRTree::IIRStm* e) : expr( e ) {}
