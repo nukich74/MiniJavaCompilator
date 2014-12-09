@@ -92,6 +92,7 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="IRTree\IRHelpers.h" />
     <ClInclude Include="IRTree\IRExp.h" />
+    <ClInclude Include="IRTree\IRPrint.h" />
     <ClInclude Include="IRTree\IRStm.h" />
     <ClInclude Include="IRTree\IRTree.h" />
     <ClInclude Include="IRTree\IRTreeVisitor.h" />
@@ -124,6 +125,7 @@
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IRTree\IRPrinter.cpp" />
     <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="main.cpp" />
