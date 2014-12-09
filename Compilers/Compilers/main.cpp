@@ -4,6 +4,7 @@
 #include <memory>
 #include <PrettyPrinterVisitor.h>
 #include <SymbolTableConstructor.h>
+#include <TypeChecker.h>
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -20,6 +21,9 @@ int main()
 		
 		CSymbolTableConstructor tableConstructor;
 		astRoot->Accept( tableConstructor );
+
+		CTypeChecker typeChecker( tableConstructor.symbolTable );
+		astRoot->Accept( typeChecker );
 
 		if( tableConstructor.errors.HasErrors() ) {
 			tableConstructor.errors.WriteErrors();
