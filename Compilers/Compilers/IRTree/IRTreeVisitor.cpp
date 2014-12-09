@@ -1,5 +1,5 @@
-// �����: ��������� ���������
-// ������� ��� ���������� ������ �������������� �������������
+﻿// Автор: Воротилов Владислав
+// Визитор для построения дерева промежуточного представления
 
 
 #include "IRTreeVisitor.h"
@@ -14,7 +14,7 @@ namespace Translate {
 
 void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 {
-	// �������� ������ � ����� ��������
+	// Забираем правый и левый операнды
 	exp.LeftArg()->Accept( *this );
 	IRTree::IIRExp* first = lastReturnedExp;
 	exp.RightArg()->Accept( *this );
@@ -38,8 +38,8 @@ void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 
 void CIRTreeVisitor::Visit( const CUnMinExp& exp )
 {
-	// ��� � ������� �������� �� 0 - exp
-	IRTree::IIRExp* first = 0; // � ��� ���� �������� ��������� ������� �������� 0
+	// Как в лекциях заменяем на (0 - exp)
+	IRTree::IIRExp* first = new IRTree::CIRConst( 0 );
 	exp.Exp()->Accept( *this );
 	IRTree::IIRExp* second = lastReturnedExp;
 	lastReturnedExp = new IRTree::CIRBinop( IRTree::B_Minus, first, second );
@@ -47,77 +47,85 @@ void CIRTreeVisitor::Visit( const CUnMinExp& exp )
 
 void CIRTreeVisitor::Visit( const CExpWithIndex& exp )
 {
-	// ���� �� ��� ��� ������
+#pragma message( "TODO Здесь надо возвращать IRTree::IRName переменной" )
 	exp.Exp()->Accept( *this );
 	exp.Index()->Accept( *this );
 }
 
 void CIRTreeVisitor::Visit( const CExpDotLength& exp )
 {
+#pragma message( "TODO Здесь надо возвращать IRTree::IRConst переменной тк длину возвращать нельзя" )
 	exp.Exp()->Accept( *this );
 }
 
 void CIRTreeVisitor::Visit( const CExpIdExpList& exp )
 {
+	// Это заголовок функции с возвращаемым типом
 	exp.Exp()->Accept( *this );
 	exp.ExpList()->Accept( *this );
 }
 
 void CIRTreeVisitor::Visit( const CExpIdVoidExpList& exp )
 {
+	// Заголовок функции без возвращаемого типа
 	exp.Exp()->Accept( *this );
 }
 
 void CIRTreeVisitor::Visit( const CIntegerLiteral& exp )
 {
-	std::cout << exp.Value();
+	lastReturnedExp = new IRTree::CIRConst( exp.Value() );
 }
 
 void CIRTreeVisitor::Visit( const CTrue& exp )
 {
-	std::cout << "true";
+	// True у нас константа 1
+	lastReturnedExp = new IRTree::CIRConst( 1 );
 }
 
 void CIRTreeVisitor::Visit( const CFalse& exp )
 {
-	std::cout << "false";
+	// False у нас константа 0
+	lastReturnedExp = new IRTree::CIRConst( 0 );
 }
 
 void CIRTreeVisitor::Visit( const CId& exp )
 {
+#pragma message( "TODO Здесь надо возвращать IRTree::IRName переменной" )
 	std::cout << exp.Id();
 }
 
 void CIRTreeVisitor::Visit( const CThis& exp )
 {
+#pragma message( "TODO Здесь надо возвращать IRTree::IRName переменной" )
 	std::cout << "this";
 }
 
 void CIRTreeVisitor::Visit( const CNewIntExpIndex& exp )
 {
+#pragma message( "TODO Оператор new для int[] тут получаем количество необходимой памяти из lastReturnedExp выделяем и возвращаем Name" )
 	exp.Exp()->Accept( *this );
 }
 void CIRTreeVisitor::Visit( const CNewId& exp )
 {
+#pragma message( "TODO Оператор new для любого типа тут нужен размер типа, выделяем и возвращаем Name" )
 	std::cout << "new " << exp.TypeId() << "()";
 }
 
 void CIRTreeVisitor::Visit( const CNotExp& exp )
 {
-	std::cout << "!";
+#pragma message( "TODO Получить lastReturnedExp и записать туда конструкцию с XOR c Const(0)" )
 	exp.Exp()->Accept( *this );
 }
 
 void CIRTreeVisitor::Visit( const CExpInBrackets& exp )
 {
-	std::cout << "( ";
+#pragma message( "TODO Здесь нужно чтобы тот кому выражение принадлежит забрал lastReturnedExp" )
 	exp.Exp()->Accept( *this );
-	std::cout << " )";
 }
 
 void CIRTreeVisitor::Visit( const CProgram& program )
 {
-	// ����� ��� IRTree ������ �� �����
+	// Здесь для IRTree ничего не нужно
 	program.MainClass()->Accept( *this );
 	if( program.ClassDeclList() != 0 ) {
 		program.ClassDeclList()->Accept( *this );
@@ -127,7 +135,7 @@ void CIRTreeVisitor::Visit( const CProgram& program )
 
 void CIRTreeVisitor::Visit( const CMainClass& mainClass )
 {
-	// ����� ��� IRTree ������ �� �����
+	// Здесь для IRTree ничего не нужно
 	if( mainClass.StatementList() != 0 ) {
 		mainClass.StatementList()->Accept( *this );
 	}
@@ -135,7 +143,7 @@ void CIRTreeVisitor::Visit( const CMainClass& mainClass )
 
 void CIRTreeVisitor::Visit( const CClassDeclList& classDeclList )
 {
-	// ����� ��� IRTree ������ �� �����
+	// Здесь для IRTree ничего не нужно
 	for( const auto& clsDecl : classDeclList.ClassDeclList() ) {
 		clsDecl->Accept( *this );
 	}
@@ -143,7 +151,7 @@ void CIRTreeVisitor::Visit( const CClassDeclList& classDeclList )
 
 void CIRTreeVisitor::Visit( const CClassDecl& classDecl )
 {
-	// ����� ��� IRTree ������ �� �����
+	// Здесь для IRTree ничего не нужно
 	if( classDecl.VarDeclList() != 0 ) {
 		classDecl.VarDeclList()->Accept( *this );
 	}
@@ -154,7 +162,7 @@ void CIRTreeVisitor::Visit( const CClassDecl& classDecl )
 
 void CIRTreeVisitor::Visit( const CVarDeclList& varDeclList )
 {
-	// ����� ��� IRTree ������ �� �����
+	// Здесь для IRTree ничего не нужно
 	for( const auto& decl : varDeclList.VarDeclList() ) {
 		decl->Accept( *this );
 	}
@@ -162,13 +170,13 @@ void CIRTreeVisitor::Visit( const CVarDeclList& varDeclList )
 
 void CIRTreeVisitor::Visit( const CVarDecl& varDecl )
 {
-	// ����� ��� IRTree ������ �� �����
+	// Здесь для IRTree ничего не нужно
 	varDecl.VarType()->Accept( *this );
 }
 
 void CIRTreeVisitor::Visit( const CMethodDeclList& methodDeclList )
 {
-	// ����� ��� IRTree ������ �� �����
+	// Здесь для IRTree ничего не нужно
 	for( const auto& decl : methodDeclList.MethodDeclList() ) {
 		decl->Accept( *this );
 	}
@@ -176,9 +184,7 @@ void CIRTreeVisitor::Visit( const CMethodDeclList& methodDeclList )
 
 void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 {
-	// ����� �������� ������ ��� ��������� �������
-	//functions.push_back( new IRTree::CIRExp() )
-
+#pragma message( "TODO Здесь строится дерево для отдельной функции functions.push_back( new IRTree::CIRExp() )" )
 	methodDecl.ReturnedType()->Accept( *this );
 	if( methodDecl.FormalList() != 0 ) {
 		methodDecl.FormalList()->Accept( *this );
@@ -269,6 +275,7 @@ void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
 
 void CIRTreeVisitor::Visit( const CExpList& expList )
 {
+#pragma message( "Здесь оборачиваем все ExpWrappero и строим для его ToExp Вложенные Seq" )
 	for( const auto& decl : expList.ExpList() ) {
 		decl->Accept( *this );
 		std::cout << std::endl;
