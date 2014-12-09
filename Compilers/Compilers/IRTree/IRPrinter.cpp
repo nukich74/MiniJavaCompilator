@@ -27,8 +27,8 @@ void CPrinter::Print( const CIRMove* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[child]" << ids.find( node->dst.get() )->second << " ";
-	std::cout << "[child]" << ids.find( node->src.get() )->second << " ";
+	std::cout << "[dst]" << ids.find( node->dst.get() )->second << " ";
+	std::cout << "[src]" << ids.find( node->src.get() )->second << " ";
 	
 	std::cout << "Type: " << "CIRMove";
 	std::cout << std::endl;
@@ -51,7 +51,7 @@ void CPrinter::Print( const CIRExp* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[child]" << ids.find( node->exp.get( ) )->second << " ";
+	std::cout << "[exp]" << ids.find( node->exp.get( ) )->second << " ";
 
 	std::cout << "Type: " << "CIRExp";
 	std::cout << std::endl;
@@ -97,10 +97,10 @@ void CPrinter::Print( const CIRCjump* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[child]" << ids.find( node->left.get( ) )->second << " ";
-	std::cout << "[child]" << ids.find( node->right.get( ) )->second << " ";
-	std::cout << "[label, iftrue]" << node->iftrue->Name( ) << " ";
-	std::cout << "[label, iffalse]" << node->iffalse->Name( ) << " ";
+	std::cout << "[left]" << ids.find( node->left.get( ) )->second << " ";
+	std::cout << "[right]" << ids.find( node->right.get( ) )->second << " ";
+	std::cout << "[iftrue]" << node->iftrue->Name( ) << " ";
+	std::cout << "[iffalse]" << node->iffalse->Name( ) << " ";
 	std::cout << "[relop]" << node->relop << " ";
 
 	std::cout << "Type: " << "CIRCjump";
@@ -126,8 +126,8 @@ void CPrinter::Print( const CIRSeq* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[child]" << ids.find( node->left.get( ) )->second << " ";
-	std::cout << "[child]" << ids.find( node->right.get( ) )->second << " ";
+	std::cout << "[left]" << ids.find( node->left.get( ) )->second << " ";
+	std::cout << "[right]" << ids.find( node->right.get( ) )->second << " ";
 
 	std::cout << "Type: " << "CIRSeq";
 	std::cout << std::endl;
@@ -148,7 +148,7 @@ void CPrinter::Print( const CIRConst* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[int]" << node->value << " ";
+	std::cout << "[value]" << node->value << " ";
 
 	std::cout << "Type: " << "CIRConst";
 	std::cout << std::endl;
@@ -190,7 +190,7 @@ void CPrinter::Print( const CIRTemp* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[label]" << node->temp.Name( ) << " ";
+	std::cout << "[temp]" << node->temp.Name( ) << " ";
 
 	std::cout << "Type: " << "CIRTemp";
 	std::cout << std::endl;
@@ -215,8 +215,8 @@ void CPrinter::Print( const CIRBinop* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[child]" << ids.find( node->left.get( ) )->second << " ";
-	std::cout << "[child]" << ids.find( node->right.get( ) )->second << " ";
+	std::cout << "[left]" << ids.find( node->left.get( ) )->second << " ";
+	std::cout << "[right]" << ids.find( node->right.get( ) )->second << " ";
 	std::cout << "[binop]" << node->binop << " ";
 
 	std::cout << "Type: " << "CIRBinop";
@@ -242,8 +242,8 @@ void CPrinter::Print( const CIRCall* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[child]" << ids.find( node->func.get( ) )->second << " ";
-	std::cout << "[arglist]" << ids.find( &node->args )->second << " ";
+	std::cout << "[func]" << ids.find( node->func.get( ) )->second << " ";
+	std::cout << "[args]" << ids.find( &node->args )->second << " ";
 
 	std::cout << "Type: " << "CIRCall";
 	std::cout << std::endl;
@@ -266,7 +266,7 @@ void CPrinter::Print( const CIRMem* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[child]" << ids.find( node->exp.get( ) )->second << " ";
+	std::cout << "[exp]" << ids.find( node->exp.get( ) )->second << " ";
 
 	std::cout << "Type: " << "CIRMem";
 	std::cout << std::endl;
@@ -291,8 +291,8 @@ void CPrinter::Print( const CIREseq* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[child]" << ids.find( node->stm.get( ) )->second << " ";
-	std::cout << "[child]" << ids.find( node->exp.get( ) )->second << " ";
+	std::cout << "[stm]" << ids.find( node->stm.get( ) )->second << " ";
+	std::cout << "[exp]" << ids.find( node->exp.get( ) )->second << " ";
 
 	std::cout << "Type: " << "CIREseq";
 	std::cout << std::endl;
