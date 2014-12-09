@@ -440,12 +440,10 @@ const CMethodDescriptor* CTypeChecker::getMethodFromClassById( const CClassDescr
 	return 0;
 }
 
-
 bool CTypeChecker::inCycled( const std::string& name ) const
 {
 	return classesWithCycleExtends.find( name ) != classesWithCycleExtends.end();
 }
-
 
 bool CTypeChecker::inNotCycled( const std::string& name ) const
 {
