@@ -254,15 +254,20 @@ void CIRTreeVisitor::Visit( const CCurlyBraceStatement& curlyBraceStatement )
 
 void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 {
-	std::cout << "if( ";
 	ifStatement.Exp()->Accept( *this );
-	std::cout << " )" << std::endl;
+	IRTree::IIRExp* ifExpr = lastReturnedExp;
+	IRTree::CIRLabel* trueLabel = new IRTree::CIRLabel( new Temp::CLabel() );
+	IRTree::CIRLabel* falseLabel = new IRTree::CIRLabel( new Temp::CLabel() );
+	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel( new Temp::CLabel() );
 	ifStatement.IfStatement()->Accept( *this );
-	std::cout << std::endl;
+	IRTree::IIRStm* trueStm = new IRTree::CIRSeq( trueLabel, new IRTree::CIRSeq( lastReturnedStm, endLabel ) );
+	IRTree::IIRStm* falseStm = 0;
 	if( ifStatement.ElseStatement() != 0 ) {
-		std::cout << "else" << std::endl;
 		ifStatement.ElseStatement()->Accept( *this );
+		falseStm = new IRTree::CIRSeq( falseLabel, new IRTree::CIRSeq( lastReturnedStm, endLabel ) );
 	}
+	// вызываем враппер 
+	// lastReturnedStm = wrapper.ToConditional
 }
 
 void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
