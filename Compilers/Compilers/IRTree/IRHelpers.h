@@ -38,7 +38,9 @@ enum TCJump {
 	CJ_Less,
 	CJ_Greater,
 	CJ_EqLess,
-	CJ_EqGreater
+	CJ_EqGreater,
+	CJ_Equal,
+	CJ_NotEqual
 };
 
 } // namespace IRTree 

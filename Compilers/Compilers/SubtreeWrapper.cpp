@@ -2,5 +2,4 @@
 
 namespace Translate {
 
-
 }; //namespace Translate

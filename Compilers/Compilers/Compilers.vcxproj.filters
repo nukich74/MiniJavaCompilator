@@ -53,6 +53,7 @@
     <ClInclude Include="SymbolsTable\SymbolsTable.h" />
     <ClInclude Include="StmConverter.h" />
     <ClInclude Include="IRTree\IRTreeVisitor.h" />
+    <ClInclude Include="ExpConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
