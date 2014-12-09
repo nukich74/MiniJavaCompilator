@@ -34,11 +34,7 @@ namespace SymbolsTable {
 
 	bool CTypeIdentifier::operator == ( const BaseTypes& rhs ) const
 	{
-		if( rhs == BT_UserDefined ) {
-			assert( false );
-		} else {
-			return Base == rhs;
-		}
+		return Base == rhs;
 	}
 
 	bool CTypeIdentifier::operator != ( const BaseTypes& rhs ) const
