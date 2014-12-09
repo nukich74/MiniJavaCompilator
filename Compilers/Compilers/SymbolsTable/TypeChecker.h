@@ -15,11 +15,11 @@ public:
 		: symbolsTable( _symbolsTable )
 	{ }
 
-	virtual void Visit( const CExpBinOpExp& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CUnMinExp& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CExpWithIndex& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CExpDotLength& exp ) { IVisitor::Visit( exp ); }
-	virtual void Visit( const CExpIdExpList& exp ) { IVisitor::Visit( exp ); }
+	virtual void Visit( const CExpBinOpExp& exp );
+	virtual void Visit( const CUnMinExp& exp );
+	virtual void Visit( const CExpWithIndex& exp );
+	virtual void Visit( const CExpDotLength& exp );
+	virtual void Visit( const CExpIdExpList& exp );
 	virtual void Visit( const CExpIdVoidExpList& exp ) { IVisitor::Visit( exp ); }
 	virtual void Visit( const CIntegerLiteral& exp ) { IVisitor::Visit( exp ); }
 	virtual void Visit( const CTrue& exp ) { IVisitor::Visit( exp ); }
@@ -42,11 +42,11 @@ public:
 	virtual void Visit( const CType& type );
 	virtual void Visit( const CStatementList& statementList );
 	virtual void Visit( const CAssignStatement& assignStatement );
-	virtual void Visit( const CPrintStatement& printStatement ) { IVisitor::Visit( printStatement ); }
-	virtual void Visit( const CCurlyBraceStatement& curlyBraceStatement ) { IVisitor::Visit( curlyBraceStatement ); }
-	virtual void Visit( const CIfStatement& ifStatement ) { IVisitor::Visit( ifStatement ); }
-	virtual void Visit( const CWhileStatement& whileStatement ) { IVisitor::Visit( whileStatement ); }
-	virtual void Visit( const CExpList& expList ) { IVisitor::Visit( expList ); }
+	virtual void Visit( const CPrintStatement& printStatement );
+	virtual void Visit( const CCurlyBraceStatement& curlyBraceStatement );
+	virtual void Visit( const CIfStatement& ifStatement );
+	virtual void Visit( const CWhileStatement& whileStatement );
+	virtual void Visit( const CExpList& expList );
 
 private:
 	const SymbolsTable::CSymbolsTable& symbolsTable;

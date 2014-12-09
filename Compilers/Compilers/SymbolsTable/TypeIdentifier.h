@@ -27,6 +27,10 @@ namespace SymbolsTable {
 
 		CTypeIdentifier( const std::string& typeName );
 
+		CTypeIdentifier( BaseTypes type )
+			: Base( type )
+		{ }
+
 		bool operator == ( const CTypeIdentifier& rhs ) const;
 
 		bool operator != ( const CTypeIdentifier& rhs ) const;
