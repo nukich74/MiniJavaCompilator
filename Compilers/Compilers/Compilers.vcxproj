@@ -94,6 +94,8 @@
     <ClInclude Include="IRTree\IRExp.h" />
     <ClInclude Include="IRTree\IRStm.h" />
     <ClInclude Include="IRTree\IRTree.h" />
+    <ClInclude Include="IRTree\IRTreeVisitor.h" />
+    <ClInclude Include="StmConverter.h" />
     <ClInclude Include="SubtreeWrapper.h" />
     <ClInclude Include="SymbolsTable\ClassDescriptor.h" />
     <ClInclude Include="AbstractTree\Exp.h" />
@@ -122,6 +124,7 @@
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />

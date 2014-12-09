@@ -39,7 +39,7 @@ void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 void CIRTreeVisitor::Visit( const CUnMinExp& exp )
 {
 	// Как в лекциях заменяем на 0 - exp
-	IRTree::IIRExp* first; // В нее надо записать выражение которое является 0
+	IRTree::IIRExp* first = 0; // В нее надо записать выражение которое является 0
 	exp.Exp()->Accept( *this );
 	IRTree::IIRExp* second = lastReturnedExp;
 	lastReturnedExp = new IRTree::CIRBinop( IRTree::B_Minus, first, second );
@@ -95,9 +95,7 @@ void CIRTreeVisitor::Visit( const CThis& exp )
 
 void CIRTreeVisitor::Visit( const CNewIntExpIndex& exp )
 {
-	std::cout << "new int[ ";
 	exp.Exp()->Accept( *this );
-	std::cout << " ]";
 }
 void CIRTreeVisitor::Visit( const CNewId& exp )
 {

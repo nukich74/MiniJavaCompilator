@@ -12,6 +12,7 @@
     <ClCompile Include="SubtreeWrapper.cpp" />
     <ClCompile Include="SymbolsTable\TypeChecker.cpp" />
     <ClCompile Include="SymbolsTable\SymbolsTable.cpp" />
+    <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -50,6 +51,8 @@
     <ClInclude Include="SymbolsTable\VariableDescriptor.h" />
     <ClInclude Include="SymbolsTable\TypeChecker.h" />
     <ClInclude Include="SymbolsTable\SymbolsTable.h" />
+    <ClInclude Include="StmConverter.h" />
+    <ClInclude Include="IRTree\IRTreeVisitor.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
