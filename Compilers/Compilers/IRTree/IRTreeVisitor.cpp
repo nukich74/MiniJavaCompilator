@@ -61,6 +61,7 @@ void CIRTreeVisitor::Visit( const CExpDotLength& exp )
 
 void CIRTreeVisitor::Visit( const CExpIdExpList& exp )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	// Это заголовок функции с возвращаемым типом
 	exp.Exp()->Accept( *this );
 	exp.ExpList()->Accept( *this );
@@ -68,6 +69,7 @@ void CIRTreeVisitor::Visit( const CExpIdExpList& exp )
 
 void CIRTreeVisitor::Visit( const CExpIdVoidExpList& exp )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	// Заголовок функции без возвращаемого типа
 	exp.Exp()->Accept( *this );
 }
@@ -114,8 +116,9 @@ void CIRTreeVisitor::Visit( const CNewId& exp )
 
 void CIRTreeVisitor::Visit( const CNotExp& exp )
 {
-#pragma message( "TODO Получить lastReturnedExp и записать туда конструкцию с XOR c Const(0)" )
+	// Получить lastReturnedExp и записать туда конструкцию с XOR c Const(0)
 	exp.Exp()->Accept( *this );
+	lastReturnedExp = new IRTree::CIRBinop( IRTree::B_Xor, new IRTree::CIRConst( 0 ), lastReturnedExp );
 }
 
 void CIRTreeVisitor::Visit( const CExpInBrackets& exp )
@@ -136,10 +139,13 @@ void CIRTreeVisitor::Visit( const CProgram& program )
 
 void CIRTreeVisitor::Visit( const CMainClass& mainClass )
 {
-	// Здесь для IRTree ничего не нужно
+	// Запоминаем в каком мы классе
+	currentClass = &( symbolsTable.Classes().at( mainClass.MainClassName() ) );
 	if( mainClass.StatementList() != 0 ) {
 		mainClass.StatementList()->Accept( *this );
 	}
+	currentClass = 0;
+	currentMethod = 0;
 }
 
 void CIRTreeVisitor::Visit( const CClassDeclList& classDeclList )
@@ -152,17 +158,22 @@ void CIRTreeVisitor::Visit( const CClassDeclList& classDeclList )
 
 void CIRTreeVisitor::Visit( const CClassDecl& classDecl )
 {
-	// Здесь для IRTree ничего не нужно
+#pragma message( "TODO Возможно здесь надо что-то делать" )
+	// Запоминаем в каком мы классе
+	currentClass = &( symbolsTable.Classes( ).at( classDecl.ClassId( ) ) );
 	if( classDecl.VarDeclList() != 0 ) {
 		classDecl.VarDeclList()->Accept( *this );
 	}
 	if( classDecl.MethodDeclList() != 0 ) {
 		classDecl.MethodDeclList()->Accept( *this );
 	}
+	currentClass = 0;
+	currentMethod = 0;
 }
 
 void CIRTreeVisitor::Visit( const CVarDeclList& varDeclList )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	// Здесь для IRTree ничего не нужно
 	for( const auto& decl : varDeclList.VarDeclList() ) {
 		decl->Accept( *this );
@@ -171,12 +182,13 @@ void CIRTreeVisitor::Visit( const CVarDeclList& varDeclList )
 
 void CIRTreeVisitor::Visit( const CVarDecl& varDecl )
 {
-	// Здесь для IRTree ничего не нужно
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	varDecl.VarType()->Accept( *this );
 }
 
 void CIRTreeVisitor::Visit( const CMethodDeclList& methodDeclList )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	// Здесь для IRTree ничего не нужно
 	for( const auto& decl : methodDeclList.MethodDeclList() ) {
 		decl->Accept( *this );
@@ -203,6 +215,7 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 
 void CIRTreeVisitor::Visit( const CFormalList& formalList )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	for( auto ptr = formalList.FormalList().begin(); ptr != formalList.FormalList().end(); ++ptr ) {
 		if( ptr != formalList.FormalList().begin() ) {
 			std::cout << ", ";
@@ -215,11 +228,13 @@ void CIRTreeVisitor::Visit( const CFormalList& formalList )
 
 void CIRTreeVisitor::Visit( const CType& type )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	std::cout << type.TypeName();
 }
 
 void CIRTreeVisitor::Visit( const CStatementList& statementList )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	for( const auto& decl : statementList.StatmentList() ) {
 		decl->Accept( *this );
 		std::cout << std::endl;
@@ -228,6 +243,7 @@ void CIRTreeVisitor::Visit( const CStatementList& statementList )
 
 void CIRTreeVisitor::Visit( const CAssignStatement& assignStatement )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	std::cout << assignStatement.LeftId();
 	if( assignStatement.IndexExp() != 0 ) {
 		std::cout << "[";
@@ -241,6 +257,7 @@ void CIRTreeVisitor::Visit( const CAssignStatement& assignStatement )
 
 void CIRTreeVisitor::Visit( const CPrintStatement& printStatement )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
 	std::cout << "System.out.println( ";
 	printStatement.Exp()->Accept( *this );
 	std::cout << " );";
@@ -248,6 +265,8 @@ void CIRTreeVisitor::Visit( const CPrintStatement& printStatement )
 
 void CIRTreeVisitor::Visit( const CCurlyBraceStatement& curlyBraceStatement )
 {
+#pragma message( "TODO Возможно здесь надо что-то делать" )
+	// Возможно здесь надо что-то делать с frame pointer
 	std::cout << "{ " << std::endl;
 	curlyBraceStatement.StatementList()->Accept( *this );
 	std::cout << "}";

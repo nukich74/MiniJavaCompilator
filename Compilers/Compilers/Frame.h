@@ -2,12 +2,14 @@
 
 #include <MethodDescription.h>
 #include <vector>
+#include "IRExp.h"
 
-namespace Frame
-{
-// Переменная фрейма
+namespace Frame {
+
+// Интерфейс для переменной фрейма
 class IAccess {
 public:
+	virtual IRTree::IIRExp* GetExp( const Temp::CTemp* framePtr ) = 0;
 	virtual ~IAccess() {}
 };
 
@@ -20,6 +22,10 @@ public:
 		formals.resize( name->Params.size(), 0 );
 		locals.resize( name->Locals.size(), 0 );
 	}
+
+	Temp::CTemp* FP() const;
+
+	int WordSize();
 			
 	// Доступ к формальным параметрам
 	int FormalsCount() const { return formals.size(); }
@@ -34,4 +40,5 @@ private:
 	std::vector<IAccess*> formals;
 	std::vector<IAccess*> locals;
 };
-}
+
+} // namespace Frame

@@ -36,7 +36,8 @@ class CIRStmList {
 enum TBinop {
 	B_Plus,
 	B_Minus,
-	B_Mul
+	B_Mul,
+	B_Xor
 };
 
 // Логическое
