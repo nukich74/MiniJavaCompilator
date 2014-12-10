@@ -93,7 +93,7 @@ void CIRTreeVisitor::Visit( const CFalse& exp )
 
 void CIRTreeVisitor::Visit( const CId& exp )
 {
-#pragma message( "TODO Здесь надо возвращать IRTree::IRName переменной" )
+	// Здесь ничего делать не нужно, вся инфа о типах у таблицы символов, спросим у нее
 	std::cout << exp.Id();
 }
 
@@ -116,7 +116,7 @@ void CIRTreeVisitor::Visit( const CNewId& exp )
 
 void CIRTreeVisitor::Visit( const CNotExp& exp )
 {
-	// Получить lastReturnedExp и записать туда конструкцию с XOR c Const(0)
+	// Получаем lastReturnedExp и записываем туда конструкцию XOR c Const(0)
 	exp.Exp()->Accept( *this );
 	lastReturnedExp = new IRTree::CIRBinop( IRTree::B_Xor, new IRTree::CIRConst( 0 ), lastReturnedExp );
 }
@@ -140,6 +140,7 @@ void CIRTreeVisitor::Visit( const CProgram& program )
 void CIRTreeVisitor::Visit( const CMainClass& mainClass )
 {
 	// Запоминаем в каком мы классе
+	// Чтобы в MethodDescriptor нужного класса записать IRTree*
 	currentClass = &( symbolsTable.Classes().at( mainClass.MainClassName() ) );
 	if( mainClass.StatementList() != 0 ) {
 		mainClass.StatementList()->Accept( *this );
@@ -311,7 +312,7 @@ void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
 
 void CIRTreeVisitor::Visit( const CExpList& expList )
 {
-#pragma message( "Здесь оборачиваем все ExpWrappero и строим для его ToExp Вложенные Seq" )
+#pragma message( "Не ясно что делать" )
 	for( const auto& decl : expList.ExpList() ) {
 		decl->Accept( *this );
 		std::cout << std::endl;
