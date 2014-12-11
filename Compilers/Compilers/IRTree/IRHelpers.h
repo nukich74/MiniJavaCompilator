@@ -2,7 +2,8 @@
 // Описание: Вспомогательные классы и константы
 #pragma once
 
-#include <IRExp.h>
+#include <IRTree.h>
+#include <IRPrint.h>
 #include <memory>
 
 namespace IRTree {
@@ -12,6 +13,11 @@ public:
 	CIRExpList( const IIRExp* const _head, const CIRExpList* const _tail ) :
 		head( _head ), tail( _tail )
 	{}
+
+	void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
 
 	std::shared_ptr<const IIRExp> head;
 	std::shared_ptr<const CIRExpList> tail;
@@ -30,7 +36,8 @@ class CIRStmList {
 enum TBinop {
 	B_Plus,
 	B_Minus,
-	B_Mul
+	B_Mul,
+	B_Xor
 };
 
 // Логическое

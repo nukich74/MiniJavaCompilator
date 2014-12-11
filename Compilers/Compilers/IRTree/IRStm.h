@@ -5,11 +5,12 @@
 #include <IRTree.h>
 #include <IRHelpers.h>
 #include <Temp.h>
+#include <IRPrint.h>
 #include <memory>
+#include <assert.h>
 
 namespace IRTree
 {
-
 // Копируем результат вычисления выражения src в dst (dst - либо временная переменная CIRTemp, либо адрес CIRMem)
 class CIRMove : public IIRStm {
 public:
@@ -17,6 +18,11 @@ public:
 		dst( _dst ),
 		src( _src )
 	{}
+
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
 
 	std::shared_ptr<const IIRExp> dst;
 	std::shared_ptr<const IIRExp> src;
@@ -29,6 +35,11 @@ public:
 		exp( _exp )
 	{}
 
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
+
 	std::shared_ptr<const IIRExp> exp;
 };
 
@@ -38,6 +49,11 @@ public:
 	CIRJump( const Temp::CLabel* const _label ) :
 		label( _label )
 	{}
+
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
 
 	const Temp::CLabel* const label;
 };
@@ -54,6 +70,11 @@ public:
 		iffalse( _iffalse )
 	{}
 
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
+
 	const TCJump relop;
 	std::shared_ptr<const IIRExp> left;
 	std::shared_ptr<const IIRExp> right;
@@ -64,10 +85,24 @@ public:
 // Последовательно исполняет left, right
 class CIRSeq : public IIRStm {
 public:
-	CIRSeq( const IIRStm* const _left, const IIRStm* const _right ) :
-		left( _left ),
-		right( _right )
-	{}
+	CIRSeq( const IIRStm* const _left, const IIRStm* const _right ) : left( _left ), right( _right ) {}
+
+	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3 ) : left( arg1 ), right( new CIRSeq( arg2, arg3 ) ) {}
+
+	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3, const IIRStm* const arg4 ) : 
+		left( arg1 ), right( new CIRSeq( arg2, arg3, arg4 ) ) {}
+
+	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3, const IIRStm* const arg4, const IIRStm* const arg5 ) : 
+		left( arg1 ), right( new CIRSeq( arg2, arg3, arg4, arg5 ) ) {}
+
+	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3, const IIRStm* const arg4, 
+			const IIRStm* const arg5, const IIRStm* const arg6) : 
+		left(arg1), right( new CIRSeq( arg2, arg3, arg4, arg5, arg6 ) ) {}
+
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
 
 	std::shared_ptr<const IIRStm> left;
 	std::shared_ptr<const IIRStm> right;
@@ -79,6 +114,11 @@ public:
 	CIRLabel( const Temp::CLabel* const _label ) :
 		label( _label )
 	{}
+
+	virtual void Print( CPrinter& printer ) const
+	{
+		assert( false );
+	}
 
 	const Temp::CLabel* const label;
 };

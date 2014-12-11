@@ -1,6 +1,7 @@
 #include "IRStm.h"
 #include "IRHelpers.h"
 #include "SubtreeWrapper.h"
+#include "IRExp.h"
 
 namespace Translate {
 	

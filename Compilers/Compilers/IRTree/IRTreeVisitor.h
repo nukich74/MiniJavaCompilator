@@ -8,6 +8,7 @@
 #include "IRStm.h"
 #include "IRHelpers.h"
 #include <list>
+#include <SymbolsTable.h>
 
 namespace Translate {
 
@@ -48,10 +49,20 @@ public:
 	virtual void Visit( const CExpList& expList);
 
 private:
+	// Как то надо хранить функции
 	std::list<IRTree::IIRExp*> functions;
+	
+	// Таблица символов для программы
+	SymbolsTable::CSymbolsTable& symbolsTable;
+
+	// Далее поля которые используются только при работе визитора
+	// Текущие класс и метод в определении которого в абстрактном дереве находится визитор
+	const SymbolsTable::CClassDescriptor* currentClass;
+	const SymbolsTable::CMethodDescriptor* currentMethod;
 
 	IRTree::IIRExp* lastReturnedExp;
 	IRTree::IIRStm* lastReturnedStm;
+
 };
 
 } // namespace Translate

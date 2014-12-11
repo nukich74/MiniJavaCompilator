@@ -14,6 +14,7 @@
     <ClCompile Include="SymbolsTable\SymbolsTable.cpp" />
     <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
     <ClCompile Include="StatementWrapper.cpp" />
+    <ClCompile Include="IRTree\IRPrinter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -54,6 +55,7 @@
     <ClInclude Include="SymbolsTable\SymbolsTable.h" />
     <ClInclude Include="StmConverter.h" />
     <ClInclude Include="IRTree\IRTreeVisitor.h" />
+    <ClInclude Include="IRTree\IRPrint.h" />
     <ClInclude Include="ExpConverter.h" />
     <ClInclude Include="StatementWrapper.h" />
   </ItemGroup>

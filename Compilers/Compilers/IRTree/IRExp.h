@@ -17,6 +17,11 @@ public:
 		value( _value )
 	{}
 
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
+
 	const int value;
 };
 
@@ -27,6 +32,11 @@ public:
 		label( _label )
 	{}
 
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
+
 	const Temp::CLabel label;
 };
 
@@ -36,6 +46,11 @@ public:
 	CIRTemp( const Temp::CTemp& _temp ) :
 		temp( _temp )
 	{}
+
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
 
 	const Temp::CTemp temp;
 };
@@ -48,6 +63,11 @@ public:
 		left( _left ),
 		right( _right )
 	{}
+
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
 	
 	const TBinop binop;
 	const std::shared_ptr<const IIRExp> left; 
@@ -72,6 +92,11 @@ public:
 		args( _args )
 	{}
 
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
+
 	const std::shared_ptr<const IIRExp> func;
 	const CIRExpList args;
 };
@@ -83,6 +108,11 @@ public:
 		stm( _stm ),
 		exp( _exp )
 	{}
+
+	virtual void Print( CPrinter& printer ) const
+	{
+		printer.Print( this );
+	}
 
 	const std::shared_ptr<const IIRStm> stm;
 	const std::shared_ptr<const IIRExp> exp;
