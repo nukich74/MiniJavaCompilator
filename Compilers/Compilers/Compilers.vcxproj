@@ -123,6 +123,7 @@
     <ClInclude Include="AbstractTree\VarDeclList.h" />
     <ClInclude Include="IRTree\Temp.h" />
     <ClInclude Include="Visitor.h" />
+    <ClInclude Include="StatementWrapper.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
@@ -130,6 +131,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
+    <ClCompile Include="StatementWrapper.cpp" />
     <ClCompile Include="SubtreeWrapper.cpp" />
     <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />
     <ClCompile Include="SymbolsTable\SymbolsTable.cpp" />
