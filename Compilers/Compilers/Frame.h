@@ -1,6 +1,5 @@
 ﻿#pragma once
 
-#include <MethodDescription.h>
 #include <vector>
 #include "IRExp.h"
 
@@ -9,36 +8,54 @@ namespace Frame {
 // Интерфейс для переменной фрейма
 class IAccess {
 public:
-	virtual IRTree::IExp* GetExp( const Temp::CTemp* framePtr ) = 0;
+	virtual IRTree::IExp* ToExp( const Temp::CTemp* framePtr ) = 0;
 	virtual ~IAccess() {}
+};
+
+class CInStack : public IAccess {
+public:
+
+	virtual IRTree::IExp* ToExp(const Temp::CTemp* framePtr) override
+	{
+		throw std::logic_error("The method or operation is not implemented.");
+	}
+
+};
+
+class CInRegister : public IAccess {
+public:
+
+	virtual IRTree::IExp* ToExp(const Temp::CTemp* framePtr) override
+	{
+		throw std::logic_error("The method or operation is not implemented.");
+	}
+
 };
 
 // Класс-контейнер с платформо-зависимой информацией о функции
 class CFrame {
 public:
-	CFrame( const SymbolsTable::CMethodDescription* _name ) :
-		name( _name )
-	{
-		formals.resize( name->Params.size(), 0 );
-		locals.resize( name->Locals.size(), 0 );
-	}
+	CFrame( const std::string _name ) :
+		name( _name ) {}
 
-	Temp::CTemp* FP() const;
+	// Зарезервированные регистры
+	Temp::CTemp* FramePointer() const;
+	Temp::CTemp* ThisPointer() const;
 
-	int WordSize();
+	// Машинно зависимая информация
+	int WordSize() { return 4; }
 			
 	// Доступ к формальным параметрам
-	int FormalsCount() const { return formals.size(); }
-	const IAccess* Formal( size_t index ) const { return formals[index]; }
+	const IAccess* GetFormal( std::string name ) const;
 
 	// Доступ к локальным переменным
-	int LocalsCount() const { return locals.size(); }
-	const IAccess* Local( size_t index ) const { return locals[index]; }
+	const IAccess* GetLocal(std::string name) const;
 
 private:
-	const SymbolsTable::CMethodDescription* const name;
-	std::vector<IAccess*> formals;
-	std::vector<IAccess*> locals;
+	const std::string name;
+
+	std::map<std::string, IAccess*> formals;
+	std::map<std::string, IAccess*> locals;
 };
 
 } // namespace Frame

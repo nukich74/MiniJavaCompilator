@@ -9,6 +9,7 @@
 #include "IRHelpers.h"
 #include <list>
 #include <SymbolsTable.h>
+#include "Frame.h"
 
 namespace Translate {
 
@@ -49,11 +50,11 @@ public:
 	virtual void Visit( const CExpList& expList);
 
 private:
-	// Как то надо хранить функции
-	std::list<IRTree::IExp*> functions;
+	// Каждой функции соответствует фрейм
+	std::vector<Frame::CFrame> functions;
 	
-	// Таблица символов для программы
-	SymbolsTable::CSymbolsTable& symbolsTable;
+	// Таблица символов для программы. Ее используем для поиска нужных аргументов и тд
+	const SymbolsTable::CSymbolsTable& symbolsTable;
 
 	// Далее поля которые используются только при работе визитора
 	// Текущие класс и метод в определении которого в абстрактном дереве находится визитор
