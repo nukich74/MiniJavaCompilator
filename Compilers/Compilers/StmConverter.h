@@ -11,14 +11,14 @@ namespace Translate {
 
 class CStmConverter : public ISubtreeWrapper {
 public:
-	CStmConverter( IRTree::IIRStm* e) : expr( e ) {}
-	IRTree::IIRExp* ToExp() const { assert( false ); }
-	IRTree::IIRStm* ToStm() const { return expr; }
-	IRTree::IIRStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f ) const { 
+	CStmConverter( IRTree::IStm* e) : expr( e ) {}
+	IRTree::IExp* ToExp() const { assert( false ); }
+	IRTree::IStm* ToStm() const { return expr; }
+	IRTree::IStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f ) const { 
 		assert( false );
 	}
 private:
-	IRTree::IIRStm* expr;
+	IRTree::IStm* expr;
 };
 
 }; //namespace Translate

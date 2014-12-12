@@ -9,12 +9,11 @@
 #include <memory>
 #include <assert.h>
 
-namespace IRTree
-{
+namespace IRTree {
 // Копируем результат вычисления выражения src в dst (dst - либо временная переменная CIRTemp, либо адрес CIRMem)
-class CIRMove : public IIRStm {
+class CMove : public IStm {
 public:
-	CIRMove( const IIRExp* const _dst, const IIRExp* const _src ) :
+	CMove( const IExp* const _dst, const IExp* const _src ) :
 		dst( _dst ),
 		src( _src )
 	{}
@@ -24,14 +23,14 @@ public:
 		printer.Print( this );
 	}
 
-	std::shared_ptr<const IIRExp> dst;
-	std::shared_ptr<const IIRExp> src;
+	std::shared_ptr<const IExp> dst;
+	std::shared_ptr<const IExp> src;
 };
 
 // Вычисляем exp и забываем про результат
-class CIRExp : public IIRStm {
+class CExp : public IStm {
 public:
-	CIRExp( const IIRExp* const _exp ) :
+	CExp( const IExp* const _exp ) :
 		exp( _exp )
 	{}
 
@@ -40,13 +39,13 @@ public:
 		printer.Print( this );
 	}
 
-	std::shared_ptr<const IIRExp> exp;
+	std::shared_ptr<const IExp> exp;
 };
 
 // Переходим в узел CIRLabel, которому соответствует метка
-class CIRJump : public IIRStm {
+class CJump : public IStm {
 public:
-	CIRJump( const Temp::CLabel* const _label ) :
+	CJump( const Temp::CLabel* const _label ) :
 		label( _label )
 	{}
 
@@ -59,9 +58,9 @@ public:
 };
 
 // Условный переход по меткам
-class CIRCjump : public IIRStm {
+class CIRCjump : public IStm {
 public:
-	CIRCjump( TCJump _relop, const IIRExp* const _left, const IIRExp* const _right, const Temp::CLabel* const _iftrue,
+	CIRCjump( TCJump _relop, const IExp* const _left, const IExp* const _right, const Temp::CLabel* const _iftrue,
 		const Temp::CLabel* const _iffalse ) :
 		relop( _relop ),
 		left( _left ),
@@ -76,42 +75,42 @@ public:
 	}
 
 	const TCJump relop;
-	std::shared_ptr<const IIRExp> left;
-	std::shared_ptr<const IIRExp> right;
+	std::shared_ptr<const IExp> left;
+	std::shared_ptr<const IExp> right;
 	const Temp::CLabel* const iftrue;
 	const Temp::CLabel* const iffalse;
 };
 
 // Последовательно исполняет left, right
-class CIRSeq : public IIRStm {
+class CSeq : public IStm {
 public:
-	CIRSeq( const IIRStm* const _left, const IIRStm* const _right ) : left( _left ), right( _right ) {}
+	CSeq( const IStm* const _left, const IStm* const _right ) : left( _left ), right( _right ) {}
 
-	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3 ) : left( arg1 ), right( new CIRSeq( arg2, arg3 ) ) {}
+	CSeq(const IStm* const arg1, const IStm* const arg2, const IStm* const arg3 ) : left( arg1 ), right( new CSeq( arg2, arg3 ) ) {}
 
-	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3, const IIRStm* const arg4 ) : 
-		left( arg1 ), right( new CIRSeq( arg2, arg3, arg4 ) ) {}
+	CSeq(const IStm* const arg1, const IStm* const arg2, const IStm* const arg3, const IStm* const arg4 ) : 
+		left( arg1 ), right( new CSeq( arg2, arg3, arg4 ) ) {}
 
-	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3, const IIRStm* const arg4, const IIRStm* const arg5 ) : 
-		left( arg1 ), right( new CIRSeq( arg2, arg3, arg4, arg5 ) ) {}
+	CSeq(const IStm* const arg1, const IStm* const arg2, const IStm* const arg3, const IStm* const arg4, const IStm* const arg5 ) : 
+		left( arg1 ), right( new CSeq( arg2, arg3, arg4, arg5 ) ) {}
 
-	CIRSeq(const IIRStm* const arg1, const IIRStm* const arg2, const IIRStm* const arg3, const IIRStm* const arg4, 
-			const IIRStm* const arg5, const IIRStm* const arg6) : 
-		left(arg1), right( new CIRSeq( arg2, arg3, arg4, arg5, arg6 ) ) {}
+	CSeq(const IStm* const arg1, const IStm* const arg2, const IStm* const arg3, const IStm* const arg4, 
+			const IStm* const arg5, const IStm* const arg6) : 
+		left(arg1), right( new CSeq( arg2, arg3, arg4, arg5, arg6 ) ) {}
 
 	virtual void Print( CPrinter& printer ) const
 	{
 		printer.Print( this );
 	}
 
-	std::shared_ptr<const IIRStm> left;
-	std::shared_ptr<const IIRStm> right;
+	std::shared_ptr<const IStm> left;
+	std::shared_ptr<const IStm> right;
 };
 
 // В этот узел будет осуществляться переход по метке label
-class CIRLabel : public IIRStm {
+class CLabel : public IStm {
 public:
-	CIRLabel( const Temp::CLabel* const _label ) :
+	CLabel( const Temp::CLabel* const _label ) :
 		label( _label )
 	{}
 

@@ -50,7 +50,7 @@ public:
 
 private:
 	// Как то надо хранить функции
-	std::list<IRTree::IIRExp*> functions;
+	std::list<IRTree::IExp*> functions;
 	
 	// Таблица символов для программы
 	SymbolsTable::CSymbolsTable& symbolsTable;
@@ -60,8 +60,8 @@ private:
 	const SymbolsTable::CClassDescriptor* currentClass;
 	const SymbolsTable::CMethodDescriptor* currentMethod;
 
-	IRTree::IIRExp* lastReturnedExp;
-	IRTree::IIRStm* lastReturnedStm;
+	IRTree::IExp* lastReturnedExp;
+	IRTree::IStm* lastReturnedStm;
 
 };
 

@@ -8,9 +8,9 @@
 
 namespace IRTree {
 
-class CIRExpList {
+class CExpList {
 public:
-	CIRExpList( const IIRExp* const _head, const CIRExpList* const _tail ) :
+	CExpList( const IExp* const _head, const CExpList* const _tail ) :
 		head( _head ), tail( _tail )
 	{}
 
@@ -19,17 +19,17 @@ public:
 		printer.Print( this );
 	}
 
-	std::shared_ptr<const IIRExp> head;
-	std::shared_ptr<const CIRExpList> tail;
+	std::shared_ptr<const IExp> head;
+	std::shared_ptr<const CExpList> tail;
 };
 
-class CIRStmList {
-	CIRStmList( const IIRStm* const _head, const CIRStmList* const _tail ) :
+class CStmList {
+	CStmList( const IStm* const _head, const CStmList* const _tail ) :
 		head( _head ), tail( _tail )
 	{}
 
-	std::shared_ptr<const IIRStm> head;
-	std::shared_ptr<const CIRStmList> tail;
+	std::shared_ptr<const IStm> head;
+	std::shared_ptr<const CStmList> tail;
 };
 
 // Арифметика

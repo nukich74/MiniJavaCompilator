@@ -7,17 +7,17 @@ namespace IRTree
 
 class CPrinter;
 // Интерфейс для узлов, возвращающих значений
-class IIRExp {
+class IExp {
 public:
-	virtual ~IIRExp() {}
+	virtual ~IExp() {}
 
 	virtual void Print( CPrinter& printer ) const = 0;
 };
 
 // Интерфейс для управляющих конструкций
-class IIRStm {
+class IStm {
 public:
-	virtual ~IIRStm() {}
+	virtual ~IStm() {}
 
 	virtual void Print( CPrinter& printer ) const = 0;
 };

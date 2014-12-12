@@ -7,38 +7,38 @@
 
 namespace IRTree
 {
-class CIRMove;
-class CIRExp;
-class CIRJump;
+class CMove;
+class CExp;
+class CJump;
 class CIRCjump;
-class CIRSeq;
-class CIRConst;
-class CIRName;
-class CIRTemp;
-class CIRBinop;
-class CIRMem;
-class CIRCall;
-class CIREseq;
-class CIRExpList;
+class CSeq;
+class CConst;
+class CName;
+class CTemp;
+class CBinop;
+class CMem;
+class CCall;
+class CEseq;
+class CExpList;
 
 
 class CPrinter {
 public:
 	CPrinter();
 
-	void Print( const CIRMove* node );
-	void Print( const CIRExp* node );
-	void Print( const CIRJump* node );
+	void Print( const CMove* node );
+	void Print( const CExp* node );
+	void Print( const CJump* node );
 	void Print( const CIRCjump* node );
-	void Print( const CIRSeq* node );
-	void Print( const CIRConst* node );
-	void Print( const CIRName* node );
-	void Print( const CIRTemp* node );
-	void Print( const CIRBinop* node );
-	void Print( const CIRMem* node );
-	void Print( const CIRCall* node );
-	void Print( const CIREseq* node );
-	void Print( const CIRExpList* node );
+	void Print( const CSeq* node );
+	void Print( const CConst* node );
+	void Print( const CName* node );
+	void Print( const CTemp* node );
+	void Print( const CBinop* node );
+	void Print( const CMem* node );
+	void Print( const CCall* node );
+	void Print( const CEseq* node );
+	void Print( const CExpList* node );
 private:
 	std::map<const void*, int> ids;
 	std::map<const void*, int> parents;

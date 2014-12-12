@@ -8,7 +8,7 @@ namespace IRTree
 
 int CPrinter::minId = 0;
 
-void CPrinter::Print( const CIRMove* node )
+void CPrinter::Print( const CMove* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -34,7 +34,7 @@ void CPrinter::Print( const CIRMove* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRExp* node )
+void CPrinter::Print( const CExp* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -57,7 +57,7 @@ void CPrinter::Print( const CIRExp* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRJump* node )
+void CPrinter::Print( const CJump* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -107,7 +107,7 @@ void CPrinter::Print( const CIRCjump* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRSeq* node )
+void CPrinter::Print( const CSeq* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -133,7 +133,7 @@ void CPrinter::Print( const CIRSeq* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRConst* node )
+void CPrinter::Print( const CConst* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -154,7 +154,7 @@ void CPrinter::Print( const CIRConst* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRName* node )
+void CPrinter::Print( const CName* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -175,7 +175,7 @@ void CPrinter::Print( const CIRName* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRTemp* node )
+void CPrinter::Print( const CTemp* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -196,7 +196,7 @@ void CPrinter::Print( const CIRTemp* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRBinop* node )
+void CPrinter::Print( const CBinop* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -223,7 +223,7 @@ void CPrinter::Print( const CIRBinop* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRCall* node )
+void CPrinter::Print( const CCall* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -249,7 +249,7 @@ void CPrinter::Print( const CIRCall* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRMem* node )
+void CPrinter::Print( const CMem* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -272,7 +272,7 @@ void CPrinter::Print( const CIRMem* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIREseq* node )
+void CPrinter::Print( const CEseq* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
@@ -298,7 +298,7 @@ void CPrinter::Print( const CIREseq* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRExpList* node )
+void CPrinter::Print( const CExpList* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );

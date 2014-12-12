@@ -11,9 +11,9 @@ namespace IRTree
 {
 
 // Константное выражение
-class CIRConst : public IIRExp {
+class CConst : public IExp {
 public:
-	CIRConst( int _value ) :
+	CConst( int _value ) :
 		value( _value )
 	{}
 
@@ -26,9 +26,9 @@ public:
 };
 
 // Метка для переходов
-class CIRName : public IIRExp {
+class CName : public IExp {
 public:
-	CIRName( const Temp::CLabel& _label ) :
+	CName( const Temp::CLabel& _label ) :
 		label( _label )
 	{}
 
@@ -41,9 +41,9 @@ public:
 };
 
 // Временная переменная
-class CIRTemp : public IIRExp {
+class CTemp : public IExp {
 public:
-	CIRTemp( const Temp::CTemp& _temp ) :
+	CTemp( const Temp::CTemp& _temp ) :
 		temp( _temp )
 	{}
 
@@ -56,9 +56,9 @@ public:
 };
 
 // Бинарный оператор
-class CIRBinop : public IIRExp {
+class CBinop : public IExp {
 public:
-	CIRBinop( TBinop _binop, const IIRExp* const _left, const IIRExp* const _right ) :
+	CBinop( TBinop _binop, const IExp* const _left, const IExp* const _right ) :
 		binop( _binop ),
 		left( _left ),
 		right( _right )
@@ -70,24 +70,24 @@ public:
 	}
 	
 	const TBinop binop;
-	const std::shared_ptr<const IIRExp> left; 
-	const std::shared_ptr<const IIRExp> right;
+	const std::shared_ptr<const IExp> left; 
+	const std::shared_ptr<const IExp> right;
 };
 
 // Читаем значение из памяти, лежащее по адресу, который возвращает exp
-class CIRMem : public IIRExp {
+class CMem : public IExp {
 public:
-	CIRMem( const IIRExp* const _exp ) :
+	CMem( const IExp* const _exp ) :
 		exp( _exp )
 	{}
 
-	const std::shared_ptr<const IIRExp> exp;
+	const std::shared_ptr<const IExp> exp;
 };
 
 // Вызов функции по адресу func с аргументами args
-class CIRCall : public IIRExp {
+class CCall : public IExp {
 public:
-	CIRCall( const IIRExp* const _func, const CIRExpList& _args ) :
+	CCall( const IExp* const _func, const CExpList& _args ) :
 		func( _func ),
 		args( _args )
 	{}
@@ -97,14 +97,14 @@ public:
 		printer.Print( this );
 	}
 
-	const std::shared_ptr<const IIRExp> func;
-	const CIRExpList args;
+	const std::shared_ptr<const IExp> func;
+	const CExpList args;
 };
 
 // Выполняет stm, затем вычисляет и возвращает exp
-class CIREseq : public IIRExp {
+class CEseq : public IExp {
 public:
-	CIREseq( const IIRStm* const _stm, const IIRExp* const _exp ) :
+	CEseq( const IStm* const _stm, const IExp* const _exp ) :
 		stm( _stm ),
 		exp( _exp )
 	{}
@@ -114,8 +114,8 @@ public:
 		printer.Print( this );
 	}
 
-	const std::shared_ptr<const IIRStm> stm;
-	const std::shared_ptr<const IIRExp> exp;
+	const std::shared_ptr<const IStm> stm;
+	const std::shared_ptr<const IExp> exp;
 };
 
 

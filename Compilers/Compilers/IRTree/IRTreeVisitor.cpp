@@ -17,9 +17,9 @@ void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 {
 	// Забираем правый и левый операнды
 	exp.LeftArg()->Accept( *this );
-	IRTree::IIRExp* first = lastReturnedExp;
+	IRTree::IExp* first = lastReturnedExp;
 	exp.RightArg()->Accept( *this );
-	IRTree::IIRExp* second = lastReturnedExp;
+	IRTree::IExp* second = lastReturnedExp;
 	IRTree::TBinop binOp;
 	switch( exp.Operation() ) {
 		case '+':
@@ -34,16 +34,16 @@ void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 		default:
 			assert( false );
 	}
-	lastReturnedExp = new IRTree::CIRBinop( binOp, first, second );
+	lastReturnedExp = new IRTree::CBinop( binOp, first, second );
 }
 
 void CIRTreeVisitor::Visit( const CUnMinExp& exp )
 {
 	// Как в лекциях заменяем на (0 - exp)
-	IRTree::IIRExp* first = new IRTree::CIRConst( 0 );
+	IRTree::IExp* first = new IRTree::CConst( 0 );
 	exp.Exp()->Accept( *this );
-	IRTree::IIRExp* second = lastReturnedExp;
-	lastReturnedExp = new IRTree::CIRBinop( IRTree::B_Minus, first, second );
+	IRTree::IExp* second = lastReturnedExp;
+	lastReturnedExp = new IRTree::CBinop( IRTree::B_Minus, first, second );
 }
 
 void CIRTreeVisitor::Visit( const CExpWithIndex& exp )
@@ -76,19 +76,19 @@ void CIRTreeVisitor::Visit( const CExpIdVoidExpList& exp )
 
 void CIRTreeVisitor::Visit( const CIntegerLiteral& exp )
 {
-	lastReturnedExp = new IRTree::CIRConst( exp.Value() );
+	lastReturnedExp = new IRTree::CConst( exp.Value() );
 }
 
 void CIRTreeVisitor::Visit( const CTrue& exp )
 {
 	// True у нас константа 1
-	lastReturnedExp = new IRTree::CIRConst( 1 );
+	lastReturnedExp = new IRTree::CConst( 1 );
 }
 
 void CIRTreeVisitor::Visit( const CFalse& exp )
 {
 	// False у нас константа 0
-	lastReturnedExp = new IRTree::CIRConst( 0 );
+	lastReturnedExp = new IRTree::CConst( 0 );
 }
 
 void CIRTreeVisitor::Visit( const CId& exp )
@@ -118,7 +118,7 @@ void CIRTreeVisitor::Visit( const CNotExp& exp )
 {
 	// Получаем lastReturnedExp и записываем туда конструкцию XOR c Const(0)
 	exp.Exp()->Accept( *this );
-	lastReturnedExp = new IRTree::CIRBinop( IRTree::B_Xor, new IRTree::CIRConst( 0 ), lastReturnedExp );
+	lastReturnedExp = new IRTree::CBinop( IRTree::B_Xor, new IRTree::CConst( 0 ), lastReturnedExp );
 }
 
 void CIRTreeVisitor::Visit( const CExpInBrackets& exp )
@@ -276,19 +276,19 @@ void CIRTreeVisitor::Visit( const CCurlyBraceStatement& curlyBraceStatement )
 void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 {
 	ifStatement.Exp()->Accept( *this );
-	IRTree::IIRExp* ifExpr = lastReturnedExp;
+	IRTree::IExp* ifExpr = lastReturnedExp;
 	Temp::CLabel* trueLabelTemp = new Temp::CLabel();
 	Temp::CLabel* falseLabelTemp = new Temp::CLabel();
 	Temp::CLabel* endLabelTemp = new Temp::CLabel();
-	IRTree::CIRLabel* trueLabel = new IRTree::CIRLabel( trueLabelTemp );
-	IRTree::CIRLabel* falseLabel = new IRTree::CIRLabel( falseLabelTemp );
-	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel( endLabelTemp );
+	IRTree::CLabel* trueLabel = new IRTree::CLabel( trueLabelTemp );
+	IRTree::CLabel* falseLabel = new IRTree::CLabel( falseLabelTemp );
+	IRTree::CLabel* endLabel = new IRTree::CLabel( endLabelTemp );
 	ifStatement.IfStatement()->Accept( *this );
-	IRTree::IIRStm* trueStm = new IRTree::CIRSeq( trueLabel, lastReturnedStm, endLabel );
-	IRTree::IIRStm* falseStm = 0;
+	IRTree::IStm* trueStm = new IRTree::CSeq( trueLabel, lastReturnedStm, endLabel );
+	IRTree::IStm* falseStm = 0;
 	if( ifStatement.ElseStatement() != 0 ) {
 		ifStatement.ElseStatement()->Accept( *this );
-		falseStm = new IRTree::CIRSeq( falseLabel, lastReturnedStm, endLabel );
+		falseStm = new IRTree::CSeq( falseLabel, lastReturnedStm, endLabel );
 	}
 	Translate::CExpConverter converter( ifExpr );
 	lastReturnedStm = converter.ToConditional( trueLabelTemp, falseLabelTemp );
@@ -299,15 +299,15 @@ void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
 	Temp::CLabel* beforeConditionLabelTemp = new Temp::CLabel();
 	Temp::CLabel* inLoopLabelTemp = new Temp::CLabel();
 	Temp::CLabel* endLabelTemp = new Temp::CLabel();
-	IRTree::CIRLabel* beforeConditionLabel = new IRTree::CIRLabel(new Temp::CLabel());
-	IRTree::CIRLabel* inLoopLabel = new IRTree::CIRLabel(new Temp::CLabel());
-	IRTree::CIRLabel* endLabel = new IRTree::CIRLabel(new Temp::CLabel());
+	IRTree::CLabel* beforeConditionLabel = new IRTree::CLabel(new Temp::CLabel());
+	IRTree::CLabel* inLoopLabel = new IRTree::CLabel(new Temp::CLabel());
+	IRTree::CLabel* endLabel = new IRTree::CLabel(new Temp::CLabel());
 	whileStatement.Exp()->Accept( *this );
 	Translate::CExpConverter converter( lastReturnedExp );
-	IRTree::IIRStm* whileStm = converter.ToConditional( inLoopLabelTemp, endLabelTemp );
-	IRTree::IIRStm* conditionStm = new IRTree::CIRSeq( beforeConditionLabel, whileStm, inLoopLabel );
+	IRTree::IStm* whileStm = converter.ToConditional( inLoopLabelTemp, endLabelTemp );
+	IRTree::IStm* conditionStm = new IRTree::CSeq( beforeConditionLabel, whileStm, inLoopLabel );
 	whileStatement.Statement()->Accept( *this );
-	lastReturnedStm = new IRTree::CIRSeq( conditionStm, lastReturnedStm, new IRTree::CIRJump( beforeConditionLabelTemp ), endLabel );
+	lastReturnedStm = new IRTree::CSeq( conditionStm, lastReturnedStm, new IRTree::CJump( beforeConditionLabelTemp ), endLabel );
 }
 
 void CIRTreeVisitor::Visit( const CExpList& expList )

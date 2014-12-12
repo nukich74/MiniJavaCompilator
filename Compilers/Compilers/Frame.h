@@ -9,7 +9,7 @@ namespace Frame {
 // Интерфейс для переменной фрейма
 class IAccess {
 public:
-	virtual IRTree::IIRExp* GetExp( const Temp::CTemp* framePtr ) = 0;
+	virtual IRTree::IExp* GetExp( const Temp::CTemp* framePtr ) = 0;
 	virtual ~IAccess() {}
 };
 
