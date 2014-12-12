@@ -8,6 +8,7 @@
 #include <ClassDescriptor.h>
 #include <MethodDescriptor.h>
 #include <TypeIdentifier.h>
+#include <ErrorsAggregator.h>
 #include <SymbolsTable.h>
 #include <set>
 #include <vector>
@@ -17,6 +18,8 @@ public:
 	CTypeChecker( const SymbolsTable::CSymbolsTable& _symbolsTable )
 		: symbolsTable( _symbolsTable )
 	{ }
+
+	SymbolsTable::CErrorsAggregator errors;
 
 	virtual void Visit( const CExpBinOpExp& exp );
 	virtual void Visit( const CUnMinExp& exp );

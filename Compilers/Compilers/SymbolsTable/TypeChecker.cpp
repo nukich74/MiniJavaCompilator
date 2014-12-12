@@ -35,34 +35,37 @@ void CTypeChecker::Visit( const CAssignStatement& assignStatement )
 {
 	if( assignStatement.IndexExp() == 0 ) {
 		if( !setLastVarTypeByIdentifier( assignStatement.LeftId() ) ) {
-			// Ошибка - правая часть неопределена.
+			std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( assignStatement.LeftId(), IT_Variable, assignStatement.Location() ) );
+			errors.AddError( undefIdentifierError );
 			return;
 		}
 		CTypeIdentifier leftType = lastType;
 		assignStatement.RightExp()->Accept( *this );
 		CTypeIdentifier rightType = lastType;
 		if( leftType != rightType ) {
-			// Ошибка - разные типы в равенстве.
+			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( rightType, leftType, assignStatement.Location() ) );
+			errors.AddError( incorrectTypeError );
 			return;
 		}
 	} else {
 		assignStatement.IndexExp()->Accept( *this );
-		if( lastType != BT_IntArr ) {
-			// Ошибка - индекс не является целочисленным.
+		if( lastType != BT_Int ) {
+			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, assignStatement.Location() ) );
+			errors.AddError( incorrectTypeError );
 			return;
 		}
 		if( !setLastVarTypeByIdentifier( assignStatement.LeftId() ) ) {
-			// Ошибка - правая часть не определена.
+			std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( assignStatement.LeftId(), IT_Variable, assignStatement.Location() ) );
 			return;
 		}
 		CTypeIdentifier leftType = lastType;
 		if( leftType != BT_IntArr ) {
-			// Ошибка - пытаемся индексировать не массив int.
+			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_IntArr, assignStatement.Location() ) );
 			return;
 		}
 		assignStatement.RightExp()->Accept( *this );
 		if( lastType != BT_Int ) {
-			// Ошибка - пытаемся элементу массива int присвоить не int.
+			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, assignStatement.Location() ) );
 		}
 	}
 }
@@ -71,7 +74,8 @@ void CTypeChecker::Visit( const CPrintStatement& printStatement )
 {
 	printStatement.Exp()->Accept( *this );
 	if( lastType != BT_Int ) {
-		// Ошибка - пытаемся печатать не int.
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, printStatement.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
 }
 
@@ -84,7 +88,8 @@ void CTypeChecker::Visit( const CIfStatement& ifStatement )
 {
 	ifStatement.Exp()->Accept( *this );
 	if( lastType != BT_Bool ) {
-		// Ошибка - выражение в this не булево.
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, ifStatement.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
 	ifStatement.IfStatement()->Accept( *this );
 	ifStatement.ElseStatement()->Accept( *this );
@@ -94,7 +99,8 @@ void CTypeChecker::Visit( const CWhileStatement& whileStatement )
 {
 	whileStatement.Exp()->Accept( *this );
 	if( lastType != BT_Bool ) {
-		// Ошибка - выражение в while не bool.
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, whileStatement.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
 	whileStatement.Statement()->Accept( *this );
 }
@@ -119,23 +125,31 @@ void CTypeChecker::Visit( const CExpBinOpExp& exp )
 	if( exp.Operation() == '&' ) {
 		exp.LeftArg()->Accept( *this );
 		if( lastType != BT_Bool ) {
-			// Ошибка - аргумент для И не булевский.
+			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, exp.Location() ) );
+			errors.AddError( incorrectTypeError );
 		}
 		exp.RightArg()->Accept( *this );
 		if( lastType != BT_Bool ) {
-			// Ошибка - аргумент для И не булевский.
+			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, exp.Location() ) );
+			errors.AddError( incorrectTypeError );
 		}
 		lastType = BT_Bool;
 	} else {
 		exp.LeftArg()->Accept( *this );
 		if( lastType != BT_Int ) {
-			// Ошибка - аргумент арифметической операции не int.
+			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
+			errors.AddError( incorrectTypeError );
 		}
 		exp.RightArg()->Accept( *this );
 		if( lastType != BT_Int ) {
-			// Ошибка - аргумент арифметической операции не int.
+			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
+			errors.AddError( incorrectTypeError );
 		}
-		lastType = BT_Int;
+		if( exp.Operation() != '<' ) {
+			lastType = BT_Int;
+		} else {
+			lastType = BT_Bool;
+		}
 	}
 }
 
@@ -143,7 +157,8 @@ void CTypeChecker::Visit( const CUnMinExp& exp )
 {
 	exp.Accept( *this );
 	if( lastType != BT_Int ) {
-		// Ошибка - применяем унарный минус не к целому числу.
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
 	lastType = BT_Int;
 }
@@ -152,11 +167,13 @@ void CTypeChecker::Visit( const CExpWithIndex& exp )
 {
 	exp.Exp()->Accept( *this );
 	if( lastType != BT_IntArr ) {
-		// Ошибка - пытаемся взять индекс не у массива.
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_IntArr, exp.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
 	exp.Index()->Accept( *this );
 	if( lastType != BT_Int ) {
-		// Ошибка - индекс не целочисленный.
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
 	lastType = BT_Int;
 }
@@ -165,7 +182,8 @@ void CTypeChecker::Visit( const CExpDotLength& exp )
 {
 	exp.Exp()->Accept( *this );
 	if( lastType != BT_IntArr ) {
-		// Ошибка - пытаемся узнать длину не у целочисленного массива.
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_IntArr, exp.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
 	lastType = BT_Int;
 }
@@ -175,12 +193,14 @@ void CTypeChecker::Visit( const CExpIdExpList& exp )
 	exp.Exp()->Accept( *this );
 
 	if( lastType.Base != BT_UserDefined ) {
-		// Ошибка - вызов метода у базового типа.
+		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
+		errors.AddError( undefIdentifierError );
 	}
 
 	const CMethodDescriptor* calledMethod = getMethodFromClassById( &symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
 	if( calledMethod == 0 ) {
-		// Ошибка - у данного класса нет такого метода.
+		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
+		errors.AddError( undefIdentifierError );
 	} else {
 		expectedArgs = &calledMethod->Params;
 		exp.ExpList()->Accept( *this );
@@ -194,12 +214,14 @@ void CTypeChecker::Visit( const CExpIdVoidExpList& exp )
 	exp.Exp()->Accept( *this );
 
 	if( lastType.Base != BT_UserDefined ) {
-		// Ошибка - вызов метода у базового типа.
+		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
+		errors.AddError( undefIdentifierError );
 	}
 
 	const CMethodDescriptor* calledMethod = getMethodFromClassById( &symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
 	if( calledMethod == 0 ) {
-		// Ошибка - у данного класса нет такого метода.
+		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
+		errors.AddError( undefIdentifierError );
 	} else {
 		expectedArgs = &calledMethod->Params;
 		if( !expectedArgs->empty() ) {
@@ -228,7 +250,8 @@ void CTypeChecker::Visit( const CFalse& exp )
 void CTypeChecker::Visit( const CId& exp )
 {
 	if( !setLastVarTypeByIdentifier( exp.Id() ) ) {
-		// Ошибка - нет такой переменной.
+		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Variable, exp.Location() ) );
+		errors.AddError( undefIdentifierError );
 	}
 }
 
@@ -236,7 +259,8 @@ void CTypeChecker::Visit( const CNewIntExpIndex& exp )
 {
 	exp.Exp()->Accept( *this );
 	if( lastType != BT_Int ) {
-		// Ошибка - индекс не целочисленный
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
 	lastType = BT_IntArr;
 }
@@ -244,7 +268,8 @@ void CTypeChecker::Visit( const CNewIntExpIndex& exp )
 void CTypeChecker::Visit( const CNewId& exp )
 {
 	if( symbolsTable.Classes().find( exp.TypeId() ) == symbolsTable.Classes().end() ) {
-		// Ошибка - нет создаваемого класса.
+		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.TypeId(), IT_Class, exp.Location() ) );
+		errors.AddError( undefIdentifierError );
 	}
 	lastType = exp.TypeId();
 }
@@ -258,7 +283,8 @@ void CTypeChecker::Visit( const CNotExp& exp )
 {
 	exp.Exp()->Accept( *this );
 	if( lastType != BT_Bool ) {
-		// Ошибка - отрицание не к булевому значению.
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, exp.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
 	lastType = BT_Bool;
 }
@@ -279,7 +305,8 @@ void CTypeChecker::Visit( const CClassDecl& classDecl )
 {
 	if( classDecl.ParendId() != "" ) {
 		if( symbolsTable.Classes().find( classDecl.ParendId() ) == symbolsTable.Classes().end() ) {
-			// Ошибка родительского класса не существует.
+			std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( classDecl.ParendId(), IT_Class, classDecl.Location() ) );
+			errors.AddError( undefIdentifierError );
 		} else {
 			std::set<std::string> inheritCycleNames;
 			const CClassDescriptor* tmp = &symbolsTable.Classes().at( classDecl.ClassId() );
@@ -339,8 +366,10 @@ void CTypeChecker::Visit( const CMethodDecl& methodDecl )
 	CTypeIdentifier retType = lastType;
 	methodDecl.ReturnedType()->Accept( *this );
 	if( lastType != retType ) {
-		// Ошибка - возвращаемое значение имеет не тот тип.
+		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, retType, methodDecl.Location() ) );
+		errors.AddError( incorrectTypeError );
 	}
+	currentMethod = 0;
 }
 
 void CTypeChecker::Visit( const CType& type )
@@ -349,7 +378,8 @@ void CTypeChecker::Visit( const CType& type )
 	if( lastType == BT_UserDefined 
 		&& symbolsTable.Classes().find( lastType.UserDefinedName ) == symbolsTable.Classes().end() )
 	{
-		// Ошибка - тип не определен.
+		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( type.TypeName(), IT_Class, type.Location() ) );
+		errors.AddError( undefIdentifierError );
 	}
 }
 

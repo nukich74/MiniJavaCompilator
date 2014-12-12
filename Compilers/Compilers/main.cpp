@@ -25,8 +25,9 @@ int main()
 		CTypeChecker typeChecker( tableConstructor.symbolTable );
 		astRoot->Accept( typeChecker );
 
-		if( tableConstructor.errors.HasErrors() ) {
+		if( tableConstructor.errors.HasErrors() || typeChecker.errors.HasErrors() ) {
 			tableConstructor.errors.WriteErrors();
+			typeChecker.errors.WriteErrors();
 			return 0;
 		}
 	}
