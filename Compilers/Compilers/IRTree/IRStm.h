@@ -58,9 +58,9 @@ public:
 };
 
 // Условный переход по меткам
-class CIRCjump : public IStm {
+class CCjump : public IStm {
 public:
-	CIRCjump( TCJump _relop, const IExp* const _left, const IExp* const _right, const Temp::CLabel* const _iftrue,
+	CCjump( TCJump _relop, const IExp* const _left, const IExp* const _right, const Temp::CLabel* const _iftrue,
 		const Temp::CLabel* const _iffalse ) :
 		relop( _relop ),
 		left( _left ),

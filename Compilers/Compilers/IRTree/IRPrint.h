@@ -10,7 +10,7 @@ namespace IRTree
 class CMove;
 class CExp;
 class CJump;
-class CIRCjump;
+class CCjump;
 class CSeq;
 class CConst;
 class CName;
@@ -29,7 +29,7 @@ public:
 	void Print( const CMove* node );
 	void Print( const CExp* node );
 	void Print( const CJump* node );
-	void Print( const CIRCjump* node );
+	void Print( const CCjump* node );
 	void Print( const CSeq* node );
 	void Print( const CConst* node );
 	void Print( const CName* node );

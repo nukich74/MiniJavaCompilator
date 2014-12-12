@@ -7,9 +7,9 @@
 namespace Translate {
 	class ISubtreeWrapper {
 	public:
-		virtual IRTree::IExp* ToExp( ) const = 0;
-		virtual IRTree::IStm* ToStm( ) const = 0;
-		virtual IRTree::IStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f ) const = 0;
+		const virtual IRTree::IExp* ToExp( ) const = 0;
+		const virtual IRTree::IStm* ToStm( ) const = 0;
+		const virtual IRTree::IStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f ) const = 0;
 
 	};
 

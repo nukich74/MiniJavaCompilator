@@ -6,23 +6,23 @@
 namespace Translate {
 	
 	class CConditionalWrapper : public ISubtreeWrapper {
-		const IRTree::IIRExp* ToExp() const;
-		const IRTree::IIRStm* ToStm() const;
+		const IRTree::IExp* ToExp() const;
+		const IRTree::IStm* ToStm() const;
 	};
 
 	class CAndWrapper : public CConditionalWrapper {
 	public:
-		const IRTree::IIRStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f);
+		const IRTree::IStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f);
 	private:
-		const IRTree::IIRExp* left;
-		const IRTree::IIRExp* right;
+		const IRTree::IExp* left;
+		const IRTree::IExp* right;
 	};
 
 	class CLessWrapper : public CConditionalWrapper {
 	public:
-		const IRTree::IIRStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f );
+		const IRTree::IStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f );
 	private:
-		const IRTree::IIRExp* left;
-		const IRTree::IIRExp* right;
+		const IRTree::IExp* left;
+		const IRTree::IExp* right;
 	};
 }

@@ -78,7 +78,7 @@ void CPrinter::Print( const CJump* node )
 	std::cout << std::endl;
 }
 
-void CPrinter::Print( const CIRCjump* node )
+void CPrinter::Print( const CCjump* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
