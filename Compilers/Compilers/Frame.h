@@ -35,27 +35,44 @@ public:
 // Класс-контейнер с платформо-зависимой информацией о функции
 class CFrame {
 public:
-	CFrame( const std::string _name ) :
-		name( _name ) {}
+	CFrame( const std::string _name, const IRTree::IExp* _exp ) :
+		Name( _name ), Exp( _exp ) {}
 
 	// Зарезервированные регистры
-	Temp::CTemp* FramePointer() const;
-	Temp::CTemp* ThisPointer() const;
+	Temp::CTemp* FramePointer() const {
+		return framePointer;
+	}
+	Temp::CTemp* ThisPointer() const {
+		return thisPointer;
+	}
 
 	// Машинно зависимая информация
-	int WordSize() { return 4; }
+	static int WordSize() { return 4; }
 			
 	// Доступ к формальным параметрам
 	const IAccess* GetFormal( std::string name ) const;
+	void AddFormal( const std::string _name, const IAccess* _var );
 
 	// Доступ к локальным переменным
 	const IAccess* GetLocal(std::string name) const;
+	void AddLocal( const std::string _name, const IAccess* _var );
+
+	// Доступ к переменной (не известно какой local, formal или какой то другой)
+	const IAccess* GetAccess( std::string _name ) const;
+
+	// Корень IRTree для текущей функции
+	const IRTree::IExp* Exp;
+	// Задекорированное имя функции
+	//	Имя_класса::имя_функции
+	const std::string Name;
 
 private:
-	const std::string name;
 
-	std::map<std::string, IAccess*> formals;
-	std::map<std::string, IAccess*> locals;
+	std::map<const std::string, const IAccess*> formals;
+	std::map<const std::string, const IAccess*> locals;
+
+	Temp::CTemp* framePointer;
+	Temp::CTemp* thisPointer;
 };
 
 } // namespace Frame

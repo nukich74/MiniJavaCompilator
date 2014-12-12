@@ -7,8 +7,7 @@
 #include <IRHelpers.h>
 #include <memory>
 
-namespace IRTree
-{
+namespace IRTree {
 
 // Константное выражение
 class CConst : public IExp {
@@ -81,6 +80,11 @@ public:
 		exp( _exp )
 	{}
 
+	virtual void Print(CPrinter& printer) const override
+	{
+		throw std::logic_error("The method or operation is not implemented.");
+	}
+
 	const std::shared_ptr<const IExp> exp;
 };
 
@@ -119,4 +123,4 @@ public:
 };
 
 
-}
+} // namespace IRTree

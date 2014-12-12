@@ -127,6 +127,7 @@
     <ClInclude Include="StatementWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Frame.cpp" />
     <ClCompile Include="IRTree\IRPrinter.cpp" />
     <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
     <ClCompile Include="lexer.cpp" />

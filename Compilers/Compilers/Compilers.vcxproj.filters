@@ -15,6 +15,7 @@
     <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
     <ClCompile Include="StatementWrapper.cpp" />
     <ClCompile Include="IRTree\IRPrinter.cpp" />
+    <ClCompile Include="Frame.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />

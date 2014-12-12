@@ -16,6 +16,11 @@ namespace Translate {
 class CIRTreeVisitor : public IVisitor {
 public:
 
+	CIRTreeVisitor( const SymbolsTable::CSymbolsTable& _symbolsTable ) : 
+		currentFrame( 0 ), lastReturnedExp( 0 ), 
+		lastReturnedStm( 0 ), lastReturnedAccess( 0 ),
+		symbolsTable( _symbolsTable ) {}
+
 	virtual void Visit( const CExpBinOpExp& exp );
 	virtual void Visit( const CUnMinExp& exp );
 	virtual void Visit( const CExpWithIndex& exp );
@@ -50,19 +55,21 @@ public:
 	virtual void Visit( const CExpList& expList);
 
 private:
-	// Каждой функции соответствует фрейм
-	std::vector<Frame::CFrame> functions;
+	// Каждой функции соответствует фрейм, его мы используем для поиска аргументов, типов и тд
+	std::vector<Frame::CFrame* > functions;
+
+	// Фрейм функции конструируемой в данный момент
+	Frame::CFrame* currentFrame;
 	
-	// Таблица символов для программы. Ее используем для поиска нужных аргументов и тд
+	// Таблица символов для программы. Ее используем для конструирования фрейма при входе в функцию
 	const SymbolsTable::CSymbolsTable& symbolsTable;
 
-	// Далее поля которые используются только при работе визитора
-	// Текущие класс и метод в определении которого в абстрактном дереве находится визитор
-	const SymbolsTable::CClassDescriptor* currentClass;
-	const SymbolsTable::CMethodDescriptor* currentMethod;
+	// Нужно для того чтобы в CFrame записать правильно декорированное имя
+	std::string className;
 
-	IRTree::IExp* lastReturnedExp;
-	IRTree::IStm* lastReturnedStm;
+	const IRTree::IExp* lastReturnedExp;
+	const IRTree::IStm* lastReturnedStm;
+	const Frame::IAccess* lastReturnedAccess;
 
 };
 
