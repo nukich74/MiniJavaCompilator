@@ -35,8 +35,8 @@ void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 		default:
 			assert( false );
 	}
-	// Берем то что лежит по адресам first, second и применяем бинарную операцию
-	lastReturnedExp = new IRTree::CBinop( binOp, new IRTree::CMem( first ), new IRTree::CMem( second ) );
+	// Берем то что лежит по first, second и применяем бинарную операцию
+	lastReturnedExp = new IRTree::CMem( new IRTree::CBinop( binOp, first, second ) );
 }
 
 void CIRTreeVisitor::Visit( const CUnMinExp& exp )
@@ -46,7 +46,7 @@ void CIRTreeVisitor::Visit( const CUnMinExp& exp )
 	exp.Exp()->Accept( *this );
 	const IRTree::IExp* second = lastReturnedExp;
 	// Аналогично binop
-	lastReturnedExp = new IRTree::CBinop( IRTree::B_Minus, first, new IRTree::CMem( second ) );
+	lastReturnedExp = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Minus, first, second ) );
 }
 
 void CIRTreeVisitor::Visit( const CExpWithIndex& exp )

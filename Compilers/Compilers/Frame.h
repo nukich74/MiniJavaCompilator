@@ -12,7 +12,7 @@ public:
 	virtual ~IAccess() {}
 };
 
-class CInStack : public IAccess {
+class CInFrame : public IAccess {
 public:
 
 	virtual IRTree::IExp* ToExp(const Temp::CTemp* framePtr) override
@@ -39,6 +39,7 @@ public:
 		Name( _name ), Exp( _exp ) {}
 
 	// Зарезервированные регистры
+	// FP нужен для того чтобы получать смещение для локальных переменных
 	Temp::CTemp* FramePointer() const {
 		return framePointer;
 	}
