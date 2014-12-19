@@ -40,7 +40,7 @@ class NotString extends BaseString {
 	}
 }
 
-class BaseString {
+class BaseString2 {
 	int a;
 	int b;
 	boolean a;
@@ -50,7 +50,7 @@ class BaseString {
 		int a;
 		return a;
 	}
-	public int testBase(int flag)
+	public int testBase2( int flag )
 	{
 		int b;
 		return b;

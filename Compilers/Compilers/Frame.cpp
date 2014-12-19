@@ -35,6 +35,7 @@ namespace Frame {
 	const IAccess* CFrame::GetAccess( std::string _name ) const
 	{
 		//ищем внутри функции и в полях
+		return 0;
 	}
 
 } // namespace Frame

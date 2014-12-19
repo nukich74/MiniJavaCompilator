@@ -58,11 +58,13 @@ private:
 	const SymbolsTable::CSymbolsTable& symbolsTable;
 	const SymbolsTable::CClassDescriptor* currentClass;
 	const SymbolsTable::CMethodDescriptor* currentMethod;
+
 	mutable std::set<std::string> classesWithCycleExtends;
 	mutable std::set<std::string> classesWithoutCycleExtends;
 	mutable SymbolsTable::CTypeIdentifier lastType;
 
 	const std::vector<SymbolsTable::CVariableDescriptor>* expectedArgs;
+	const std::string* handlingMethodName;
 
 	bool setLastVarTypeByIdentifier( const std::string& id ) const;
 

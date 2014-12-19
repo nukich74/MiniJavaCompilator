@@ -109,13 +109,15 @@ void CTypeChecker::Visit( const CExpList& expList )
 {
 	assert( expectedArgs != 0 );
 	if( expectedArgs->size() != expList.ExpList().size() ) {
-		// Ошибка - количество аргументов не соответствует действительности.
+		std::shared_ptr<CIncorrectArguments> argumentsError( std::make_shared<CIncorrectArguments>( *handlingMethodName, expList.Location() ) );
+		errors.AddError( argumentsError );
 		return;
 	}
 	for( size_t i = 0; i < expList.ExpList().size(); ++i ) {
 		expList.ExpList()[i]->Accept( *this );
 		if( ( *expectedArgs )[i].Type != lastType ) {
-			// Ошибка - в аргументе i несовпадение типов.
+			std::shared_ptr<CIncorrectArguments> argumentsError( std::make_shared<CIncorrectArguments>( *handlingMethodName, expList.Location() ) );
+			errors.AddError( argumentsError );
 		}
 	}
 }
@@ -127,11 +129,13 @@ void CTypeChecker::Visit( const CExpBinOpExp& exp )
 		if( lastType != BT_Bool ) {
 			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, exp.Location() ) );
 			errors.AddError( incorrectTypeError );
+			return;
 		}
 		exp.RightArg()->Accept( *this );
 		if( lastType != BT_Bool ) {
 			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, exp.Location() ) );
 			errors.AddError( incorrectTypeError );
+			return;
 		}
 		lastType = BT_Bool;
 	} else {
@@ -195,6 +199,7 @@ void CTypeChecker::Visit( const CExpIdExpList& exp )
 	if( lastType.Base != BT_UserDefined ) {
 		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
 		errors.AddError( undefIdentifierError );
+		return;
 	}
 
 	const CMethodDescriptor* calledMethod = getMethodFromClassById( &symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
@@ -203,7 +208,9 @@ void CTypeChecker::Visit( const CExpIdExpList& exp )
 		errors.AddError( undefIdentifierError );
 	} else {
 		expectedArgs = &calledMethod->Params;
+		handlingMethodName = &exp.Id();
 		exp.ExpList()->Accept( *this );
+		handlingMethodName = 0;
 		expectedArgs = 0;
 		lastType = calledMethod->ReturnType;
 	}
@@ -216,6 +223,7 @@ void CTypeChecker::Visit( const CExpIdVoidExpList& exp )
 	if( lastType.Base != BT_UserDefined ) {
 		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
 		errors.AddError( undefIdentifierError );
+		return;
 	}
 
 	const CMethodDescriptor* calledMethod = getMethodFromClassById( &symbolsTable.Classes().at( lastType.UserDefinedName ), exp.Id() );
@@ -225,7 +233,8 @@ void CTypeChecker::Visit( const CExpIdVoidExpList& exp )
 	} else {
 		expectedArgs = &calledMethod->Params;
 		if( !expectedArgs->empty() ) {
-			// Ошибка - функция ожидает аргументы.
+			std::shared_ptr<CIncorrectArguments> argumentsError( std::make_shared<CIncorrectArguments>( exp.Id(), exp.Location() ) );
+			errors.AddError( argumentsError );
 		}
 		expectedArgs = 0;
 		lastType = calledMethod->ReturnType;
@@ -312,7 +321,8 @@ void CTypeChecker::Visit( const CClassDecl& classDecl )
 			const CClassDescriptor* tmp = &symbolsTable.Classes().at( classDecl.ClassId() );
 			while( tmp->BaseClass != "" ) {
 				if( inheritCycleNames.find( tmp->Name() ) != inheritCycleNames.end() ) {
-					// Ошибка - повтор в цепи наследования.
+					std::shared_ptr<CCycledClasses> cycleInheritionError( std::make_shared<CCycledClasses>( classDecl.ClassId(), classDecl.Location() ) );
+					errors.AddError( cycleInheritionError );
 					classesWithCycleExtends.insert( inheritCycleNames.begin(), inheritCycleNames.end() );
 					break;
 				} else if( symbolsTable.Classes().find( tmp->BaseClass ) != symbolsTable.Classes().end() ) {

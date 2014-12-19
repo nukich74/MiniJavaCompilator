@@ -11,6 +11,12 @@
 #include <TypeIdentifier.h>
 
 namespace SymbolsTable {
+	enum CItemType {
+		IT_Variable,
+		IT_Method,
+		IT_Class
+	};
+
 	class CSemanticError {
 	public:
 		CSemanticError( const std::string& _errorMsg )
@@ -23,24 +29,20 @@ namespace SymbolsTable {
 		std::string errorMsg;
 
 		static std::string locationString( const CLocation& location ) { return std::to_string( location.startLine ) + ":" + std::to_string( location.startColumn )	+ " - " + std::to_string( location.endLine ) + ":" + std::to_string( location.startColumn ); }
+
+		static std::string itemName( CItemType itemType );
 	};
 
 	class CRedefinitionError : public CSemanticError {
 	public:
-		CRedefinitionError( const std::string& redefinedName, const CLocation& location )
+		CRedefinitionError( const std::string& redefinedName, CItemType itemType,  const CLocation& location )
 			: CSemanticError( baseRedefinitionMessage )
 		{
-			errorMsg += redefinedName + " in positions " + locationString( location );
+			errorMsg += itemName( itemType ) + " " + redefinedName + " in positions " + locationString( location );
 		}
 
 	private:
 		static const std::string baseRedefinitionMessage;
-	};
-
-	enum CItemType {
-		IT_Variable,
-		IT_Method,
-		IT_Class
 	};
 
 	class CUndefinedItemError : public CSemanticError {
@@ -53,8 +55,6 @@ namespace SymbolsTable {
 
 	private:
 		static const std::string baseUndefinedItemMessage;
-
-		static std::string itemName( CItemType itemType );
 	};
 
 	class CIncorrectType : public CSemanticError {
@@ -67,6 +67,28 @@ namespace SymbolsTable {
 
 	private:
 		static const std::string baseIncorrectTypeMessage;
+	};
+
+	class CIncorrectArguments : public CSemanticError {
+	public:
+		CIncorrectArguments( const std::string& functionName, const CLocation& location )
+			: CSemanticError( baseIncorrectArgumentsMessage )
+		{
+			errorMsg += functionName + " at positions " + locationString( location );
+		}
+	private:
+		static const std::string baseIncorrectArgumentsMessage;
+	};
+
+	class CCycledClasses : public CSemanticError {
+	public:
+		CCycledClasses( const std::string& className, const CLocation& location )
+			: CSemanticError( baseCycledClassesMessage )
+		{
+			errorMsg += className + " in positions " + locationString( location );
+		}
+	private:
+		static const std::string baseCycledClassesMessage;
 	};
 
 	class CErrorsAggregator {
