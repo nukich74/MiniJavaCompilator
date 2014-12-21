@@ -39,41 +39,44 @@ public:
 		Name( _name ), Exp( _exp ) {}
 
 	// Зарезервированные регистры
-	// FP нужен для того чтобы получать смещение для локальных переменных
-	Temp::CTemp* FramePointer() const {
-		return framePointer;
+
+	// FP нужен для того чтобы получать смещение для локальных переменных внутри функции
+	const Temp::CTemp* FramePointer() const {
+		return framePointer.get();
 	}
-	Temp::CTemp* ThisPointer() const {
-		return thisPointer;
+
+	// this нужен чтобы получать смещения на поля объекта класса
+	const Temp::CTemp* ThisPointer() const {
+		return thisPointer.get();
 	}
 
 	// Машинно зависимая информация
 	static int WordSize() { return 4; }
 			
 	// Доступ к формальным параметрам
-	const IAccess* GetFormal( std::string name ) const;
+	std::shared_ptr<const IAccess> GetFormal( std::string name ) const;
 	void AddFormal( const std::string _name, const IAccess* _var );
 
 	// Доступ к локальным переменным
-	const IAccess* GetLocal(std::string name) const;
+	std::shared_ptr<const IAccess> GetLocal( std::string name ) const;
 	void AddLocal( const std::string _name, const IAccess* _var );
 
 	// Доступ к переменной (не известно какой local, formal или какой то другой)
-	const IAccess* GetAccess( std::string _name ) const;
+	std::shared_ptr<const IAccess> GetAccess( std::string _name ) const;
 
 	// Корень IRTree для текущей функции
-	const IRTree::IExp* Exp;
+	std::shared_ptr<const IRTree::IExp> Exp;
 	// Задекорированное имя функции
 	//	Имя_класса::имя_функции
 	const std::string Name;
 
 private:
 
-	std::map<const std::string, const IAccess*> formals;
-	std::map<const std::string, const IAccess*> locals;
+	std::map<const std::string, std::shared_ptr<const IAccess> > formals;
+	std::map<const std::string, std::shared_ptr<const IAccess> > locals;
 
-	Temp::CTemp* framePointer;
-	Temp::CTemp* thisPointer;
+	std::shared_ptr<const Temp::CTemp> framePointer;
+	std::shared_ptr<const Temp::CTemp> thisPointer;
 };
 
 } // namespace Frame

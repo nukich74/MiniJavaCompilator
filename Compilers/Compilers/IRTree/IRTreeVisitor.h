@@ -11,6 +11,10 @@
 #include <SymbolsTable.h>
 #include "Frame.h"
 
+using std::shared_ptr;
+using std::string;
+using std::vector;
+
 namespace Translate {
 
 class CIRTreeVisitor : public IVisitor {
@@ -56,20 +60,21 @@ public:
 
 private:
 	// Каждой функции соответствует фрейм, его мы используем для поиска аргументов, типов и тд
-	std::vector<Frame::CFrame* > functions;
+	vector<shared_ptr<const Frame::CFrame> > functions;
 
-	// Фрейм функции конструируемой в данный момент
-	Frame::CFrame* currentFrame;
+	// Фрейм функции конструируемой в данный момент, создается при входе в функцию, добавляется в список при выходе
+	shared_ptr<const Frame::CFrame> currentFrame;
 	
 	// Таблица символов для программы. Ее используем для конструирования фрейма при входе в функцию
 	const SymbolsTable::CSymbolsTable& symbolsTable;
 
 	// Нужно для того чтобы в CFrame записать правильно декорированное имя
+	//	Имя декорируется className::functionName
 	std::string className;
 
-	const IRTree::IExp* lastReturnedExp;
-	const IRTree::IStm* lastReturnedStm;
-	const Frame::IAccess* lastReturnedAccess;
+	shared_ptr<const IRTree::IExp> lastReturnedExp;
+	shared_ptr<const IRTree::IStm> lastReturnedStm;
+	shared_ptr<const Frame::IAccess> lastReturnedAccess;
 
 };
 

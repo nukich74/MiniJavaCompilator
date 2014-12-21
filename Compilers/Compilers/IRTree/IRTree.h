@@ -2,8 +2,7 @@
 // Описание: Интерфейс для дерева промежуточного представления
 #pragma once
 
-namespace IRTree
-{
+namespace IRTree {
 
 class CPrinter;
 // Интерфейс для узлов, возвращающих значений

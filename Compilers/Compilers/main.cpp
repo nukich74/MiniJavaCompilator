@@ -5,6 +5,7 @@
 #include <PrettyPrinterVisitor.h>
 #include <SymbolTableConstructor.h>
 #include <TypeChecker.h>
+#include "IRTree\IRTreeVisitor.h"
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -30,6 +31,10 @@ int main()
 			typeChecker.errors.WriteErrors();
 			return 0;
 		}
+
+		Translate::CIRTreeVisitor irTreeVisitor( tableConstructor.symbolTable );
+		astRoot->Accept( irTreeVisitor );
+
 	}
 
 	return 0;

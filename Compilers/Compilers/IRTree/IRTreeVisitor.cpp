@@ -12,15 +12,17 @@
 #include "ExpConverter.h"
 #include "IRExp.h"
 
+using std::make_shared;
+
 namespace Translate {
 
 void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 {
 	// Забираем правый и левый операнды
 	exp.LeftArg()->Accept( *this );
-	const IRTree::IExp* first = lastReturnedExp;
+	const IRTree::IExp* first = lastReturnedExp.get();
 	exp.RightArg()->Accept( *this );
-	const IRTree::IExp* second = lastReturnedExp;
+	const IRTree::IExp* second = lastReturnedExp.get();
 	IRTree::TBinop binOp;
 	switch( exp.Operation() ) {
 		case '+':
@@ -36,7 +38,7 @@ void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 			assert( false );
 	}
 	// Берем то что лежит по first, second и применяем бинарную операцию
-	lastReturnedExp = new IRTree::CMem( new IRTree::CBinop( binOp, first, second ) );
+	lastReturnedExp = make_shared<IRTree::IExp>( IRTree::CMem( new IRTree::CBinop( binOp, first, second ) ) );
 }
 
 void CIRTreeVisitor::Visit( const CUnMinExp& exp )
@@ -44,20 +46,20 @@ void CIRTreeVisitor::Visit( const CUnMinExp& exp )
 	// Как в лекциях заменяем на (0 - exp)
 	const IRTree::IExp* first = new IRTree::CConst( 0 );
 	exp.Exp()->Accept( *this );
-	const IRTree::IExp* second = lastReturnedExp;
+	const IRTree::IExp* second = lastReturnedExp.get();
 	// Аналогично binop
-	lastReturnedExp = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Minus, first, second ) );
+	lastReturnedExp = make_shared<IRTree::IExp>( new IRTree::CMem( new IRTree::CBinop( IRTree::B_Minus, first, second ) ) );
 }
 
 void CIRTreeVisitor::Visit( const CExpWithIndex& exp )
 {
 	exp.Exp()->Accept( *this );
-	const IRTree::IExp* varExp = lastReturnedExp;
+	const IRTree::IExp* varExp = lastReturnedExp.get();
 	exp.Index()->Accept( *this );
-	const IRTree::IExp* indexExp = lastReturnedExp;
+	const IRTree::IExp* indexExp = lastReturnedExp.get();
 	IRTree::IExp* offset = new IRTree::CBinop( IRTree::B_Mul, new IRTree::CConst( Frame::CFrame::WordSize() ), new IRTree::CMem( indexExp ) );
 	// Возвращаем адрес переменной
-	lastReturnedExp = new IRTree::CBinop( IRTree::B_Plus, varExp, offset );
+	lastReturnedExp = make_shared<IRTree::IExp>( new IRTree::CBinop( IRTree::B_Plus, varExp, offset ) );
 }
 
 void CIRTreeVisitor::Visit( const CExpDotLength& exp )
@@ -65,10 +67,10 @@ void CIRTreeVisitor::Visit( const CExpDotLength& exp )
 #pragma message( "TODO: Здесь надо возвращать IRTree::CConst переменной которую надо взять у SymbolTable" )
 	// Во время компиляции уже известен размер каждого массива, он должен проверяться на корректность при валидации
 	exp.Exp()->Accept( *this );
-	const IRTree::IExp* varExp = lastReturnedExp;
+	const IRTree::IExp* varExp = lastReturnedExp.get();
 	// Здесь будем запрашивать у фрейма длину
 	// Пока сделаем константу 100500
-	lastReturnedExp = new IRTree::CConst( 100500 );
+	lastReturnedExp = make_shared<IRTree::IExp>( new IRTree::CConst( 100500 ) );
 }
 
 void CIRTreeVisitor::Visit( const CExpIdExpList& exp )
@@ -90,19 +92,19 @@ void CIRTreeVisitor::Visit( const CExpIdVoidExpList& exp )
 
 void CIRTreeVisitor::Visit( const CIntegerLiteral& exp )
 {
-	lastReturnedExp = new IRTree::CConst( exp.Value() );
+	lastReturnedExp = make_shared<IRTree::IExp>( new IRTree::CConst( exp.Value() ) );
 }
 
 void CIRTreeVisitor::Visit( const CTrue& exp )
 {
 	// True у нас константа 1
-	lastReturnedExp = new IRTree::CConst( 1 );
+	lastReturnedExp = make_shared<IRTree::IExp>( new IRTree::CConst( 1 ) );
 }
 
 void CIRTreeVisitor::Visit( const CFalse& exp )
 {
 	// False у нас константа 0
-	lastReturnedExp = new IRTree::CConst( 0 );
+	lastReturnedExp = make_shared<IRTree::IExp>( new IRTree::CConst( 0 ) );
 }
 
 void CIRTreeVisitor::Visit( const CId& exp )
@@ -132,7 +134,8 @@ void CIRTreeVisitor::Visit( const CNotExp& exp )
 {
 	// Получаем lastReturnedExp и записываем туда конструкцию XOR c Const(0)
 	exp.Exp()->Accept( *this );
-	lastReturnedExp = new IRTree::CBinop( IRTree::B_Xor, new IRTree::CConst( 0 ), new IRTree::CMem( lastReturnedExp ) );
+	lastReturnedExp = make_shared<IRTree::IExp>(new IRTree::CBinop( IRTree::B_Xor, 
+		new IRTree::CConst( 0 ), new IRTree::CMem( lastReturnedExp.get() ) ) );
 }
 
 void CIRTreeVisitor::Visit( const CExpInBrackets& exp )
@@ -284,7 +287,7 @@ void CIRTreeVisitor::Visit( const CCurlyBraceStatement& curlyBraceStatement )
 void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 {
 	ifStatement.Exp()->Accept( *this );
-	const IRTree::IExp* ifExpr = lastReturnedExp;
+	const IRTree::IExp* ifExpr = lastReturnedExp.get();
 	Temp::CLabel* trueLabelTemp = new Temp::CLabel();
 	Temp::CLabel* falseLabelTemp = new Temp::CLabel();
 	Temp::CLabel* endLabelTemp = new Temp::CLabel();
@@ -292,14 +295,14 @@ void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 	IRTree::CLabel* falseLabel = new IRTree::CLabel( falseLabelTemp );
 	IRTree::CLabel* endLabel = new IRTree::CLabel( endLabelTemp );
 	ifStatement.IfStatement()->Accept( *this );
-	IRTree::IStm* trueStm = new IRTree::CSeq( trueLabel, lastReturnedStm, endLabel );
+	IRTree::IStm* trueStm = new IRTree::CSeq( trueLabel, lastReturnedStm.get(), endLabel );
 	IRTree::IStm* falseStm = 0;
 	if( ifStatement.ElseStatement() != 0 ) {
 		ifStatement.ElseStatement()->Accept( *this );
-		falseStm = new IRTree::CSeq( falseLabel, lastReturnedStm, endLabel );
+		falseStm = new IRTree::CSeq( falseLabel, lastReturnedStm.get(), endLabel );
 	}
 	Translate::CExpConverter converter( ifExpr );
-	lastReturnedStm = converter.ToConditional( trueLabelTemp, falseLabelTemp );
+	lastReturnedStm = std::make_shared<IRTree::IStm>( converter.ToConditional( trueLabelTemp, falseLabelTemp ) );
 }
 
 void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
@@ -311,11 +314,12 @@ void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
 	IRTree::CLabel* inLoopLabel = new IRTree::CLabel(new Temp::CLabel());
 	IRTree::CLabel* endLabel = new IRTree::CLabel(new Temp::CLabel());
 	whileStatement.Exp()->Accept( *this );
-	Translate::CExpConverter converter( lastReturnedExp );
+	Translate::CExpConverter converter( lastReturnedExp.get() );
 	const IRTree::IStm* whileStm = converter.ToConditional( inLoopLabelTemp, endLabelTemp );
 	IRTree::IStm* conditionStm = new IRTree::CSeq( beforeConditionLabel, whileStm, inLoopLabel );
 	whileStatement.Statement()->Accept( *this );
-	lastReturnedStm = new IRTree::CSeq( conditionStm, lastReturnedStm, new IRTree::CJump( beforeConditionLabelTemp ), endLabel );
+	lastReturnedStm = make_shared<IRTree::IStm>( new IRTree::CSeq( conditionStm, lastReturnedStm.get(), 
+		new IRTree::CJump( beforeConditionLabelTemp ), endLabel ) );
 }
 
 void CIRTreeVisitor::Visit( const CExpList& expList )
