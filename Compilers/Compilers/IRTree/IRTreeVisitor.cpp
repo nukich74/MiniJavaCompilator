@@ -165,8 +165,11 @@ void CIRTreeVisitor::Visit( const CMainClass& mainClass )
 	if( mainClass.StatementList() != 0 ) {
 		mainClass.StatementList()->Accept( *this );
 	}
-	currentFrame->Exp = lastReturnedExp;
-	methods.push_back( currentFrame );
+	currentFrame->Stm = lastReturnedStm;
+	lastReturnedStm = nullptr;
+	lastReturnedExp = nullptr;
+	lastReturnedAccess = nullptr;
+	Methods.push_back( currentFrame );
 	// Очищаем инфу о текущем фрейме
 	currentFrame = 0;
 	className = "";

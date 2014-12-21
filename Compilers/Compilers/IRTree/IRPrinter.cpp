@@ -3,8 +3,7 @@
 #include <IRExp.h>
 #include <iostream>
 
-namespace IRTree
-{
+namespace IRTree {
 
 int CPrinter::minId = 0;
 

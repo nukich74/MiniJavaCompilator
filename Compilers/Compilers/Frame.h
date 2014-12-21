@@ -65,7 +65,7 @@ public:
 	const IAccess* GetAccess( std::string _name ) const;
 
 	// Корень IRTree для текущей функции
-	const IRTree::IExp* Exp;
+	const IRTree::IStm* Stm;
 	// Задекорированное имя функции
 	//	Имя_класса::имя_функции
 	const std::string Name;

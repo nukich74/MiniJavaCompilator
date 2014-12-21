@@ -57,9 +57,10 @@ public:
 	virtual void Visit( const CWhileStatement& whileStatement);
 	virtual void Visit( const CExpList& expList);
 
-private:
 	// Каждой функции соответствует фрейм, его мы используем для поиска аргументов, типов и тд
-	vector<const Frame::CFrame* > methods;
+	vector<const Frame::CFrame* > Methods;
+
+private:
 
 	// Фрейм функции конструируемой в данный момент, создается при входе в функцию, добавляется в список при выходе
 	Frame::CFrame* currentFrame;

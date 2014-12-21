@@ -6,6 +6,7 @@
 #include <SymbolTableConstructor.h>
 #include <TypeChecker.h>
 #include "IRTree\IRTreeVisitor.h"
+#include "IRTree\IRPrint.h"
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -35,6 +36,11 @@ int main()
 		Translate::CIRTreeVisitor irTreeVisitor( tableConstructor.symbolTable );
 		astRoot->Accept( irTreeVisitor );
 
+		for( const auto& frame : irTreeVisitor.Methods ) {
+			// Печатаем деревья для отдельной функции
+			IRTree::CPrinter irPrinter;
+			frame->Stm->Print( irPrinter );
+		}
 	}
 
 	return 0;
