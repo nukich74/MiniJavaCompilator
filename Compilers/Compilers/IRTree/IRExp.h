@@ -27,7 +27,7 @@ public:
 // Метка для переходов
 class CName : public IExp {
 public:
-	CName( const Temp::CLabel& _label ) :
+	CName( const Temp::CLabel* _label ) :
 		label( _label )
 	{}
 
@@ -36,7 +36,7 @@ public:
 		printer.Print( this );
 	}
 
-	const Temp::CLabel label;
+	const Temp::CLabel* label;
 };
 
 // Временная переменная

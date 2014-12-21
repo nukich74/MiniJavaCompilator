@@ -9,19 +9,16 @@ namespace Temp
 {
 CLabel::CLabel()
 {
-	name = "tempLabel" + nextUniqueId;
+	name = "tempLabel" + std::to_string(nextUniqueId);
 	nextUniqueId++;
 }
 
 CLabel::CLabel( const string& _name ) :
-	name( _name )
-{
-	// Nothing
-}
+	name( _name ) {}
 
 CTemp::CTemp()
 {
-	name = "tempVar" + nextUniqueId;
+	name = "tempVar" + std::to_string( nextUniqueId );
 	nextUniqueId++;
 }
 

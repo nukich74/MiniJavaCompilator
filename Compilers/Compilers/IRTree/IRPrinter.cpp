@@ -169,7 +169,7 @@ void CPrinter::Print( const CName* node )
 
 	std::cout << " Values: ";
 
-	std::cout << "[label]" << node->label.Name() << " ";
+	std::cout << "[label]" << node->label->Name() << " ";
 
 	std::cout << "Type: " << "CIRName";
 	std::cout << std::endl;

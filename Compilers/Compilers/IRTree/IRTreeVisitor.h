@@ -11,7 +11,6 @@
 #include <SymbolsTable.h>
 #include "Frame.h"
 
-using std::shared_ptr;
 using std::string;
 using std::vector;
 
@@ -60,10 +59,10 @@ public:
 
 private:
 	// Каждой функции соответствует фрейм, его мы используем для поиска аргументов, типов и тд
-	vector<shared_ptr<const Frame::CFrame> > functions;
+	vector<const Frame::CFrame* > methods;
 
 	// Фрейм функции конструируемой в данный момент, создается при входе в функцию, добавляется в список при выходе
-	shared_ptr<const Frame::CFrame> currentFrame;
+	Frame::CFrame* currentFrame;
 	
 	// Таблица символов для программы. Ее используем для конструирования фрейма при входе в функцию
 	const SymbolsTable::CSymbolsTable& symbolsTable;
@@ -72,9 +71,11 @@ private:
 	//	Имя декорируется className::functionName
 	std::string className;
 
-	shared_ptr<const IRTree::IExp> lastReturnedExp;
-	shared_ptr<const IRTree::IStm> lastReturnedStm;
-	shared_ptr<const Frame::IAccess> lastReturnedAccess;
+	// Все объекты сохраняемые в этих указателях должны жить все время, их не нужно удалять
+	//	Нету смысла мучаться с умными указателями для 
+	const IRTree::IExp* lastReturnedExp;
+	const IRTree::IStm* lastReturnedStm;
+	const Frame::IAccess* lastReturnedAccess;
 
 };
 

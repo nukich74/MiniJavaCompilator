@@ -35,8 +35,8 @@ public:
 // Класс-контейнер с платформо-зависимой информацией о функции
 class CFrame {
 public:
-	CFrame( const std::string _name, const IRTree::IExp* _exp ) :
-		Name( _name ), Exp( _exp ) {}
+	CFrame( const std::string _name ) :
+		Name( _name ) {}
 
 	// Зарезервированные регистры
 
@@ -54,26 +54,26 @@ public:
 	static int WordSize() { return 4; }
 			
 	// Доступ к формальным параметрам
-	std::shared_ptr<const IAccess> GetFormal( std::string name ) const;
+	const IAccess* GetFormal( std::string name ) const;
 	void AddFormal( const std::string _name, const IAccess* _var );
 
 	// Доступ к локальным переменным
-	std::shared_ptr<const IAccess> GetLocal( std::string name ) const;
+	const IAccess* GetLocal( std::string name ) const;
 	void AddLocal( const std::string _name, const IAccess* _var );
 
 	// Доступ к переменной (не известно какой local, formal или какой то другой)
-	std::shared_ptr<const IAccess> GetAccess( std::string _name ) const;
+	const IAccess* GetAccess( std::string _name ) const;
 
 	// Корень IRTree для текущей функции
-	std::shared_ptr<const IRTree::IExp> Exp;
+	const IRTree::IExp* Exp;
 	// Задекорированное имя функции
 	//	Имя_класса::имя_функции
 	const std::string Name;
 
 private:
 
-	std::map<const std::string, std::shared_ptr<const IAccess> > formals;
-	std::map<const std::string, std::shared_ptr<const IAccess> > locals;
+	std::map<const std::string, const IAccess* > formals;
+	std::map<const std::string, const IAccess* > locals;
 
 	std::shared_ptr<const Temp::CTemp> framePointer;
 	std::shared_ptr<const Temp::CTemp> thisPointer;
