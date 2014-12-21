@@ -38,8 +38,8 @@ int main()
 
 		for( const auto& frame : irTreeVisitor.Methods ) {
 			// Печатаем деревья для отдельной функции
-			IRTree::CPrinter irPrinter;
-			frame->Stm->Print( irPrinter );
+			//IRTree::CPrinter irPrinter;
+			//frame->Stm->Print( irPrinter );
 		}
 	}
 

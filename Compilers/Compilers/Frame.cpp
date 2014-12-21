@@ -34,8 +34,33 @@ void CFrame::AddLocal(const std::string _name, const IAccess* _var)
 
 const IAccess* CFrame::GetAccess( std::string _name ) const
 {
-	//ищем внутри функции и в полях
-	return 0;
+	const IAccess* result = GetFormal( _name );
+	if( result != 0 ) {
+		return result;
+	}
+	result = GetLocal( _name );
+	if( result != 0 ) {
+		return result;
+	}
+	result = GetField( _name );
+	if( result != 0 ) {
+		return result;
+	}
+	return nullptr;
+}
+
+const IAccess* CFrame::GetField( std::string name ) const
+{
+	auto result = fields.find( name );
+	if( result == fields.end() ) {
+		return 0;
+	}
+	return result->second;
+}
+
+void CFrame::AddField( const std::string _name, const IAccess* _var )
+{
+	fields.insert( std::make_pair( _name, _var ) );
 }
 
 } // namespace Frame

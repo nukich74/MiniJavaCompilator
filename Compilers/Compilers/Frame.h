@@ -12,13 +12,37 @@ public:
 	virtual ~IAccess() {}
 };
 
+// для локальных переменных, которые лежат со смещением у FramePointer
 class CInFrame : public IAccess {
 public:
+
+	CInFrame( int _offsetInWords ) : offsetInWords( _offsetInWords ) {}
 
 	virtual IRTree::IExp* ToExp(const Temp::CTemp* framePtr) override
 	{
 		throw std::logic_error("The method or operation is not implemented.");
 	}
+
+private:
+
+	const int offsetInWords;
+
+};
+
+// Для полей класса, которые лежат по this
+class CInObject : public IAccess {
+public:
+
+	CInObject( int _offsetInWords ) : offsetInWords( _offsetInWords ) {}
+
+	virtual IRTree::IExp* ToExp( const Temp::CTemp* framePtr ) override
+	{
+		throw std::logic_error( "The method or operation is not implemented." );
+	}
+
+private:
+
+	const int offsetInWords;
 
 };
 
@@ -36,7 +60,8 @@ public:
 class CFrame {
 public:
 	CFrame( const std::string _name ) :
-		Name( _name ) {}
+		Name( _name ), ThisCounter( 0 ), LocalCounter( 0 ), 
+		framePointer( new Temp::CTemp( _name + "_FP" ) ), thisPointer( new Temp::CTemp( _name + "_thisPointer" ) ) {}
 
 	// Зарезервированные регистры
 
@@ -61,6 +86,10 @@ public:
 	const IAccess* GetLocal( std::string name ) const;
 	void AddLocal( const std::string _name, const IAccess* _var );
 
+	// Доступ к полям класса
+	const IAccess* GetField( std::string name ) const;
+	void AddField( const std::string _name, const IAccess* _var );
+
 	// Доступ к переменной (не известно какой local, formal или какой то другой)
 	const IAccess* GetAccess( std::string _name ) const;
 
@@ -70,10 +99,14 @@ public:
 	//	Имя_класса::имя_функции
 	const std::string Name;
 
+	int ThisCounter;
+	int LocalCounter;
+
 private:
 
 	std::map<const std::string, const IAccess* > formals;
 	std::map<const std::string, const IAccess* > locals;
+	std::map<const std::string, const IAccess* > fields;
 
 	std::shared_ptr<const Temp::CTemp> framePointer;
 	std::shared_ptr<const Temp::CTemp> thisPointer;

@@ -54,22 +54,29 @@ void CIRTreeVisitor::Visit( const CExpWithIndex& exp )
 {
 	exp.Exp()->Accept( *this );
 	const IRTree::IExp* varExp = lastReturnedExp;
+	lastReturnedExp = nullptr;
 	exp.Index()->Accept( *this );
-	const IRTree::IExp* indexExp = lastReturnedExp;
-	IRTree::IExp* offset = new IRTree::CBinop( IRTree::B_Mul, new IRTree::CConst( Frame::CFrame::WordSize() ), new IRTree::CMem( indexExp ) );
+	const IRTree::IExp* indexExp = new IRTree::CBinop( IRTree::B_Plus, new IRTree::CMem( lastReturnedExp ), new IRTree::CConst( 1 ) );
+	lastReturnedExp = nullptr;
+	IRTree::IExp* offset = new IRTree::CBinop( IRTree::B_Mul, new IRTree::CConst( Frame::CFrame::WordSize() ), indexExp );
 	// Возвращаем адрес переменной
 	lastReturnedExp =  new IRTree::CBinop( IRTree::B_Plus, varExp, offset );
 }
 
 void CIRTreeVisitor::Visit( const CExpDotLength& exp )
 {
-#pragma message( "TODO: Здесь надо возвращать IRTree::CConst переменной которую надо взять у SymbolTable" )
 	// Во время компиляции уже известен размер каждого массива, он должен проверяться на корректность при валидации
 	exp.Exp()->Accept( *this );
 	const IRTree::IExp* varExp = lastReturnedExp;
-	// Здесь будем запрашивать у фрейма длину
-	// Пока сделаем константу 100500
-	lastReturnedExp = new IRTree::CConst( 100500 );
+	lastReturnedExp = nullptr;
+	const IRTree::IExp* lengthCommandRW = new IRTree::CBinop( IRTree::B_Plus, varExp, new IRTree::CConst( 0 ) );
+	// Создаем временную переменную
+	const Temp::CTemp* lengthTemp = new Temp::CTemp();
+	const IRTree::CTemp* tempVar = new IRTree::CTemp( *lengthTemp );
+	// Копируем значение туда
+	const IRTree::CMove* movingCommand = new IRTree::CMove( tempVar, lengthCommandRW );
+	// Возвращаем адрес переменной
+	lastReturnedExp = new IRTree::CEseq( movingCommand, tempVar );
 }
 
 void CIRTreeVisitor::Visit( const CExpIdExpList& exp )
@@ -110,6 +117,8 @@ void CIRTreeVisitor::Visit( const CId& exp )
 {
 	// Найдем нужную инфу во фрейме
 	lastReturnedAccess = currentFrame->GetAccess( exp.Id() );
+	lastReturnedExp = nullptr;
+	lastReturnedStm = nullptr;
 }
 
 void CIRTreeVisitor::Visit( const CThis& exp )
@@ -160,7 +169,7 @@ void CIRTreeVisitor::Visit( const CMainClass& mainClass )
 	className = mainClass.MainClassName();
 	// У main нет никаких переменных, потому что такая грамматика
 	//	Программу можно будет начать если сделать временный объект какого нибудь класса
-	//	например System.out.Println( new Pr1() );
+	//	например System.out.println( new Pr1() );
 	currentFrame = new Frame::CFrame( className + ":main" );
 	if( mainClass.StatementList() != 0 ) {
 		mainClass.StatementList()->Accept( *this );
@@ -194,6 +203,9 @@ void CIRTreeVisitor::Visit( const CClassDecl& classDecl )
 	if( classDecl.MethodDeclList() != 0 ) {
 		classDecl.MethodDeclList()->Accept( *this );
 	}
+	lastReturnedAccess = nullptr;
+	lastReturnedExp = nullptr;
+	lastReturnedStm = nullptr;
 	className = "";
 }
 
@@ -220,7 +232,7 @@ void CIRTreeVisitor::Visit( const CMethodDeclList& methodDeclList )
 
 void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 {
-#pragma message( "TODO Здесь строится дерево для отдельной функции functions.push_back( new IRTree::CIRExp() )" )
+	// Все это мы игнорируем, это есть у теблицы символоа
 	methodDecl.ReturnedType()->Accept( *this );
 	if( methodDecl.FormalList() != 0 ) {
 		methodDecl.FormalList()->Accept( *this );
@@ -228,12 +240,34 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 	if( methodDecl.VarDeclList() != 0 ) {
 		methodDecl.VarDeclList()->Accept( *this );
 	}
+	// Строим фрейм
+	currentFrame = new Frame::CFrame( className + ":" + methodDecl.MethodName() );
+	// Добавляем поля класса к фрейму
+	for( const auto& field : symbolsTable.Classes().at( className ).Fields ) {
+		currentFrame->AddField( field.Name(), new Frame::CInObject( currentFrame->ThisCounter ) );
+		currentFrame->ThisCounter++;
+	}
+	// Добавляем параметры функции фрейму
+	for( const auto& field : symbolsTable.Classes( ).at( className ).Methods.at( methodDecl.MethodName ).Params ) {
+		currentFrame->AddField( field.Name(), new Frame::CInFrame( currentFrame->LocalCounter ) );
+		currentFrame->LocalCounter++;
+	}
+	// Добавляем локальные переменные фрейму
+	for( const auto& field : symbolsTable.Classes( ).at( className ).Methods.at( methodDecl.MethodName ).Locals ) {
+		currentFrame->AddField( field.Name(), new Frame::CInFrame( currentFrame->LocalCounter ) );
+		currentFrame->LocalCounter++;
+	}
 	if( methodDecl.StatementList() != 0 ) {
 		methodDecl.StatementList()->Accept( *this );
 	}
 	if( methodDecl.ReturnedExp() != 0 ) {
 		methodDecl.ReturnedExp()->Accept( *this );
 	}
+	Methods.push_back( currentFrame );
+	currentFrame = nullptr;
+	lastReturnedStm = nullptr;
+	lastReturnedExp = nullptr;
+	lastReturnedAccess = nullptr;
 }
 
 void CIRTreeVisitor::Visit( const CFormalList& formalList )
