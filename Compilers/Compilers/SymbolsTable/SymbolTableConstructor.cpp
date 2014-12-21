@@ -44,7 +44,7 @@ void CSymbolTableConstructor::Visit( const CClassDecl& classDecl )
 		classDecl.MethodDeclList()->Accept( *this );
 	}
 	if( symbolTable.Classes().find( classDecl.ClassId() ) != symbolTable.Classes().end() ) {
-		std::shared_ptr<CRedefinitionError> classRedError( std::make_shared<CRedefinitionError>( classDecl.ClassId(), classDecl.Location() ) );
+		std::shared_ptr<CRedefinitionError> classRedError( std::make_shared<CRedefinitionError>( classDecl.ClassId(), IT_Class, classDecl.Location() ) );
 		errors.AddError( classRedError );
 	} else {
 		symbolTable.AddClass( *curClass );
@@ -64,7 +64,7 @@ void CSymbolTableConstructor::Visit( const CVarDecl& varDecl )
 {
 	if( curMethod == 0 ) {
 		if( hasSuchNameInScope( curClass->Fields, varDecl.VarName() ) ) {
-			std::shared_ptr<CRedefinitionError> varRedError( std::make_shared<CRedefinitionError>( varDecl.VarName(), varDecl.Location() ) );
+			std::shared_ptr<CRedefinitionError> varRedError( std::make_shared<CRedefinitionError>( varDecl.VarName(), IT_Variable, varDecl.Location() ) );
 			errors.AddError( varRedError );
 		}
 		assert( curVariable == 0 );
@@ -75,7 +75,7 @@ void CSymbolTableConstructor::Visit( const CVarDecl& varDecl )
 		curVariable = 0;
 	} else {
 		if( hasSuchNameInScope( curMethod->Locals, varDecl.VarName() ) || hasSuchNameInScope( curMethod->Params, varDecl.VarName() ) ) {
-			std::shared_ptr<CRedefinitionError> varRedError( std::make_shared<CRedefinitionError>( varDecl.VarName(), varDecl.Location() ) );
+			std::shared_ptr<CRedefinitionError> varRedError( std::make_shared<CRedefinitionError>( varDecl.VarName(), IT_Variable, varDecl.Location() ) );
 			errors.AddError( varRedError );
 		}
 		assert( curVariable == 0 );
@@ -107,7 +107,7 @@ void CSymbolTableConstructor::Visit( const CMethodDeclList& methodDeclList )
 void CSymbolTableConstructor::Visit( const CMethodDecl& methodDecl )
 {
 	if( hasSuchNameInScope( curClass->Fields, methodDecl.MethodName() ) || hasSuchNameInScope( curClass->Methods, methodDecl.MethodName() ) ) {
-		std::shared_ptr<CRedefinitionError> methodRedError( std::make_shared<CRedefinitionError>( methodDecl.MethodName(), methodDecl.Location() ) );
+		std::shared_ptr<CRedefinitionError> methodRedError( std::make_shared<CRedefinitionError>( methodDecl.MethodName(), IT_Method, methodDecl.Location() ) );
 		errors.AddError( methodRedError );
 	}
 	CMethodDescriptor newMethod( methodDecl.MethodName() );
@@ -127,7 +127,7 @@ void CSymbolTableConstructor::Visit( const CFormalList& formalList )
 {
 	for( auto& formalArg : formalList.FormalList() ) {
 		if( hasSuchNameInScope( curMethod->Params, formalArg.second ) ) {
-			std::shared_ptr<CRedefinitionError> varRedError( std::make_shared<CRedefinitionError>( formalArg.second, formalList.Location() ) );
+			std::shared_ptr<CRedefinitionError> varRedError( std::make_shared<CRedefinitionError>( formalArg.second, IT_Variable, formalList.Location() ) );
 			errors.AddError( varRedError );
 		}
 		CVariableDescriptor newVar( formalArg.second );

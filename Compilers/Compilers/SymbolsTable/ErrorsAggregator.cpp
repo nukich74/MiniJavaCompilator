@@ -12,8 +12,12 @@ const std::string CUndefinedItemError::baseUndefinedItemMessage = "Undefined nam
 
 const std::string CIncorrectType::baseIncorrectTypeMessage = "Incorrect type of expression ";
 
-std::string CUndefinedItemError::itemName( CItemType itemType )
- {
+const std::string CIncorrectArguments::baseIncorrectArgumentsMessage = "Incorrect arguments in call of method ";
+
+const std::string CCycledClasses::baseCycledClassesMessage = "Cycled using of inheritance in class ";
+
+std::string CSemanticError::itemName( CItemType itemType )
+{
 	switch( itemType ) {
 		case IT_Variable:
 			return "Variable";
@@ -23,6 +27,7 @@ std::string CUndefinedItemError::itemName( CItemType itemType )
 			return "Class";
 		default:
 			assert( false );
+			return "AntiWarning";
 	}
 }
 
