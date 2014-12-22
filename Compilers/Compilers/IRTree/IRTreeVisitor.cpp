@@ -230,7 +230,10 @@ void CIRTreeVisitor::Visit( const CMethodDeclList& methodDeclList )
 	}
 }
 
+
 void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
+{ }
+/*
 {
 	// Все это мы игнорируем, это есть у теблицы символоа
 	methodDecl.ReturnedType()->Accept( *this );
@@ -268,7 +271,7 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 	lastReturnedStm = nullptr;
 	lastReturnedExp = nullptr;
 	lastReturnedAccess = nullptr;
-}
+}*/
 
 void CIRTreeVisitor::Visit( const CFormalList& formalList )
 {
