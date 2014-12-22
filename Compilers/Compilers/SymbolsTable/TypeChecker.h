@@ -77,4 +77,6 @@ private:
 	bool inCycled( const std::string& ) const;
 
 	bool inNotCycled( const std::string& ) const;
+
+	void SetLastTypeCausedByError() const { lastType = SymbolsTable::BT_Int; }
 };

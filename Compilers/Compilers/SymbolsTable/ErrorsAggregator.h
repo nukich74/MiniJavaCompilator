@@ -28,8 +28,6 @@ namespace SymbolsTable {
 	protected:
 		std::string errorMsg;
 
-		static std::string locationString( const CLocation& location ) { return std::to_string( location.startLine ) + ":" + std::to_string( location.startColumn )	+ " - " + std::to_string( location.endLine ) + ":" + std::to_string( location.startColumn ); }
-
 		static std::string itemName( CItemType itemType );
 	};
 
@@ -38,7 +36,7 @@ namespace SymbolsTable {
 		CRedefinitionError( const std::string& redefinedName, CItemType itemType,  const CLocation& location )
 			: CSemanticError( baseRedefinitionMessage )
 		{
-			errorMsg += itemName( itemType ) + " " + redefinedName + " in positions " + locationString( location );
+			errorMsg += itemName( itemType ) + " " + redefinedName + " in positions " + location.ToString();
 		}
 
 	private:
@@ -50,7 +48,7 @@ namespace SymbolsTable {
 		CUndefinedItemError( const std::string& undefinedName, CItemType itemType, const CLocation& location )
 			: CSemanticError( baseUndefinedItemMessage )
 		{
-			errorMsg += itemName( itemType ) + " " + undefinedName + " in positions " + locationString( location );
+			errorMsg += itemName( itemType ) + " " + undefinedName + " in positions " + location.ToString();
 		}
 
 	private:
@@ -62,7 +60,7 @@ namespace SymbolsTable {
 		CIncorrectType( const SymbolsTable::CTypeIdentifier& takenType, const SymbolsTable::CTypeIdentifier& expectedType, const CLocation& location )
 			: CSemanticError( baseIncorrectTypeMessage )
 		{
-			errorMsg += "in positions " + locationString( location ) + ". Expected " + expectedType.toString() + " instead of " + takenType.toString();
+			errorMsg += "in positions " + location.ToString() + ". Expected " + expectedType.toString() + " instead of " + takenType.toString();
 		}
 
 	private:
@@ -74,7 +72,7 @@ namespace SymbolsTable {
 		CIncorrectArguments( const std::string& functionName, const CLocation& location )
 			: CSemanticError( baseIncorrectArgumentsMessage )
 		{
-			errorMsg += functionName + " at positions " + locationString( location );
+			errorMsg += functionName + " at positions " + location.ToString();
 		}
 	private:
 		static const std::string baseIncorrectArgumentsMessage;
@@ -85,7 +83,7 @@ namespace SymbolsTable {
 		CCycledClasses( const std::string& className, const CLocation& location )
 			: CSemanticError( baseCycledClassesMessage )
 		{
-			errorMsg += className + " in positions " + locationString( location );
+			errorMsg += className + " in positions " + location.ToString();
 		}
 	private:
 		static const std::string baseCycledClassesMessage;

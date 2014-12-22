@@ -129,12 +129,14 @@ void CTypeChecker::Visit( const CExpBinOpExp& exp )
 		if( lastType != BT_Bool ) {
 			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, exp.Location() ) );
 			errors.AddError( incorrectTypeError );
+			SetLastTypeCausedByError();
 			return;
 		}
 		exp.RightArg()->Accept( *this );
 		if( lastType != BT_Bool ) {
 			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, exp.Location() ) );
 			errors.AddError( incorrectTypeError );
+			SetLastTypeCausedByError();
 			return;
 		}
 		lastType = BT_Bool;
@@ -143,11 +145,15 @@ void CTypeChecker::Visit( const CExpBinOpExp& exp )
 		if( lastType != BT_Int ) {
 			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
 			errors.AddError( incorrectTypeError );
+			SetLastTypeCausedByError();
+			return;
 		}
 		exp.RightArg()->Accept( *this );
 		if( lastType != BT_Int ) {
 			std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
 			errors.AddError( incorrectTypeError );
+			SetLastTypeCausedByError();
+			return;
 		}
 		if( exp.Operation() != '<' ) {
 			lastType = BT_Int;
@@ -163,6 +169,8 @@ void CTypeChecker::Visit( const CUnMinExp& exp )
 	if( lastType != BT_Int ) {
 		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
 		errors.AddError( incorrectTypeError );
+		SetLastTypeCausedByError();
+		return;
 	}
 	lastType = BT_Int;
 }
@@ -173,11 +181,15 @@ void CTypeChecker::Visit( const CExpWithIndex& exp )
 	if( lastType != BT_IntArr ) {
 		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_IntArr, exp.Location() ) );
 		errors.AddError( incorrectTypeError );
+		SetLastTypeCausedByError();
+		return;
 	}
 	exp.Index()->Accept( *this );
 	if( lastType != BT_Int ) {
 		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
 		errors.AddError( incorrectTypeError );
+		SetLastTypeCausedByError();
+		return;
 	}
 	lastType = BT_Int;
 }
@@ -188,6 +200,8 @@ void CTypeChecker::Visit( const CExpDotLength& exp )
 	if( lastType != BT_IntArr ) {
 		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_IntArr, exp.Location() ) );
 		errors.AddError( incorrectTypeError );
+		SetLastTypeCausedByError();
+		return;
 	}
 	lastType = BT_Int;
 }
@@ -199,6 +213,7 @@ void CTypeChecker::Visit( const CExpIdExpList& exp )
 	if( lastType.Base != BT_UserDefined ) {
 		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
 		errors.AddError( undefIdentifierError );
+		SetLastTypeCausedByError();
 		return;
 	}
 
@@ -206,6 +221,8 @@ void CTypeChecker::Visit( const CExpIdExpList& exp )
 	if( calledMethod == 0 ) {
 		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
 		errors.AddError( undefIdentifierError );
+		SetLastTypeCausedByError();
+		return;
 	} else {
 		expectedArgs = &calledMethod->Params;
 		handlingMethodName = &exp.Id();
@@ -223,6 +240,7 @@ void CTypeChecker::Visit( const CExpIdVoidExpList& exp )
 	if( lastType.Base != BT_UserDefined ) {
 		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
 		errors.AddError( undefIdentifierError );
+		SetLastTypeCausedByError();
 		return;
 	}
 
@@ -230,11 +248,15 @@ void CTypeChecker::Visit( const CExpIdVoidExpList& exp )
 	if( calledMethod == 0 ) {
 		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Method, exp.Location() ) );
 		errors.AddError( undefIdentifierError );
+		SetLastTypeCausedByError();
+		return;
 	} else {
 		expectedArgs = &calledMethod->Params;
 		if( !expectedArgs->empty() ) {
 			std::shared_ptr<CIncorrectArguments> argumentsError( std::make_shared<CIncorrectArguments>( exp.Id(), exp.Location() ) );
 			errors.AddError( argumentsError );
+			SetLastTypeCausedByError();
+			return;
 		}
 		expectedArgs = 0;
 		lastType = calledMethod->ReturnType;
@@ -261,6 +283,8 @@ void CTypeChecker::Visit( const CId& exp )
 	if( !setLastVarTypeByIdentifier( exp.Id() ) ) {
 		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.Id(), IT_Variable, exp.Location() ) );
 		errors.AddError( undefIdentifierError );
+		SetLastTypeCausedByError();
+		return;
 	}
 }
 
@@ -270,6 +294,8 @@ void CTypeChecker::Visit( const CNewIntExpIndex& exp )
 	if( lastType != BT_Int ) {
 		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Int, exp.Location() ) );
 		errors.AddError( incorrectTypeError );
+		SetLastTypeCausedByError();
+		return;
 	}
 	lastType = BT_IntArr;
 }
@@ -279,6 +305,8 @@ void CTypeChecker::Visit( const CNewId& exp )
 	if( symbolsTable.Classes().find( exp.TypeId() ) == symbolsTable.Classes().end() ) {
 		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( exp.TypeId(), IT_Class, exp.Location() ) );
 		errors.AddError( undefIdentifierError );
+		SetLastTypeCausedByError();
+		return;
 	}
 	lastType = exp.TypeId();
 }
@@ -294,6 +322,8 @@ void CTypeChecker::Visit( const CNotExp& exp )
 	if( lastType != BT_Bool ) {
 		std::shared_ptr<CIncorrectType> incorrectTypeError( std::make_shared<CIncorrectType>( lastType, BT_Bool, exp.Location() ) );
 		errors.AddError( incorrectTypeError );
+		SetLastTypeCausedByError();
+		return;
 	}
 	lastType = BT_Bool;
 }
@@ -384,13 +414,16 @@ void CTypeChecker::Visit( const CMethodDecl& methodDecl )
 
 void CTypeChecker::Visit( const CType& type )
 {
-	lastType = type.TypeName();
-	if( lastType == BT_UserDefined 
-		&& symbolsTable.Classes().find( lastType.UserDefinedName ) == symbolsTable.Classes().end() )
+	CTypeIdentifier tmp = type.TypeName();
+	if( tmp == BT_UserDefined 
+		&& symbolsTable.Classes().find( tmp.UserDefinedName ) == symbolsTable.Classes().end() )
 	{
 		std::shared_ptr<CUndefinedItemError> undefIdentifierError( std::make_shared<CUndefinedItemError>( type.TypeName(), IT_Class, type.Location() ) );
 		errors.AddError( undefIdentifierError );
+		SetLastTypeCausedByError();
+		return;
 	}
+	lastType = tmp;
 }
 
 void CTypeChecker::Visit( const CVarDeclList& varDeclList )

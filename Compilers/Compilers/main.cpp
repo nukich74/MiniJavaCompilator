@@ -33,6 +33,7 @@ int main()
 			return 0;
 		}
 
+		/*
 		Translate::CIRTreeVisitor irTreeVisitor( tableConstructor.symbolTable );
 		astRoot->Accept( irTreeVisitor );
 
@@ -41,6 +42,7 @@ int main()
 			//IRTree::CPrinter irPrinter;
 			//frame->Stm->Print( irPrinter );
 		}
+		*/
 	}
 
 	return 0;
