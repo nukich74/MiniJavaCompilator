@@ -4,6 +4,8 @@
 
 namespace Frame {
 
+
+
 const IAccess* CFrame::GetFormal( std::string name ) const
 {
 	auto result = formals.find( name );
@@ -61,6 +63,24 @@ const IAccess* CFrame::GetField( std::string name ) const
 void CFrame::AddField( const std::string _name, const IAccess* _var )
 {
 	fields.insert( std::make_pair( _name, _var ) );
+}
+
+
+const IRTree::IExp* CInFrame::ToExp( const Frame::CFrame* frame ) const
+{
+	return new IRTree::CMem( new IRTree::CBinop(
+		IRTree::B_Plus, new IRTree::CTemp( *( frame->FramePointer() ) ),
+		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
+		new IRTree::CConst( offsetInWords ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
+}
+
+
+const IRTree::IExp* CInObject::ToExp( const Frame::CFrame* frame ) const
+{
+	return new IRTree::CMem( new IRTree::CBinop(
+		IRTree::B_Plus, new IRTree::CTemp( *( frame->ThisPointer() ) ),
+		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
+		new IRTree::CConst( offsetInWords ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
 }
 
 } // namespace Frame

@@ -5,10 +5,12 @@
 
 namespace Frame {
 
+class CFrame;
+
 // Интерфейс для переменной фрейма
 class IAccess {
 public:
-	virtual IRTree::IExp* ToExp( const Temp::CTemp* framePtr ) = 0;
+	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const = 0;
 	virtual ~IAccess() {}
 };
 
@@ -18,10 +20,7 @@ public:
 
 	CInFrame( int _offsetInWords ) : offsetInWords( _offsetInWords ) {}
 
-	virtual IRTree::IExp* ToExp(const Temp::CTemp* framePtr) override
-	{
-		throw std::logic_error("The method or operation is not implemented.");
-	}
+	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const override;
 
 private:
 
@@ -35,10 +34,7 @@ public:
 
 	CInObject( int _offsetInWords ) : offsetInWords( _offsetInWords ) {}
 
-	virtual IRTree::IExp* ToExp( const Temp::CTemp* framePtr ) override
-	{
-		throw std::logic_error( "The method or operation is not implemented." );
-	}
+	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const override;
 
 private:
 
@@ -49,7 +45,7 @@ private:
 class CInRegister : public IAccess {
 public:
 
-	virtual IRTree::IExp* ToExp(const Temp::CTemp* framePtr) override
+	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const override
 	{
 		throw std::logic_error("The method or operation is not implemented.");
 	}
@@ -61,7 +57,9 @@ class CFrame {
 public:
 	CFrame( const std::string _name ) :
 		Name( _name ), ThisCounter( 0 ), LocalCounter( 0 ), 
-		framePointer( new Temp::CTemp( _name + "_FP" ) ), thisPointer( new Temp::CTemp( _name + "_thisPointer" ) ) {}
+		framePointer( new Temp::CTemp( _name + "_FP" ) ), 
+		thisPointer( new Temp::CTemp( _name + "_thisPointer" ) ),
+		returnValue( new Temp::CTemp( _name + "_returnValue" ) ) {}
 
 	// Зарезервированные регистры
 
@@ -73,6 +71,10 @@ public:
 	// this нужен чтобы получать смещения на поля объекта класса
 	const Temp::CTemp* ThisPointer() const {
 		return thisPointer.get();
+	}
+
+	const Temp::CTemp* ReturnValue() const {
+		return returnValue.get();
 	}
 
 	// Машинно зависимая информация
@@ -110,6 +112,7 @@ private:
 
 	std::shared_ptr<const Temp::CTemp> framePointer;
 	std::shared_ptr<const Temp::CTemp> thisPointer;
+	std::shared_ptr<const Temp::CTemp> returnValue;
 };
 
 } // namespace Frame

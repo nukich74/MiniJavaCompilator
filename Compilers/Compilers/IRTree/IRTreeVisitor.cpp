@@ -81,10 +81,28 @@ void CIRTreeVisitor::Visit( const CExpDotLength& exp )
 
 void CIRTreeVisitor::Visit( const CExpIdExpList& exp )
 {
-#pragma message( "TODO Возможно здесь надо что-то делать" )
-	assert( currentFrame == 0 );
-	//currentFrame = new Frame::CFrame( exp.Id() )
-	// Больше ничего, всю остальную информацию уже знаем из таблицы символов
+	// Вычисляем выражение к которому надо применить метод
+	exp.Exp()->Accept( *this );
+	const IRTree::IExp* exprToBeCalled = lastReturnedExp;
+	lastReturnedExp = nullptr;
+	// Это просто метод который надо вызвать
+	std::string methodName = exp.Id();
+	Temp::CLabel* functionLabel = new Temp::CLabel( methodName );
+	IRTree::CName* functionName = new IRTree::CName( functionLabel );
+	const IRTree::CExpList* args;
+	if( exp.ExpList() != 0 ) {
+		exp.ExpList()->Accept( *this );
+		args = lastReturnedExpList;
+	}
+	else {
+		args = new IRTree::CExpList( nullptr, nullptr );
+	}
+	Temp::CTemp* returned = new Temp::CTemp();
+	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *returned );
+	// Только если функция возвращает значени иначе просто будет stm
+	lastReturnedExp = new IRTree::CEseq(new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, *lastReturnedExpList ) ), returnedTemp );
+	lastReturnedExpList = nullptr;
+
 }
 
 void CIRTreeVisitor::Visit( const CExpIdVoidExpList& exp )
@@ -116,9 +134,7 @@ void CIRTreeVisitor::Visit( const CFalse& exp )
 void CIRTreeVisitor::Visit( const CId& exp )
 {
 	// Найдем нужную инфу во фрейме
-	lastReturnedAccess = currentFrame->GetAccess( exp.Id() );
-	lastReturnedExp = nullptr;
-	lastReturnedStm = nullptr;
+	lastReturnedExp = currentFrame->GetAccess( exp.Id() )->ToExp( currentFrame );
 }
 
 void CIRTreeVisitor::Visit( const CThis& exp )
@@ -129,13 +145,36 @@ void CIRTreeVisitor::Visit( const CThis& exp )
 
 void CIRTreeVisitor::Visit( const CNewIntExpIndex& exp )
 {
-#pragma message( "TODO Оператор new для int[] тут получаем количество необходимой памяти из lastReturnedExp выделяем и возвращаем Name" )
 	exp.Exp()->Accept( *this );
+	const IRTree::IExp* lengthOfArrray = lastReturnedExp;
+	lastReturnedExp = nullptr;
+	const IRTree::IExp* lengthDeFacto = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Plus, lengthOfArrray, new IRTree::CConst( 1 ) ) );
+	// Выделяем память
+	Temp::CLabel* mallocLabel = new Temp::CLabel( "malloc" );
+	const IRTree::CName* mallocName = new IRTree::CName( mallocLabel );
+	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *( new IRTree::CExpList( lengthDeFacto, nullptr ) ) );
+	Temp::CTemp* resultTemp = new Temp::CTemp();
+	const IRTree::CTemp* tempTemp = new IRTree::CTemp( *resultTemp );
+	// Проставляем память нулями
+	const IRTree::CCall* memSetCall = nullptr;
+	const IRTree::CSeq* mallocMoveMemset = new IRTree::CSeq( new IRTree::CMove( tempTemp, mallocCall ), 
+		new IRTree::CMove( tempTemp, lengthOfArrray ) , new IRTree::CExp( memSetCall ) );
+	lastReturnedExp = new IRTree::CEseq( mallocMoveMemset, tempTemp );
 }
 void CIRTreeVisitor::Visit( const CNewId& exp )
 {
-#pragma message( "TODO Оператор new для любого типа тут нужен размер типа, выделяем и возвращаем Name" )
-	std::cout << "new " << exp.TypeId() << "()";
+	// Выделяем память
+	Temp::CLabel* mallocLabel = new Temp::CLabel( "malloc" );
+	// По хорошему здесь надо посчитать сколько всего полей у класса и выделить столько машинных слов
+	const IRTree::CName* mallocName = new IRTree::CName( mallocLabel );
+	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *(new IRTree::CExpList( new IRTree::CConst( 100500 ), nullptr ) ) );
+	Temp::CTemp* resultTemp = new Temp::CTemp();
+	const IRTree::CTemp* tempTemp = new IRTree::CTemp( *resultTemp );
+	// Проставляем память нулями
+	const IRTree::CCall* memSetCall = nullptr;
+	const IRTree::CSeq* mallocMoveMemset = new IRTree::CSeq( new IRTree::CMove( tempTemp, mallocCall ), new IRTree::CExp( memSetCall ) );
+	lastReturnedExp = new IRTree::CEseq( mallocMoveMemset, tempTemp );
+
 }
 
 void CIRTreeVisitor::Visit( const CNotExp& exp )
@@ -194,7 +233,6 @@ void CIRTreeVisitor::Visit( const CClassDeclList& classDeclList )
 
 void CIRTreeVisitor::Visit( const CClassDecl& classDecl )
 {
-#pragma message( "TODO Возможно здесь надо что-то делать" )
 	// Запоминаем в каком мы классе
 	className = classDecl.ClassId();
 	if( classDecl.VarDeclList() != 0 ) {
@@ -219,6 +257,7 @@ void CIRTreeVisitor::Visit( const CVarDeclList& varDeclList )
 
 void CIRTreeVisitor::Visit( const CVarDecl& varDecl )
 {
+	// Здесь для IRTree ничего не нужно
 	varDecl.VarType()->Accept( *this );
 }
 
@@ -273,8 +312,14 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 	}
 	if( methodDecl.StatementList() != 0 ) {
 		methodDecl.StatementList()->Accept( *this );
+		// после этой строки есть сам код
 	}
 	if( methodDecl.ReturnedExp() != 0 ) {
+		// Это обрабатываем как возвращаемое значение, оно проставляется return 
+		// Переносим lastReturnedValue в регистр если оно было
+		if( lastReturnedExp != nullptr ) {
+			lastReturnedStm = new IRTree::CMove( new IRTree::CTemp( *currentFrame->ReturnValue() ), lastReturnedExp );
+		}
 		methodDecl.ReturnedExp()->Accept( *this );
 	}
 	Methods.push_back( currentFrame );
@@ -286,14 +331,10 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 
 void CIRTreeVisitor::Visit( const CFormalList& formalList )
 {
-#pragma message( "TODO Возможно здесь надо что-то делать" )
+	// Эта инфа у таблицы символов
+	// Нам тут делать нечего
 	for( auto ptr = formalList.FormalList().begin(); ptr != formalList.FormalList().end(); ++ptr ) {
-		if( ptr != formalList.FormalList().begin() ) {
-			std::cout << ", ";
-		}
 		ptr->first->Accept( *this );
-		std::cout << " ";
-		std::cout << ptr->second;
 	}
 }
 
@@ -431,11 +472,12 @@ void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
 
 void CIRTreeVisitor::Visit( const CExpList& expList )
 {
-#pragma message( "Не ясно что делать" )
+	const IRTree::CExpList* irExpList = nullptr;
 	for( const auto& decl : expList.ExpList() ) {
 		decl->Accept( *this );
-		std::cout << std::endl;
+		irExpList = new IRTree::CExpList( lastReturnedExp, irExpList );
 	}
+	lastReturnedExpList = irExpList;
 }
 
 } // namespace Translate
