@@ -301,24 +301,28 @@ void CPrinter::Print( const CExpList* node )
 {
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
-	parents.insert( std::make_pair( node->head.get( ), id ) );
-	parents.insert( std::make_pair( node->tail.get( ), id ) );
-	node->head->Print( *this );
-	node->tail->Print( *this );
+	if( node != nullptr ) {
+		parents.insert( std::make_pair( node->head.get(), id ) );
+		parents.insert( std::make_pair( node->tail.get(), id ) );
+		node->head->Print( *this );
+		node->tail->Print( *this );
+	}
 
 	std::cout << "Parent: ";
 	auto it = parents.find( this );
-	if( it != parents.end( ) ) {
+	if( it != parents.end() ) {
 		std::cout << it->second;
-	} else {
+	}
+	else {
 		std::cout << -1;
 	}
 
 	std::cout << " Values: ";
 
-	std::cout << "[head]" << ids.find( node->head.get( ) )->second << " ";
-	std::cout << "[tail]" << ids.find( node->tail.get( ) )->second << " ";
-
+	if( node != nullptr ) {
+		std::cout << "[head]" << ids.find( node->head.get() )->second << " ";
+		std::cout << "[tail]" << ids.find( node->tail.get() )->second << " ";
+	}
 	std::cout << "Type: " << "CIRExpList";
 	std::cout << std::endl;
 }

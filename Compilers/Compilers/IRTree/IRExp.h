@@ -80,9 +80,10 @@ public:
 		exp( _exp )
 	{}
 
-	virtual void Print(CPrinter& printer) const override
+	virtual void Print( CPrinter& printer ) const override
 	{
-		throw std::logic_error("The method or operation is not implemented.");
+		// АЗАТ че за дела? Чего ты метод не дописал?
+		printer.Print( this );
 	}
 
 	const std::shared_ptr<const IExp> exp;

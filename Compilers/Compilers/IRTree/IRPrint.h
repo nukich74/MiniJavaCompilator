@@ -24,7 +24,7 @@ class CExpList;
 
 class CPrinter {
 public:
-	CPrinter();
+	CPrinter() {}
 
 	void Print( const CMove* node );
 	void Print( const CExp* node );

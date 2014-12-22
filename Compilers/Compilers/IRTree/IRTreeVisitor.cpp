@@ -336,11 +336,12 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 	if( methodDecl.ReturnedExp() != 0 ) {
 		// Это обрабатываем как возвращаемое значение, оно проставляется return 
 		// Переносим lastReturnedValue в регистр если оно было
+		methodDecl.ReturnedExp()->Accept( *this );
 		if( lastReturnedExp != nullptr ) {
 			lastReturnedStm = new IRTree::CMove( new IRTree::CTemp( *currentFrame->ReturnValue() ), lastReturnedExp );
 		}
-		methodDecl.ReturnedExp()->Accept( *this );
 	}
+	currentFrame->Stm = lastReturnedStm;
 	Methods.push_back( currentFrame );
 	currentFrame = nullptr;
 	lastReturnedStm = nullptr;
@@ -423,7 +424,7 @@ void CIRTreeVisitor::Visit( const CPrintStatement& printStatement )
 	const IRTree::CName* funcNameTree = new IRTree::CName( funcName );
 	const IRTree::CExpList* args = new IRTree::CExpList( exprForPrint, nullptr );
 	const IRTree::IExp* funcCall = new IRTree::CCall( funcNameTree, *args );
-	lastReturnedExp = funcCall;
+	lastReturnedStm = new IRTree::CExp( funcCall );
 }
 
 void CIRTreeVisitor::Visit( const CCurlyBraceStatement& curlyBraceStatement )
