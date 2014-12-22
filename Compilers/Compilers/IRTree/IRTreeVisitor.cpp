@@ -232,8 +232,6 @@ void CIRTreeVisitor::Visit( const CMethodDeclList& methodDeclList )
 
 
 void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
-{ }
-/*
 {
 	// Все это мы игнорируем, это есть у теблицы символоа
 	methodDecl.ReturnedType()->Accept( *this );
@@ -250,13 +248,26 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 		currentFrame->AddField( field.Name(), new Frame::CInObject( currentFrame->ThisCounter ) );
 		currentFrame->ThisCounter++;
 	}
+	
+	// Добавил костыль, ибо не компилится - в ClassDecsriptor методы и переменные хранятся в массивах а не map.
+	// Если не конструкция вам не по душе можете выделить в отдельный метод, либо развлечься иным способом.
+	const std::vector<SymbolsTable::CVariableDescriptor>* params = nullptr;
+	const std::vector<SymbolsTable::CVariableDescriptor>* locals = nullptr;
+	for( auto& method : symbolsTable.Classes( ).at( className ).Methods ) {
+		if( method.Name() == methodDecl.MethodName() ) {
+			params = &method.Params;
+			locals = &method.Locals;
+			break;
+		}
+	}
+	
 	// Добавляем параметры функции фрейму
-	for( const auto& field : symbolsTable.Classes( ).at( className ).Methods.at( methodDecl.MethodName ).Params ) {
+	for( const auto& field : *params ) {
 		currentFrame->AddField( field.Name(), new Frame::CInFrame( currentFrame->LocalCounter ) );
 		currentFrame->LocalCounter++;
 	}
 	// Добавляем локальные переменные фрейму
-	for( const auto& field : symbolsTable.Classes( ).at( className ).Methods.at( methodDecl.MethodName ).Locals ) {
+	for( const auto& field : *locals ) {
 		currentFrame->AddField( field.Name(), new Frame::CInFrame( currentFrame->LocalCounter ) );
 		currentFrame->LocalCounter++;
 	}
@@ -271,7 +282,7 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 	lastReturnedStm = nullptr;
 	lastReturnedExp = nullptr;
 	lastReturnedAccess = nullptr;
-}*/
+}
 
 void CIRTreeVisitor::Visit( const CFormalList& formalList )
 {
