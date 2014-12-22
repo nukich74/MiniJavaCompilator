@@ -33,6 +33,15 @@ void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 		case '*':
 			binOp = IRTree::B_Mul;
 			break;
+		case '^':
+			binOp = IRTree::B_Xor;
+			break;
+		case '<':
+			binOp = IRTree::B_Less;
+			break;
+		case '>':
+			binOp = IRTree::B_Greater;
+			break;
 		default:
 			assert( false );
 	}
@@ -97,6 +106,7 @@ void CIRTreeVisitor::Visit( const CExpIdExpList& exp )
 	else {
 		args = new IRTree::CExpList( nullptr, nullptr );
 	}
+#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	Temp::CTemp* returned = new Temp::CTemp();
 	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *returned );
 	// Только если функция возвращает значени иначе просто будет stm
@@ -109,7 +119,7 @@ void CIRTreeVisitor::Visit( const CExpIdVoidExpList& exp )
 {
 #pragma message( "TODO Возможно здесь надо что-то делать" )
 	// Заголовок функции без возвращаемого типа
-	assert( currentFrame == 0 );
+	lastReturnedExp = nullptr;
 	//currentFrame = new Frame::CFrame( exp.Id() )
 	// Больше ничего, всю остальную информацию уже знаем из таблицы символов
 }
@@ -139,12 +149,12 @@ void CIRTreeVisitor::Visit( const CId& exp )
 
 void CIRTreeVisitor::Visit( const CThis& exp )
 {
-#pragma message( "TODO Здесь надо возвращать IRTree::IRName переменной" )
-	std::cout << "this";
+	lastReturnedExp = new IRTree::CTemp( *currentFrame->ThisPointer() );
 }
 
 void CIRTreeVisitor::Visit( const CNewIntExpIndex& exp )
 {
+#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	exp.Exp()->Accept( *this );
 	const IRTree::IExp* lengthOfArrray = lastReturnedExp;
 	lastReturnedExp = nullptr;
@@ -163,6 +173,7 @@ void CIRTreeVisitor::Visit( const CNewIntExpIndex& exp )
 }
 void CIRTreeVisitor::Visit( const CNewId& exp )
 {
+#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	// Выделяем память
 	Temp::CLabel* mallocLabel = new Temp::CLabel( "malloc" );
 	// По хорошему здесь надо посчитать сколько всего полей у класса и выделить столько машинных слов
@@ -187,8 +198,7 @@ void CIRTreeVisitor::Visit( const CNotExp& exp )
 
 void CIRTreeVisitor::Visit( const CExpInBrackets& exp )
 {
-#pragma message( "TODO Здесь нужно чтобы тот кому выражение принадлежит забрал lastReturnedExp" )
-	// Строится exp list
+	// Здесь все и так нормально, тут сохраняется lastReturnedExp
 	exp.Exp()->Accept( *this );
 }
 
@@ -216,7 +226,6 @@ void CIRTreeVisitor::Visit( const CMainClass& mainClass )
 	currentFrame->Stm = lastReturnedStm;
 	lastReturnedStm = nullptr;
 	lastReturnedExp = nullptr;
-	lastReturnedAccess = nullptr;
 	Methods.push_back( currentFrame );
 	// Очищаем инфу о текущем фрейме
 	currentFrame = 0;
@@ -241,7 +250,6 @@ void CIRTreeVisitor::Visit( const CClassDecl& classDecl )
 	if( classDecl.MethodDeclList() != 0 ) {
 		classDecl.MethodDeclList()->Accept( *this );
 	}
-	lastReturnedAccess = nullptr;
 	lastReturnedExp = nullptr;
 	lastReturnedStm = nullptr;
 	className = "";
@@ -326,7 +334,6 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 	currentFrame = nullptr;
 	lastReturnedStm = nullptr;
 	lastReturnedExp = nullptr;
-	lastReturnedAccess = nullptr;
 }
 
 void CIRTreeVisitor::Visit( const CFormalList& formalList )
@@ -354,7 +361,6 @@ void CIRTreeVisitor::Visit( const CStatementList& statementList )
 	listOfStm = lastReturnedStm;
 	lastReturnedStm = nullptr;
 	lastReturnedExp = nullptr;
-	lastReturnedAccess = nullptr;
 	if( statementList.StatmentList().size() == 1 ) {
 		lastReturnedStm = listOfStm;
 		return;
@@ -375,7 +381,6 @@ void CIRTreeVisitor::Visit( const CStatementList& statementList )
 			listOfStm = new IRTree::CSeq( listOfStm, statementToAdd );
 			lastReturnedStm = nullptr;
 			lastReturnedExp = nullptr;
-			lastReturnedAccess = nullptr;
 		}
 		lastReturnedStm = listOfStm;
 	}
@@ -383,16 +388,16 @@ void CIRTreeVisitor::Visit( const CStatementList& statementList )
 
 void CIRTreeVisitor::Visit( const CAssignStatement& assignStatement )
 {
-#pragma message( "TODO Возможно здесь надо что-то делать" )
-	std::cout << assignStatement.LeftId();
+	const IRTree::IExp* leftExp = currentFrame->GetAccess( assignStatement.LeftId() )->ToExp( currentFrame );
 	if( assignStatement.IndexExp() != 0 ) {
-		std::cout << "[";
 		assignStatement.IndexExp()->Accept( *this );
-		std::cout << "]";
+		const IRTree::IExp* index = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Plus, lastReturnedExp, new IRTree::CConst( 1 ) ) );
+		leftExp = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Plus, leftExp, index ) );
 	}
-	std::cout << " = ";
 	assignStatement.RightExp()->Accept( *this );
-	std::cout << ";";
+	const IRTree::IExp* rightExp = lastReturnedExp;
+	lastReturnedExp = nullptr;
+	lastReturnedStm = new IRTree::CMove( leftExp, rightExp );
 }
 
 void CIRTreeVisitor::Visit( const CPrintStatement& printStatement )
@@ -402,7 +407,6 @@ void CIRTreeVisitor::Visit( const CPrintStatement& printStatement )
 	const IRTree::IExp* exprForPrint = lastReturnedExp;
 	lastReturnedExp = nullptr;
 	lastReturnedStm = nullptr;
-	lastReturnedAccess = nullptr;
 	// Вызываем функцию
 	Temp::CLabel* funcName = new Temp::CLabel( "System.out.println" );
 	const IRTree::CName* funcNameTree = new IRTree::CName( funcName );
@@ -423,7 +427,6 @@ void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 	const IRTree::IExp* ifExpr = lastReturnedExp;
 	lastReturnedExp = nullptr;
 	lastReturnedStm = nullptr;
-	lastReturnedAccess = nullptr;
 	Temp::CLabel* trueLabelTemp = new Temp::CLabel();
 	Temp::CLabel* falseLabelTemp = new Temp::CLabel();
 	Temp::CLabel* endLabelTemp = new Temp::CLabel();
@@ -434,14 +437,12 @@ void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 	IRTree::IStm* trueStm = new IRTree::CSeq( trueLabel, lastReturnedStm, endLabel );
 	lastReturnedExp = nullptr;
 	lastReturnedStm = nullptr;
-	lastReturnedAccess = nullptr;
 	IRTree::IStm* falseStm = 0;
 	if( ifStatement.ElseStatement() != 0 ) {
 		ifStatement.ElseStatement()->Accept( *this );
 		falseStm = new IRTree::CSeq( falseLabel, lastReturnedStm, endLabel );
 		lastReturnedExp = nullptr;
 		lastReturnedStm = nullptr;
-		lastReturnedAccess = nullptr;
 	}
 	Translate::CExpConverter converter( ifExpr );
 	// Предполагается что ToConditional правильно обрабатывает если второй аргумент 0
@@ -461,13 +462,11 @@ void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
 	const IRTree::IStm* whileStm = converter.ToConditional( inLoopLabelTemp, endLabelTemp );
 	lastReturnedExp = nullptr;
 	lastReturnedStm = nullptr;
-	lastReturnedAccess = nullptr;
 	IRTree::IStm* conditionStm = new IRTree::CSeq( beforeConditionLabel, whileStm, inLoopLabel );
 	whileStatement.Statement()->Accept( *this );
 	lastReturnedStm = new IRTree::CSeq( conditionStm, lastReturnedStm, 
 		new IRTree::CJump( beforeConditionLabelTemp ), endLabel );
 	lastReturnedExp = nullptr;
-	lastReturnedAccess = nullptr;
 }
 
 void CIRTreeVisitor::Visit( const CExpList& expList )

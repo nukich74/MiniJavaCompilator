@@ -21,7 +21,7 @@ public:
 
 	CIRTreeVisitor( const SymbolsTable::CSymbolsTable& _symbolsTable ) : 
 		currentFrame( 0 ), lastReturnedExp( 0 ), 
-		lastReturnedStm( 0 ), lastReturnedAccess( 0 ), lastReturnedExpList( 0 ),
+		lastReturnedStm( 0 ), lastReturnedExpList( 0 ),
 		symbolsTable( _symbolsTable ) {}
 
 	virtual void Visit( const CExpBinOpExp& exp );
@@ -76,7 +76,6 @@ private:
 	//	Ќету смысла мучатьс€ с умными указател€ми дл€ 
 	const IRTree::IExp* lastReturnedExp;
 	const IRTree::IStm* lastReturnedStm;
-	const Frame::IAccess* lastReturnedAccess;
 	const IRTree::CExpList* lastReturnedExpList;
 
 };
