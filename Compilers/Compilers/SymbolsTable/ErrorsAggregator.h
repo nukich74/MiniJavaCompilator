@@ -60,7 +60,7 @@ namespace SymbolsTable {
 		CIncorrectType( const SymbolsTable::CTypeIdentifier& takenType, const SymbolsTable::CTypeIdentifier& expectedType, const CLocation& location )
 			: CSemanticError( baseIncorrectTypeMessage )
 		{
-			errorMsg += "in positions " + location.ToString() + ". Expected " + expectedType.toString() + " instead of " + takenType.toString();
+			errorMsg += "in positions " + location.ToString() + ". Expected " + expectedType.ToString() + " instead of " + takenType.ToString();
 		}
 
 	private:
@@ -72,7 +72,7 @@ namespace SymbolsTable {
 		CIncorrectArguments( const std::string& functionName, const CLocation& location )
 			: CSemanticError( baseIncorrectArgumentsMessage )
 		{
-			errorMsg += functionName + " at positions " + location.ToString();
+			errorMsg += functionName + " in positions " + location.ToString();
 		}
 	private:
 		static const std::string baseIncorrectArgumentsMessage;

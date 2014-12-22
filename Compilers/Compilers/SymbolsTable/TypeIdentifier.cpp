@@ -18,7 +18,7 @@ namespace SymbolsTable {
 		}
 	}
 
-	std::string CTypeIdentifier::toString() const
+	std::string CTypeIdentifier::ToString() const
 	{
 		if( Base == BT_UserDefined ) {
 			return UserDefinedName;
