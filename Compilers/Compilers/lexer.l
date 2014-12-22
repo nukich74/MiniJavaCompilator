@@ -73,7 +73,7 @@ static void updateLocation()
 
 "this"				{ return THIS; }
 
-[a-zA-Z][a-zA-Z0-9]*		{ strcpy_s( yylval.sval, yytext ); return ID; }
+[a-zA-Z][\_a-zA-Z0-9]*		{ strcpy_s( yylval.sval, yytext ); return ID; }
 
 [0-9]+ 				{ yylval.ival = atoi(yytext); return INTEGER_LITERAL; }
 
