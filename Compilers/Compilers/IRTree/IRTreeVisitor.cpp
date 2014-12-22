@@ -117,11 +117,22 @@ void CIRTreeVisitor::Visit( const CExpIdExpList& exp )
 
 void CIRTreeVisitor::Visit( const CExpIdVoidExpList& exp )
 {
-#pragma message( "TODO Возможно здесь надо что-то делать" )
-	// Заголовок функции без возвращаемого типа
+	// Вызов функции без аргументов
+	// Вычисляем выражение к которому надо применить метод
+	exp.Exp()->Accept( *this );
+	const IRTree::IExp* exprToBeCalled = lastReturnedExp;
 	lastReturnedExp = nullptr;
-	//currentFrame = new Frame::CFrame( exp.Id() )
-	// Больше ничего, всю остальную информацию уже знаем из таблицы символов
+	// Это просто метод который надо вызвать
+	std::string methodName = exp.Id();
+	Temp::CLabel* functionLabel = new Temp::CLabel( methodName );
+	IRTree::CName* functionName = new IRTree::CName( functionLabel );
+	const IRTree::CExpList* args = new IRTree::CExpList( nullptr, nullptr );
+#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
+	Temp::CTemp* returned = new Temp::CTemp();
+	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *returned );
+	// Только если функция возвращает значени иначе просто будет stm
+	lastReturnedExp = new IRTree::CEseq( new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, *lastReturnedExpList ) ), returnedTemp );
+	lastReturnedExpList = nullptr;
 }
 
 void CIRTreeVisitor::Visit( const CIntegerLiteral& exp )
