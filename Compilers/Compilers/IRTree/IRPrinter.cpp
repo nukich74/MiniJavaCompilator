@@ -327,4 +327,25 @@ void CPrinter::Print( const CExpList* node )
 	std::cout << std::endl;
 }
 
+void CPrinter::Print( const CLabel* node )
+{
+	int id = minId++;
+	ids.insert( std::make_pair( node, id ) );
+
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
+	if( it != parents.end( ) ) {
+		std::cout << it->second;
+	} else {
+		std::cout << -1;
+	}
+
+	std::cout << " Values: ";
+
+	std::cout << "[label]" << node->label->Name( ) << " ";
+
+	std::cout << "Type: " << "CIRLabel";
+	std::cout << std::endl;
+}
+
 }

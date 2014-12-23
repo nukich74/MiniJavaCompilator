@@ -116,7 +116,7 @@ public:
 
 	virtual void Print( CPrinter& printer ) const
 	{
-		assert( false );
+		printer.Print( this );
 	}
 
 	const Temp::CLabel* const label;

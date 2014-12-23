@@ -20,6 +20,7 @@ class CMem;
 class CCall;
 class CEseq;
 class CExpList;
+class CLabel;
 
 
 class CPrinter {
@@ -39,6 +40,7 @@ public:
 	void Print( const CCall* node );
 	void Print( const CEseq* node );
 	void Print( const CExpList* node );
+	void Print( const CLabel* node );
 private:
 	std::map<const void*, int> ids;
 	std::map<const void*, int> parents;
