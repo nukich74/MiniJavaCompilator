@@ -344,7 +344,7 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 		// Переносим lastReturnedValue в регистр если оно было
 		methodDecl.ReturnedExp()->Accept( *this );
 		if( lastReturnedExp != nullptr ) {
-			lastReturnedStm = new IRTree::CMove( new IRTree::CTemp( *currentFrame->ReturnValue() ), lastReturnedExp );
+			lastReturnedStm = new IRTree::CSeq( lastReturnedStm, new IRTree::CMove( new IRTree::CTemp( *currentFrame->ReturnValue() ), lastReturnedExp ) );
 		}
 	}
 	currentFrame->Stm = lastReturnedStm;
@@ -464,7 +464,7 @@ void CIRTreeVisitor::Visit( const CIfStatement& ifStatement )
 	}
 	Translate::CExpConverter converter( ifExpr );
 	// Предполагается что ToConditional правильно обрабатывает если второй аргумент 0
-	lastReturnedStm = converter.ToConditional( trueLabelTemp, falseLabelTemp );
+	lastReturnedStm = new IRTree::CSeq( converter.ToConditional( trueLabelTemp, falseLabelTemp ), trueStm, falseStm );
 }
 
 void CIRTreeVisitor::Visit( const CWhileStatement& whileStatement )
