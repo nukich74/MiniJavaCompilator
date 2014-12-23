@@ -37,9 +37,11 @@ enum TBinop {
 	B_Plus,
 	B_Minus,
 	B_Mul,
+	B_Division,
 	B_Xor,
 	B_Less,
-	B_Greater
+	B_Greater,
+	B_And
 };
 
 // Логическое

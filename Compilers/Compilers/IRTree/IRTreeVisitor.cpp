@@ -33,6 +33,9 @@ void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 		case '*':
 			binOp = IRTree::B_Mul;
 			break;
+		case '/':
+			binOp = IRTree::B_Division;
+			break;
 		case '^':
 			binOp = IRTree::B_Xor;
 			break;
@@ -41,6 +44,9 @@ void CIRTreeVisitor::Visit( const CExpBinOpExp& exp )
 			break;
 		case '>':
 			binOp = IRTree::B_Greater;
+			break;
+		case '&':
+			binOp = IRTree::B_And;
 			break;
 		default:
 			assert( false );
