@@ -16,8 +16,8 @@ void CPrinter::Print( const CMove* node )
 	node->dst->Print( *this );
 	node->src->Print( *this );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end() ) {
 		std::cout << it->second;
 	} else {
@@ -40,8 +40,8 @@ void CPrinter::Print( const CExp* node )
 	parents.insert( std::make_pair( node->exp.get( ), id ) );
 	node->exp->Print( *this );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -61,8 +61,8 @@ void CPrinter::Print( const CJump* node )
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -86,8 +86,8 @@ void CPrinter::Print( const CCjump* node )
 	node->left->Print( *this );
 	node->right->Print( *this );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -115,8 +115,8 @@ void CPrinter::Print( const CSeq* node )
 	node->left->Print( *this );
 	node->right->Print( *this );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -137,8 +137,8 @@ void CPrinter::Print( const CConst* node )
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -158,8 +158,8 @@ void CPrinter::Print( const CName* node )
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -179,8 +179,8 @@ void CPrinter::Print( const CTemp* node )
 	int id = minId++;
 	ids.insert( std::make_pair( node, id ) );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -204,8 +204,8 @@ void CPrinter::Print( const CBinop* node )
 	node->left->Print( *this );
 	node->right->Print( *this );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -231,8 +231,8 @@ void CPrinter::Print( const CCall* node )
 	node->args.Print( *this );
 	node->func->Print( *this );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -255,8 +255,8 @@ void CPrinter::Print( const CMem* node )
 	parents.insert( std::make_pair( node->exp.get( ), id ) );
 	node->exp->Print( *this );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -280,8 +280,8 @@ void CPrinter::Print( const CEseq* node )
 	node->stm->Print( *this );
 	node->exp->Print( *this );
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end( ) ) {
 		std::cout << it->second;
 	} else {
@@ -308,8 +308,8 @@ void CPrinter::Print( const CExpList* node )
 		node->tail->Print( *this );
 	}
 
-	std::cout << "Parent: ";
-	auto it = parents.find( this );
+	std::cout << "Node: " << id << " Parent: ";
+	auto it = parents.find( node );
 	if( it != parents.end() ) {
 		std::cout << it->second;
 	}
