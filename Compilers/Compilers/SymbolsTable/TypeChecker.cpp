@@ -107,15 +107,16 @@ void CTypeChecker::Visit( const CWhileStatement& whileStatement )
 
 void CTypeChecker::Visit( const CExpList& expList )
 {
-	assert( expectedArgs != 0 );
-	if( expectedArgs->size() != expList.ExpList().size() ) {
+	auto currentArgs = expectedArgs;
+	assert( currentArgs != 0 );
+	if( currentArgs->size() != expList.ExpList().size() ) {
 		std::shared_ptr<CIncorrectArguments> argumentsError( std::make_shared<CIncorrectArguments>( *handlingMethodName, expList.Location() ) );
 		errors.AddError( argumentsError );
 		return;
 	}
 	for( size_t i = 0; i < expList.ExpList().size(); ++i ) {
 		expList.ExpList()[i]->Accept( *this );
-		if( ( *expectedArgs )[i].Type != lastType ) {
+		if( ( *currentArgs )[i].Type != lastType ) {
 			std::shared_ptr<CIncorrectArguments> argumentsError( std::make_shared<CIncorrectArguments>( *handlingMethodName, expList.Location() ) );
 			errors.AddError( argumentsError );
 		}
