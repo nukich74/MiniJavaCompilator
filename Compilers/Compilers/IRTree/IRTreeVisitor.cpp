@@ -344,7 +344,12 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 		// Переносим lastReturnedValue в регистр если оно было
 		methodDecl.ReturnedExp()->Accept( *this );
 		if( lastReturnedExp != nullptr ) {
-			lastReturnedStm = new IRTree::CSeq( lastReturnedStm, new IRTree::CMove( new IRTree::CTemp( *currentFrame->ReturnValue() ), lastReturnedExp ) );
+			if( lastReturnedStm != nullptr ) {
+				lastReturnedStm = new IRTree::CSeq( lastReturnedStm, new IRTree::CMove( new IRTree::CTemp( *currentFrame->ReturnValue() ), lastReturnedExp ) );
+			} else {
+				lastReturnedStm = new IRTree::CMove( new IRTree::CTemp( *currentFrame->ReturnValue() ), lastReturnedExp);
+			}
+			
 		}
 	}
 	currentFrame->Stm = lastReturnedStm;
@@ -372,7 +377,7 @@ void CIRTreeVisitor::Visit( const CType& type )
 void CIRTreeVisitor::Visit( const CStatementList& statementList )
 {
 	// Предполагается что есть хоть какие то statement
-	assert( statementList.StatmentList().size() > 0 );
+	//assert( statementList.StatmentList().size() > 0 );
 	const IRTree::IStm* listOfStm = nullptr;
 	// Выполняем первый
 	statementList.StatmentList().front()->Accept( *this );
