@@ -6,6 +6,7 @@
 #include <Exp.h>
 #include <iostream>
 #include <string>
+#include <stack>
 #include <cassert>
 #include <common.h>
 #include <Visitor.h>
@@ -307,12 +308,23 @@ void CIRTreeVisitor::Visit( const CMethodDecl& methodDecl )
 	}
 	// Строим фрейм
 	currentFrame = new Frame::CFrame( className + ":" + methodDecl.MethodName() );
-	// Добавляем поля класса к фрейму
-	for( const auto& field : symbolsTable.Classes().at( className ).Fields ) {
-		currentFrame->AddField( field.Name(), new Frame::CInObject( currentFrame->ThisCounter ) );
-		currentFrame->ThisCounter++;
+	std::vector<const SymbolsTable::CClassDescriptor*> classNames;
+	const SymbolsTable::CClassDescriptor* currentClass = &symbolsTable.Classes().at( className );
+	while( currentClass != nullptr ) {
+		classNames.push_back( currentClass );
+		if( !currentClass->BaseClass.empty() ) {
+			currentClass = &( symbolsTable.Classes().at( currentClass->BaseClass ) );
+		} else {
+			currentClass = nullptr;
+		}
 	}
-	
+	// Добавляем поля класса к фрейму symbolsTable.Classes().at( className )
+	for( int i = classNames.size() - 1; i >= 0; i-- ) {
+		for( const auto& field : classNames.at( i )->Fields ) {
+			currentFrame->AddField( field.Name(), new Frame::CInObject( currentFrame->ThisCounter ) );
+			currentFrame->ThisCounter++;
+		}
+	}
 	// Добавил костыль, ибо не компилится - в ClassDecsriptor методы и переменные хранятся в массивах а не map.
 	// Если не конструкция вам не по душе можете выделить в отдельный метод, либо развлечься иным способом.
 	const std::vector<SymbolsTable::CVariableDescriptor>* params = nullptr;
