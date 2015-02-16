@@ -132,7 +132,7 @@ ClassDecls:
 	;
 MainClass:
 	CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements '}' '}' { CLocation location( @1.first_line, @1.first_column, @17.last_line, @17.last_column ); $$ = new CMainClass( $2, $12, $15, location ); }
-	| CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements error '}' '}' { *hasError = 1; std::cout << "Syntax error : incorrect symbols in Main function from " << @16.first_line << ":" << @16.first_column << " to " << @16.last_line << ":" << @16.last_column << std::endl; }
+	| CLASS ID '{' PUBLIC STATIC VOID MAIN '(' STRING '[' ']' ID ')' '{' Statements error '}' '}' { *hasError = 1; std::cout << "Syntax error : incorrect symbols in Main function from " << @16.first_line << ":" << @16.first_column << " to " << @16.last_line << ":" << @16.last_column << std::endl; $$ = 0; }
 ClassDecl:
 	CLASS ID '{' '}' { CLocation location( @1.first_line, @1.first_column, @4.last_line, @4.last_column ); $$ = new CClassDecl( $2, 0, 0, "", location ); }
 	| CLASS ID '{' VarDecls '}' { CLocation location( @1.first_line, @1.first_column, @5.last_line, @5.last_column ); $$ = new CClassDecl( $2, $4, 0, "", location ); }
@@ -149,7 +149,7 @@ VarDecls:
 	;
 VarDecl:
 	Type ID ';' { CLocation location( @1.first_line, @1.first_column, @3.last_line, @3.last_column ); $$ = new CVarDecl( $1, $2, location ); }
-	| Type error ';' { *hasError = 1; std::cout << "Syntax error : incorrect variable definition from " << @2.first_line << ":" << @2.first_column << " to " << @2.last_line << ":" << @2.last_column << std::endl; }
+	| Type error ';' { *hasError = 1; std::cout << "Syntax error : incorrect variable definition from " << @2.first_line << ":" << @2.first_column << " to " << @2.last_line << ":" << @2.last_column << std::endl; $$ = 0; }
 	;
 MethodDecls:
 	MethodDecl { CLocation location( @1.first_line, @1.first_column, @1.last_line, @1.last_column ); $$ = new CMethodDeclList( 0, $1, location ); }
@@ -191,8 +191,8 @@ Statement:
 	| '{' Statements '}' { CLocation location( @1.first_line, @1.first_column, @3.last_line, @3.last_column ); $$ = new CCurlyBraceStatement( $2, location ); }
 	| IF '(' Exp ')' Statement ELSE Statement { CLocation location( @1.first_line, @1.first_column, @7.last_line, @7.last_column ); $$ = new CIfStatement( $3, $5, $7, location ); }
 	| WHILE '(' Exp ')' Statement { CLocation location( @1.first_line, @1.first_column, @5.last_line, @5.last_column ); $$ = new CWhileStatement( $3, $5, location ); }
-	| error ';' { *hasError = 1; std::cout << "Syntax error : incorrect statement from " << @1.first_line << ":" << @1.first_column << " to " << @1.last_line << ":" << @1.last_column << std::endl; }
-	| SYSTEM_OUT_PRINTLN error ';' { *hasError = 1; std::cout << "Syntax error : incorrect Println-statement from " << @2.first_line << ":" << @2.first_column << " to " << @2.last_line << ":" << @2.last_column << std::endl; }
+	| error ';' { *hasError = 1; std::cout << "Syntax error : incorrect statement from " << @1.first_line << ":" << @1.first_column << " to " << @1.last_line << ":" << @1.last_column << std::endl; $$ = 0; }
+	| SYSTEM_OUT_PRINTLN error ';' { *hasError = 1; std::cout << "Syntax error : incorrect Println-statement from " << @2.first_line << ":" << @2.first_column << " to " << @2.last_line << ":" << @2.last_column << std::endl; $$ = 0; }
 	;
 
 Exp:
