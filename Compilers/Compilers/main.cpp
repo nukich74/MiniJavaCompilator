@@ -38,8 +38,10 @@ int main()
 
 		for( const auto& frame : irForestBuilder.Methods ) {
 			// Печатаем деревья для отдельной функции
-			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter("temp1111.dot");
+			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_" ) 
+				+ frame->Name + std::string( ".dot" ) );
 			frame->Stm->Visit( irTreeToDigraphConverter );
+			irTreeToDigraphConverter.Flush();
 		}
 	}
 

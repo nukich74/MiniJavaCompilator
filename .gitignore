@@ -190,3 +190,4 @@ UpgradeLog*.htm
 FakesAssemblies/
 *.output
 Compilers/Compilers/temp1111.dot
+*.dot

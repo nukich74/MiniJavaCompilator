@@ -237,7 +237,7 @@ void CIRForestBuilder::Visit( const CMainClass& mainClass )
 	// У main нет никаких переменных, потому что такая грамматика
 	//	Программу можно будет начать если сделать временный объект какого нибудь класса
 	//	например System.out.println( new Pr1() );
-	currentFrame = new Frame::CFrame( className + ":main" );
+	currentFrame = new Frame::CFrame( className + "!main" );
 	if( mainClass.StatementList() != 0 ) {
 		mainClass.StatementList()->Accept( *this );
 	}
@@ -307,7 +307,7 @@ void CIRForestBuilder::Visit( const CMethodDecl& methodDecl )
 		methodDecl.VarDeclList()->Accept( *this );
 	}
 	// Строим фрейм
-	currentFrame = new Frame::CFrame( className + ":" + methodDecl.MethodName() );
+	currentFrame = new Frame::CFrame( className + "!" + methodDecl.MethodName() );
 	std::vector<const SymbolsTable::CClassDescriptor*> classNames;
 	const SymbolsTable::CClassDescriptor* currentClass = &symbolsTable.Classes().at( className );
 	while( currentClass != nullptr ) {

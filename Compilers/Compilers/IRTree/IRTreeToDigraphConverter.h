@@ -54,6 +54,8 @@ public:
 
 	virtual void Visit( const CLabel* node ) override;
 
+	void Flush() { treeRepresentation.Flush(); }
+
 private:
 
 	static int minId;

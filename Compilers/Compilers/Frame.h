@@ -99,7 +99,7 @@ public:
 	// Корень IRTree для текущей функции
 	const IRTree::IStm* Stm;
 	// Задекорированное имя функции
-	//	Имя_класса::имя_функции
+	//	Имя_класса!имя_функции
 	const std::string Name;
 
 	int ThisCounter;
