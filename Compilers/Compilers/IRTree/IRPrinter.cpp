@@ -348,4 +348,5 @@ void CPrinter::Print( const CLabel* node )
 	std::cout << std::endl;
 }
 
-}
+
+} //namespace IRTree 

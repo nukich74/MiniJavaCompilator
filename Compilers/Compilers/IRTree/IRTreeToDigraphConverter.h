@@ -1,11 +1,10 @@
-// Автор: Азат Давлетшин
-// Описание: Принтер IRTree
+// Автор: Воротилов Владислав
+// Описание: Преобразование дерева промежуточного представления в dot формат
 
-#pragma once
-
-#include <map>
+#include "Digrapg.h"
 
 namespace IRTree {
+
 class CMove;
 class CExp;
 class CJump;
@@ -22,9 +21,9 @@ class CExpList;
 class CLabel;
 
 
-class CPrinter {
+class CIRTreeToDigraphConverter {
 public:
-	CPrinter() {}
+	CIRTreeToDigraphConverter( std::string treeFileName );
 
 	void Print( const CMove* node );
 	void Print( const CExp* node );
@@ -42,10 +41,10 @@ public:
 	void Print( const CLabel* node );
 
 private:
-	std::map<const void*, int> ids;
-	std::map<const void*, int> parents;
+
 	static int minId;
 
+	CDigraph treeRepresentation;
 };
 
 } // namespace IRTree

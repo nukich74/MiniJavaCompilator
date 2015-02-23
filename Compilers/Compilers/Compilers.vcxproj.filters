@@ -16,6 +16,8 @@
     <ClCompile Include="StatementWrapper.cpp" />
     <ClCompile Include="IRTree\IRPrinter.cpp" />
     <ClCompile Include="Frame.cpp" />
+    <ClCompile Include="Digrapg.cpp" />
+    <ClCompile Include="IRTree\IRTreeToDigraphConverter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -59,6 +61,8 @@
     <ClInclude Include="IRTree\IRPrint.h" />
     <ClInclude Include="ExpConverter.h" />
     <ClInclude Include="StatementWrapper.h" />
+    <ClInclude Include="Digrapg.h" />
+    <ClInclude Include="IRTree\IRTreeToDigraphConverter.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

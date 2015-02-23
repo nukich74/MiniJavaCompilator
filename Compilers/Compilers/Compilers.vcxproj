@@ -89,6 +89,7 @@
     <ClInclude Include="AbstractTree\ExpList.h" />
     <ClInclude Include="AbstractTree\Location.h" />
     <ClInclude Include="common.h" />
+    <ClInclude Include="Digrapg.h" />
     <ClInclude Include="ExpConverter.h" />
     <ClInclude Include="Frame.h" />
     <ClInclude Include="IRTree\IRHelpers.h" />
@@ -96,6 +97,7 @@
     <ClInclude Include="IRTree\IRPrint.h" />
     <ClInclude Include="IRTree\IRStm.h" />
     <ClInclude Include="IRTree\IRTree.h" />
+    <ClInclude Include="IRTree\IRTreeToDigraphConverter.h" />
     <ClInclude Include="IRTree\IRTreeVisitor.h" />
     <ClInclude Include="StmConverter.h" />
     <ClInclude Include="SubtreeWrapper.h" />
@@ -127,8 +129,10 @@
     <ClInclude Include="StatementWrapper.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Digrapg.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="IRTree\IRPrinter.cpp" />
+    <ClCompile Include="IRTree\IRTreeToDigraphConverter.cpp" />
     <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="main.cpp" />
