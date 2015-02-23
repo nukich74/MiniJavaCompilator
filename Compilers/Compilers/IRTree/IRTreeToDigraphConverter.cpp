@@ -110,17 +110,45 @@ void CIRTreeToDigraphConverter::Visit( const CMem* node )
 
 void CIRTreeToDigraphConverter::Visit( const CCall* node )
 {
+	node->func->Visit( *this );
+	string funcString = lastNodeName;
+	node->args.Visit( *this );
+	string argsString = lastNodeName;
 	nextNameWithId( "call" );
+	treeRepresentation.AddEdge( lastNodeName, funcString, "func" );
+	treeRepresentation.AddEdge( lastNodeName, argsString, "args" );
 }
 
 void CIRTreeToDigraphConverter::Visit( const CEseq* node )
 {
+	node->stm->Visit( *this );
+	string stmString = lastNodeName;
+	node->exp->Visit( *this );
+	string expString = lastNodeName;
 	nextNameWithId( "eseq" );
+	treeRepresentation.AddEdge( lastNodeName, expString, "exp" );
+	treeRepresentation.AddEdge( lastNodeName, stmString, "stm" );
 }
 
 void CIRTreeToDigraphConverter::Visit( const CExpList* node )
 {
-	nextNameWithId( "expList" );
+	if( node->head != nullptr ) {
+		node->head->Visit( *this );
+		string headString = lastNodeName;
+		if( node->tail != nullptr ) {
+			node->tail->Visit( *this );
+			string tailString = lastNodeName;
+			nextNameWithId( "expList" );
+			treeRepresentation.AddEdge( lastNodeName, headString, "head" );
+			treeRepresentation.AddEdge( lastNodeName, tailString, "tail" );
+		} else {
+			nextNameWithId( "expList" );
+			treeRepresentation.AddEdge( lastNodeName, headString, "head" );
+		}
+	} else {
+		nextNameWithId( "expList" );
+	}
+	
 }
 
 void CIRTreeToDigraphConverter::Visit( const CLabel* node )
