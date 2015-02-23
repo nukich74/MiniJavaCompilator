@@ -189,3 +189,4 @@ UpgradeLog*.htm
 # Microsoft Fakes
 FakesAssemblies/
 *.output
+Compilers/Compilers/temp1111.dot

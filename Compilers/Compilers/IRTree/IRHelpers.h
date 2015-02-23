@@ -3,7 +3,7 @@
 #pragma once
 
 #include <IRTree.h>
-#include <IRPrint.h>
+#include "IRTreeVisitor.h"
 #include <memory>
 
 namespace IRTree {
@@ -14,9 +14,9 @@ public:
 		head( _head ), tail( _tail )
 	{}
 
-	void Print( CPrinter& printer ) const
+	void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	std::shared_ptr<const IExp> head;

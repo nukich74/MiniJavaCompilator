@@ -11,11 +11,15 @@ public:
 	CDigraph( std::string _fileName );
 	~CDigraph();
 
+	void SetNodeLabel( std::string nodeName, std::string nodeLabel );
+
 	void AddEdge( std::string from, std::string to );
+	void AddEdge( std::string from, std::string to, std::string edgeName );
+	void Flush();
 
 private:
 
-	void flush();
+	bool isFlushed;
 	
 	std::string fileName;
 	std::string data;

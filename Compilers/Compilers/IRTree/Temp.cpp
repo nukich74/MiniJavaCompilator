@@ -9,7 +9,7 @@ namespace Temp
 {
 CLabel::CLabel()
 {
-	name = "tempLabel" + std::to_string(nextUniqueId);
+	name = "tempLabel" + std::to_string( nextUniqueId );
 	nextUniqueId++;
 }
 

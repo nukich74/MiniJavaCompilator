@@ -2,6 +2,7 @@
 
 #include <vector>
 #include "IRExp.h"
+#include <map>
 
 namespace Frame {
 

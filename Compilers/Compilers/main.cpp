@@ -5,8 +5,8 @@
 #include <PrettyPrinterVisitor.h>
 #include <SymbolTableConstructor.h>
 #include <TypeChecker.h>
-#include "IRTree\IRTreeVisitor.h"
-#include "IRTree\IRPrint.h"
+#include "IRTree\IRForestBuilder.h"
+#include "IRTree\IRTreeToDigraphConverter.h"
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -33,14 +33,13 @@ int main()
 			return 0;
 		}
 
-		Translate::CIRTreeVisitor irTreeVisitor( tableConstructor.symbolTable );
-		astRoot->Accept( irTreeVisitor );
+		Translate::CIRForestBuilder irForestBuilder( tableConstructor.symbolTable );
+		astRoot->Accept( irForestBuilder );
 
-		for( const auto& frame : irTreeVisitor.Methods ) {
+		for( const auto& frame : irForestBuilder.Methods ) {
 			// Печатаем деревья для отдельной функции
-			IRTree::CPrinter irPrinter;
-			frame->Stm->Print( irPrinter );
-			std::cout << "\n\n";
+			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter("temp1111.dot");
+			frame->Stm->Visit( irTreeToDigraphConverter );
 		}
 	}
 

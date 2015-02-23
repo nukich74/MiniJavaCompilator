@@ -4,8 +4,6 @@
 
 namespace Frame {
 
-
-
 const IAccess* CFrame::GetFormal( std::string name ) const
 {
 	auto result = formals.find( name );

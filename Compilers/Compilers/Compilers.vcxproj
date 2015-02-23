@@ -94,11 +94,11 @@
     <ClInclude Include="Frame.h" />
     <ClInclude Include="IRTree\IRHelpers.h" />
     <ClInclude Include="IRTree\IRExp.h" />
-    <ClInclude Include="IRTree\IRPrint.h" />
+    <ClInclude Include="IRTree\IRTreeVisitor.h" />
     <ClInclude Include="IRTree\IRStm.h" />
     <ClInclude Include="IRTree\IRTree.h" />
     <ClInclude Include="IRTree\IRTreeToDigraphConverter.h" />
-    <ClInclude Include="IRTree\IRTreeVisitor.h" />
+    <ClInclude Include="IRTree\IRForestBuilder.h" />
     <ClInclude Include="StmConverter.h" />
     <ClInclude Include="SubtreeWrapper.h" />
     <ClInclude Include="SymbolsTable\ClassDescriptor.h" />
@@ -131,9 +131,8 @@
   <ItemGroup>
     <ClCompile Include="Digrapg.cpp" />
     <ClCompile Include="Frame.cpp" />
-    <ClCompile Include="IRTree\IRPrinter.cpp" />
     <ClCompile Include="IRTree\IRTreeToDigraphConverter.cpp" />
-    <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
+    <ClCompile Include="IRTree\IRForestBuilder.cpp" />
     <ClCompile Include="lexer.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />

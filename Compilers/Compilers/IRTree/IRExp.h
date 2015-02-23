@@ -16,9 +16,9 @@ public:
 		value( _value )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	const int value;
@@ -31,9 +31,9 @@ public:
 		label( _label )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	const Temp::CLabel* label;
@@ -46,9 +46,9 @@ public:
 		temp( _temp )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	const Temp::CTemp temp;
@@ -63,9 +63,9 @@ public:
 		right( _right )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 	
 	const TBinop binop;
@@ -80,10 +80,10 @@ public:
 		exp( _exp )
 	{}
 
-	virtual void Print( CPrinter& printer ) const override
+	virtual void Visit( IVisitor& printer ) const override
 	{
 		// АЗАТ че за дела? Чего ты метод не дописал?
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	const std::shared_ptr<const IExp> exp;
@@ -97,9 +97,9 @@ public:
 		args( _args )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	const std::shared_ptr<const IExp> func;
@@ -114,9 +114,9 @@ public:
 		exp( _exp )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	const std::shared_ptr<const IStm> stm;

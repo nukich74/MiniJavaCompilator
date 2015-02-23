@@ -12,12 +12,11 @@
     <ClCompile Include="SubtreeWrapper.cpp" />
     <ClCompile Include="SymbolsTable\TypeChecker.cpp" />
     <ClCompile Include="SymbolsTable\SymbolsTable.cpp" />
-    <ClCompile Include="IRTree\IRTreeVisitor.cpp" />
     <ClCompile Include="StatementWrapper.cpp" />
-    <ClCompile Include="IRTree\IRPrinter.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Digrapg.cpp" />
     <ClCompile Include="IRTree\IRTreeToDigraphConverter.cpp" />
+    <ClCompile Include="IRTree\IRForestBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -57,12 +56,12 @@
     <ClInclude Include="SymbolsTable\TypeChecker.h" />
     <ClInclude Include="SymbolsTable\SymbolsTable.h" />
     <ClInclude Include="StmConverter.h" />
-    <ClInclude Include="IRTree\IRTreeVisitor.h" />
-    <ClInclude Include="IRTree\IRPrint.h" />
     <ClInclude Include="ExpConverter.h" />
     <ClInclude Include="StatementWrapper.h" />
     <ClInclude Include="Digrapg.h" />
     <ClInclude Include="IRTree\IRTreeToDigraphConverter.h" />
+    <ClInclude Include="IRTree\IRForestBuilder.h" />
+    <ClInclude Include="IRTree\IRTreeVisitor.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

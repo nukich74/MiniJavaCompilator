@@ -5,7 +5,7 @@
 #include <IRTree.h>
 #include <IRHelpers.h>
 #include <Temp.h>
-#include <IRPrint.h>
+#include "IRTreeVisitor.h"
 #include <memory>
 #include <assert.h>
 
@@ -18,9 +18,9 @@ public:
 		src( _src )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	std::shared_ptr<const IExp> dst;
@@ -34,9 +34,9 @@ public:
 		exp( _exp )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	std::shared_ptr<const IExp> exp;
@@ -49,9 +49,9 @@ public:
 		label( _label )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	const Temp::CLabel* const label;
@@ -69,9 +69,9 @@ public:
 		iffalse( _iffalse )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	const TCJump relop;
@@ -98,9 +98,9 @@ public:
 			const IStm* const arg5, const IStm* const arg6) : 
 		left(arg1), right( new CSeq( arg2, arg3, arg4, arg5, arg6 ) ) {}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	std::shared_ptr<const IStm> left;
@@ -114,9 +114,9 @@ public:
 		label( _label )
 	{}
 
-	virtual void Print( CPrinter& printer ) const
+	virtual void Visit( IVisitor& printer ) const
 	{
-		printer.Print( this );
+		printer.Visit( this );
 	}
 
 	const Temp::CLabel* const label;

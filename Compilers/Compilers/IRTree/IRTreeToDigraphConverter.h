@@ -2,6 +2,7 @@
 // ќписание: ѕреобразование дерева промежуточного представлени€ в dot формат
 
 #include "Digrapg.h"
+#include "IRTreeVisitor.h"
 
 namespace IRTree {
 
@@ -21,30 +22,47 @@ class CExpList;
 class CLabel;
 
 
-class CIRTreeToDigraphConverter {
+class CIRTreeToDigraphConverter : public IVisitor {
 public:
-	CIRTreeToDigraphConverter( std::string treeFileName );
+	CIRTreeToDigraphConverter( std::string treeFileName ) : treeRepresentation( treeFileName ) {}
 
-	void Print( const CMove* node );
-	void Print( const CExp* node );
-	void Print( const CJump* node );
-	void Print( const CCjump* node );
-	void Print( const CSeq* node );
-	void Print( const CConst* node );
-	void Print( const CName* node );
-	void Print( const CTemp* node );
-	void Print( const CBinop* node );
-	void Print( const CMem* node );
-	void Print( const CCall* node );
-	void Print( const CEseq* node );
-	void Print( const CExpList* node );
-	void Print( const CLabel* node );
+	virtual void Visit( const CMove* node ) override;
+
+	virtual void Visit( const CExp* node ) override;
+
+	virtual void Visit( const CJump* node ) override;
+
+	virtual void Visit( const CCjump* node ) override;
+
+	virtual void Visit( const CSeq* node ) override;
+
+	virtual void Visit( const CConst* node ) override;
+
+	virtual void Visit( const CName* node ) override;
+
+	virtual void Visit( const CTemp* node ) override;
+
+	virtual void Visit( const CBinop* node ) override;
+
+	virtual void Visit( const CMem* node ) override;
+
+	virtual void Visit( const CCall* node ) override;
+
+	virtual void Visit( const CEseq* node ) override;
+
+	virtual void Visit( const CExpList* node ) override;
+
+	virtual void Visit( const CLabel* node ) override;
 
 private:
 
 	static int minId;
 
+	std::string lastNodeName;
+
 	CDigraph treeRepresentation;
+
+	void nextNameWithId( std::string label );
 };
 
 } // namespace IRTree

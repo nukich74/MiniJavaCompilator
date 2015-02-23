@@ -4,13 +4,13 @@
 
 namespace IRTree {
 
-class CPrinter;
+struct IVisitor;
 // Интерфейс для узлов, возвращающих значений
 class IExp {
 public:
 	virtual ~IExp() {}
 
-	virtual void Print( CPrinter& printer ) const = 0;
+	virtual void Visit( IVisitor& printer ) const = 0;
 };
 
 // Интерфейс для управляющих конструкций
@@ -18,7 +18,7 @@ class IStm {
 public:
 	virtual ~IStm() {}
 
-	virtual void Print( CPrinter& printer ) const = 0;
+	virtual void Visit( IVisitor& printer ) const = 0;
 };
 
 }
