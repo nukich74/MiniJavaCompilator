@@ -131,6 +131,7 @@
   <ItemGroup>
     <ClCompile Include="Digrapg.cpp" />
     <ClCompile Include="Frame.cpp" />
+    <ClCompile Include="IRTree\IRHelpers.cpp" />
     <ClCompile Include="IRTree\IRTreeToDigraphConverter.cpp" />
     <ClCompile Include="IRTree\IRForestBuilder.cpp" />
     <ClCompile Include="lexer.cpp" />

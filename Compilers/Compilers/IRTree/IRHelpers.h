@@ -5,6 +5,8 @@
 #include <IRTree.h>
 #include "IRTreeVisitor.h"
 #include <memory>
+#include <string>
+#include <assert.h>
 
 namespace IRTree {
 
@@ -41,8 +43,12 @@ enum TBinop {
 	B_Xor,
 	B_Less,
 	B_Greater,
-	B_And
+	B_And,
+
+	B_Count
 };
+
+std::string ToString( const TBinop binOp );
 
 // Логическое
 enum TCJump {
@@ -51,7 +57,9 @@ enum TCJump {
 	CJ_EqLess,
 	CJ_EqGreater,
 	CJ_Equal,
-	CJ_NotEqual
+	CJ_NotEqual,
+
+	CJ_Count
 };
 
 } // namespace IRTree 

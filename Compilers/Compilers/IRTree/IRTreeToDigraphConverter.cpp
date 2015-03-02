@@ -95,7 +95,7 @@ void CIRTreeToDigraphConverter::Visit( const CBinop* node )
 	string leftString = lastNodeName;
 	node->right->Visit( *this );
 	string rightString = lastNodeName;
-	nextNameWithId( "binop" );
+	nextNameWithId( "binop__" + ToString( node->binop ) );
 	treeRepresentation.AddEdge( lastNodeName, rightString, "right" );
 	treeRepresentation.AddEdge( lastNodeName, leftString, "left" );
 }
