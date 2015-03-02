@@ -24,4 +24,6 @@ private:
 	std::string fileName;
 	std::string data;
 
+	void decorateName( std::string& stringToDecorate );
+
 };
