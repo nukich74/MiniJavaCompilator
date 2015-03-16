@@ -127,6 +127,7 @@
     <ClInclude Include="IRTree\Temp.h" />
     <ClInclude Include="Visitor.h" />
     <ClInclude Include="StatementWrapper.h" />
+    <ClInclude Include="IRTreeEseqLifter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Digrapg.cpp" />
@@ -146,6 +147,7 @@
     <ClCompile Include="SymbolsTable\TypeChecker.cpp" />
     <ClCompile Include="SymbolsTable\TypeIdentifier.cpp" />
     <ClCompile Include="IRTree\Temp.cpp" />
+    <ClCompile Include="IRTreeEseqLifter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lexer.l">
