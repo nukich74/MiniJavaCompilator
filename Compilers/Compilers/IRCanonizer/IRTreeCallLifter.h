@@ -26,7 +26,19 @@ namespace IRTree {
 		void Visit( const CLabel* node ) override;
 
 	private:
-		class CPseudoCall {};
+		class CPseudoCall : public IStm {
+		public:
+
+			void Accept( IVisitor& visitor ) 
+			{
+			}
+			IRTree::CTemp temp;
+			const CExpList args;
+			const std::shared_ptr<const IExp> func;
+		};
+
+		IStm* lastStm;
+		IExp* lastExp;
 	};
 
 }
