@@ -1,5 +1,5 @@
-/*
-	Автор: Мысин Юрий
+п»ї/*
+	РђРІС‚РѕСЂ: РњС‹СЃРёРЅ Р®СЂРёР№
 */
 
 #include <IRTreeEseqLifter.h>
@@ -22,7 +22,7 @@ void IRTreeEseqLifter::Visit(const CExp* node)
 	CExp* newNode = new CExp(newExp);
 	lastBuildStm = dynamic_cast<IStm*>(newNode);
 }
-//в книге не так
+//РІ РєРЅРёРіРµ РЅРµ С‚Р°Рє
 void IRTreeEseqLifter::Visit(const CJump* node)
 {
 	CJump* newNode = new CJump(node->label);
@@ -40,13 +40,13 @@ void IRTreeEseqLifter::Visit(const CCjump* node)
 	if (leftEseq != 0 && rightEseq != 0) {
 		Temp::CTemp* rightTemp = new Temp::CTemp;
 		CTemp* rightTempIRTree = new CTemp(*rightTemp);
-		CMove* moveRight = new CMove(rightTempIRTree, rightEseq->exp.get());//тут
-		CSeq* seq1 = new CSeq(rightEseq->stm.get(), moveRight);//тут
+		CMove* moveRight = new CMove(rightTempIRTree, rightEseq->exp.get());//С‚СѓС‚
+		CSeq* seq1 = new CSeq(rightEseq->stm.get(), moveRight);//С‚СѓС‚
 		Temp::CTemp* leftTemp = new Temp::CTemp;
 		CTemp* leftTempIRTree = new CTemp(*leftTemp);
-		CMove* moveLeft = new CMove(leftTempIRTree, leftEseq->exp.get());//тут
+		CMove* moveLeft = new CMove(leftTempIRTree, leftEseq->exp.get());//С‚СѓС‚
 		CSeq* seq2 = new CSeq(moveLeft, seq1);
-		CSeq* seq3 = new CSeq(leftEseq->stm.get(), seq2);//тут
+		CSeq* seq3 = new CSeq(leftEseq->stm.get(), seq2);//С‚СѓС‚
 		CTemp* rightTempGet = new CTemp(*rightTemp);
 		CTemp* leftTempGet = new CTemp(*leftTemp);
 		CCjump* newJump = new CCjump(node->relop, leftTempGet, rightTempGet, node->iftrue, node->iffalse);
@@ -59,8 +59,8 @@ void IRTreeEseqLifter::Visit(const CCjump* node)
 	} else if (leftEseq == 0 && rightEseq != 0) {
 		Temp::CTemp* leftTemp = new Temp::CTemp;
 		CTemp* leftTempGet = new CTemp(*leftTemp);
-		CMove* leftMove = new CMove(leftTempGet, newLeft);//тут
-		CSeq* seq1 = new CSeq(leftMove, rightEseq->stm.get());//тут
+		CMove* leftMove = new CMove(leftTempGet, newLeft);//С‚СѓС‚
+		CSeq* seq1 = new CSeq(leftMove, rightEseq->stm.get());//С‚СѓС‚
 		CCjump* newJump = new CCjump(node->relop, leftTempGet, rightEseq->exp.get(), node->iftrue, node->iffalse);
 		CSeq* seq2 = new CSeq(seq1, newJump);
 		lastBuildStm = seq2;
@@ -105,31 +105,31 @@ void IRTreeEseqLifter::Visit(const CBinop* node)
 	IExp* newRight = lastBuildExp;
 	const CEseq* leftEseq = dynamic_cast<const CEseq*>(newLeft);
 	const CEseq* rightEseq = dynamic_cast<const CEseq*>(newRight);
-	//далее код не работает без глубокого копирования
+	//РґР°Р»РµРµ РєРѕРґ РЅРµ СЂР°Р±РѕС‚Р°РµС‚ Р±РµР· РіР»СѓР±РѕРєРѕРіРѕ РєРѕРїРёСЂРѕРІР°РЅРёСЏ
 	if (leftEseq != 0 && rightEseq != 0) {
-		//если оба потомка Eseq, то сохраняем результаты вычислений, и только потом вычисляем Binop
+		//РµСЃР»Рё РѕР±Р° РїРѕС‚РѕРјРєР° Eseq, С‚Рѕ СЃРѕС…СЂР°РЅСЏРµРј СЂРµР·СѓР»СЊС‚Р°С‚С‹ РІС‹С‡РёСЃР»РµРЅРёР№, Рё С‚РѕР»СЊРєРѕ РїРѕС‚РѕРј РІС‹С‡РёСЃР»СЏРµРј Binop
 		Temp::CTemp* rightTemp = new Temp::CTemp;
 		CTemp* rightTempIRTree = new CTemp(*rightTemp);
-		CMove* moveRight = new CMove(rightTempIRTree, rightEseq->exp.get());//тут
-		CSeq* seq1 = new CSeq(rightEseq->stm.get(), moveRight);//тут
+		CMove* moveRight = new CMove(rightTempIRTree, rightEseq->exp.get());//С‚СѓС‚
+		CSeq* seq1 = new CSeq(rightEseq->stm.get(), moveRight);//С‚СѓС‚
 		Temp::CTemp* leftTemp = new Temp::CTemp;
 		CTemp* leftTempIRTree = new CTemp(*leftTemp);
-		CMove* moveLeft = new CMove(leftTempIRTree, leftEseq->exp.get());//тут
+		CMove* moveLeft = new CMove(leftTempIRTree, leftEseq->exp.get());//С‚СѓС‚
 		CSeq* seq2 = new CSeq(moveLeft, seq1);
-		CSeq* seq3 = new CSeq(leftEseq->stm.get(), seq2);//тут
+		CSeq* seq3 = new CSeq(leftEseq->stm.get(), seq2);//С‚СѓС‚
 		CTemp* rightTempGet = new CTemp(*rightTemp);
 		CTemp* leftTempGet = new CTemp(*leftTemp);
 		CBinop* newBinop = new CBinop(node->binop, leftTempGet, rightTempGet);
 		CEseq* newNode = new CEseq(seq3, newBinop);
 		lastBuildExp = newNode;
 	} else if (leftEseq != 0 && rightEseq == 0) {
-		CBinop* newBinop = new CBinop(node->binop, leftEseq->exp.get(), newRight);//тут
-		CEseq* newNode = new CEseq(leftEseq->stm.get(), newBinop);//тут
+		CBinop* newBinop = new CBinop(node->binop, leftEseq->exp.get(), newRight);//С‚СѓС‚
+		CEseq* newNode = new CEseq(leftEseq->stm.get(), newBinop);//С‚СѓС‚
 		lastBuildExp = newNode;
 	} else if (leftEseq == 0 && rightEseq != 0) {
 		Temp::CTemp* leftTemp = new Temp::CTemp;
 		CTemp* leftTempIRTree = new CTemp(*leftTemp);
-		CMove* leftMove = new CMove(leftTempIRTree, newLeft);//тут
+		CMove* leftMove = new CMove(leftTempIRTree, newLeft);//С‚СѓС‚
 		CSeq* seq1 = new CSeq(leftMove, rightEseq->stm.get());
 		CTemp* leftTempGet = new CTemp(*leftTemp);
 		CBinop* newBinop = new CBinop(node->binop, leftTempGet, rightEseq->exp.get());
@@ -147,8 +147,8 @@ void IRTreeEseqLifter::Visit(const CMem* node)
 	IExp* newExp = lastBuildExp;
 	CEseq* eseqCheck = dynamic_cast<CEseq*>(newExp);
 	if (eseqCheck != 0) {
-		CMem* newMem = new CMem(eseqCheck->exp.get());//тут
-		CEseq* newNode = new CEseq(eseqCheck->stm.get(), newMem);//тут
+		CMem* newMem = new CMem(eseqCheck->exp.get());//С‚СѓС‚
+		CEseq* newNode = new CEseq(eseqCheck->stm.get(), newMem);//С‚СѓС‚
 		lastBuildExp = newNode;
 	} else {
 		CMem* newNode = new CMem(newExp);
@@ -169,8 +169,8 @@ void IRTreeEseqLifter::Visit(const CEseq* node)
 	IExp* newExp = lastBuildExp;
 	CEseq* eseqCheck = dynamic_cast<CEseq*>(newExp);
 	if (eseqCheck != 0) {
-		CSeq* leftSeq = new CSeq(newStm, eseqCheck->stm.get()); //тут
-		CEseq* newNode = new CEseq(leftSeq, eseqCheck->exp.get()); //тут
+		CSeq* leftSeq = new CSeq(newStm, eseqCheck->stm.get()); //С‚СѓС‚
+		CEseq* newNode = new CEseq(leftSeq, eseqCheck->exp.get()); //С‚СѓС‚
 		lastBuildExp = newNode;
 	} else {
 		CEseq* newNode = new CEseq(newStm, newExp);
