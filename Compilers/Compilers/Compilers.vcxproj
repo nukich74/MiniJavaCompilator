@@ -54,7 +54,7 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir)/SymbolsTable;$(ProjectDir)/AbstractTree;$(ProjectDir);$(ProjectDir)/IRTree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/SymbolsTable;$(ProjectDir)/IRCanonizer;$(ProjectDir)/AbstractTree;$(ProjectDir);$(ProjectDir)/IRTree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -74,7 +74,7 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>$(ProjectDir);$(ProjectDir)/AbstractTree;$(ProjectDir)/SymbolsTable;$(ProjectDir)/IRTree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)/SymbolsTable;$(ProjectDir)/IRCanonizer;$(ProjectDir)/AbstractTree;$(ProjectDir);$(ProjectDir)/IRTree;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -92,6 +92,7 @@
     <ClInclude Include="Digrapg.h" />
     <ClInclude Include="ExpConverter.h" />
     <ClInclude Include="Frame.h" />
+    <ClInclude Include="IRCanonizer\IRTreeCallLifter.h" />
     <ClInclude Include="IRTree\IRHelpers.h" />
     <ClInclude Include="IRTree\IRExp.h" />
     <ClInclude Include="IRTree\IRTreeVisitor.h" />
@@ -127,11 +128,12 @@
     <ClInclude Include="IRTree\Temp.h" />
     <ClInclude Include="Visitor.h" />
     <ClInclude Include="StatementWrapper.h" />
-    <ClInclude Include="IRTreeEseqLifter.h" />
+    <ClInclude Include="IRCanonizer\IRTreeEseqLifter.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Digrapg.cpp" />
     <ClCompile Include="Frame.cpp" />
+    <ClCompile Include="IRCanonizer\IRTreeCallLifter.cpp" />
     <ClCompile Include="IRTree\IRHelpers.cpp" />
     <ClCompile Include="IRTree\IRTreeToDigraphConverter.cpp" />
     <ClCompile Include="IRTree\IRForestBuilder.cpp" />
@@ -147,7 +149,7 @@
     <ClCompile Include="SymbolsTable\TypeChecker.cpp" />
     <ClCompile Include="SymbolsTable\TypeIdentifier.cpp" />
     <ClCompile Include="IRTree\Temp.cpp" />
-    <ClCompile Include="IRTreeEseqLifter.cpp" />
+    <ClCompile Include="IRCanonizer\IRTreeEseqLifter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="lexer.l">

@@ -1,5 +1,5 @@
-/*
-Автор: Мысин Юрий
+п»ї/*
+РђРІС‚РѕСЂ: РњС‹СЃРёРЅ Р®СЂРёР№
 */
 
 #include<IRTreeVisitor.h>
@@ -9,11 +9,9 @@
 #include<IRHelpers.h>
 #include<vector>
 
-using namespace std;
-
 namespace IRTree {
-	//Данный класс строит новое дерево, в котором все узлы Eseq перенесены на наивысший уровень
-	class IRTreeEseqLifter : public IRTree::IVisitor  {
+	//Р”Р°РЅРЅС‹Р№ РєР»Р°СЃСЃ СЃС‚СЂРѕРёС‚ РЅРѕРІРѕРµ РґРµСЂРµРІРѕ, РІ РєРѕС‚РѕСЂРѕРј РІСЃРµ СѓР·Р»С‹ Eseq РїРµСЂРµРЅРµСЃРµРЅС‹ РЅР° РЅР°РёРІС‹СЃС€РёР№ СѓСЂРѕРІРµРЅСЊ
+	class CIRTreeEseqLifter : public IRTree::IVisitor  {
 	public:
 		void Visit(const CMove* node) override;
 		void Visit(const CExp* node) override;
@@ -32,7 +30,7 @@ namespace IRTree {
 	private:
 		IExp* lastBuildExp;
 		IStm* lastBuildStm;
-		pair<IStm*, CExpList*> lastBuildPair;
+		std::pair<IStm*, CExpList*> lastBuildPair;
 	};
 
 }

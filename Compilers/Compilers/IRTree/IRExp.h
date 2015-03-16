@@ -16,7 +16,7 @@ public:
 		value( _value )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -31,7 +31,7 @@ public:
 		label( _label )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -46,7 +46,7 @@ public:
 		temp( _temp )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -63,7 +63,7 @@ public:
 		right( _right )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -80,7 +80,7 @@ public:
 		exp( _exp )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const override
+	virtual void Accept( IVisitor& printer ) const override
 	{
 		// АЗАТ че за дела? Чего ты метод не дописал?
 		printer.Visit( this );
@@ -97,7 +97,7 @@ public:
 		args( _args )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -114,7 +114,7 @@ public:
 		exp( _exp )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}

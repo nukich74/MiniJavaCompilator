@@ -40,7 +40,7 @@ int main()
 			// Печатаем деревья для отдельной функции
 			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_" ) 
 				+ frame->Name + std::string( ".dot" ) );
-			frame->Stm->Visit( irTreeToDigraphConverter );
+			frame->Stm->Accept( irTreeToDigraphConverter );
 			irTreeToDigraphConverter.Flush();
 		}
 	}

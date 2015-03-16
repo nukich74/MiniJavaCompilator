@@ -10,7 +10,7 @@ class IExp {
 public:
 	virtual ~IExp() {}
 
-	virtual void Visit( IVisitor& printer ) const = 0;
+	virtual void Accept( IVisitor& printer ) const = 0;
 };
 
 // Интерфейс для управляющих конструкций
@@ -18,7 +18,7 @@ class IStm {
 public:
 	virtual ~IStm() {}
 
-	virtual void Visit( IVisitor& printer ) const = 0;
+	virtual void Accept( IVisitor& printer ) const = 0;
 };
 
 }
