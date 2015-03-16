@@ -6,6 +6,7 @@
 #include<IRTree.h>
 #include<IRStm.h>
 #include<IRExp.h>
+#include<IRHelpers.h>
 #include<vector>
 
 using namespace std;
@@ -31,6 +32,7 @@ namespace IRTree {
 	private:
 		IExp* lastBuildExp;
 		IStm* lastBuildStm;
+		pair<IStm*, CExpList*> lastBuildPair;
 	};
 
 }

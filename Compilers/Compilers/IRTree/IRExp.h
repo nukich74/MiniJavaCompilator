@@ -69,8 +69,8 @@ public:
 	}
 	
 	const TBinop binop;
-	const std::shared_ptr<const IExp> left; 
-	const std::shared_ptr<const IExp> right;
+	std::shared_ptr<const IExp> left; 
+	std::shared_ptr<const IExp> right;
 };
 
 // Читаем значение из памяти, лежащее по адресу, который возвращает exp
@@ -86,7 +86,7 @@ public:
 		printer.Visit( this );
 	}
 
-	const std::shared_ptr<const IExp> exp;
+	std::shared_ptr<const IExp> exp;
 };
 
 // Вызов функции по адресу func с аргументами args
@@ -102,7 +102,7 @@ public:
 		printer.Visit( this );
 	}
 
-	const std::shared_ptr<const IExp> func;
+	std::shared_ptr<const IExp> func;
 	const CExpList args;
 };
 
@@ -119,8 +119,8 @@ public:
 		printer.Visit( this );
 	}
 
-	const std::shared_ptr<const IStm> stm;
-	const std::shared_ptr<const IExp> exp;
+	std::shared_ptr<const IStm> stm;
+	std::shared_ptr<const IExp> exp;
 };
 
 
