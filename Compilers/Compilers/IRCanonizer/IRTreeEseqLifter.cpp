@@ -7,9 +7,9 @@ using namespace IRTree;
 
 void IRTreeEseqLifter::Visit(const CMove* node)
 {
-	node->dst->Visit(*this);
+	node->dst->Accept(*this);
 	IExp* newDst = lastBuildExp;
-	node->src->Visit(*this);
+	node->src->Accept(*this);
 	IExp* newSrc = lastBuildExp;
 	CMove* newNode = new CMove(newDst, newSrc);
 	lastBuildStm = dynamic_cast<IStm*>(newNode);
@@ -17,7 +17,7 @@ void IRTreeEseqLifter::Visit(const CMove* node)
 
 void IRTreeEseqLifter::Visit(const CExp* node) 
 {
-	node->exp->Visit(*this);
+	node->exp->Accept(*this);
 	IExp* newExp = lastBuildExp;
 	CExp* newNode = new CExp(newExp);
 	lastBuildStm = dynamic_cast<IStm*>(newNode);
@@ -31,9 +31,9 @@ void IRTreeEseqLifter::Visit(const CJump* node)
 
 void IRTreeEseqLifter::Visit(const CCjump* node) 
 {
-	node->left->Visit(*this);
+	node->left->Accept(*this);
 	IExp* newLeft = lastBuildExp;
-	node->right->Visit(*this);
+	node->right->Accept(*this);
 	IExp* newRight = lastBuildExp;
 	CEseq* leftEseq = dynamic_cast<CEseq*>(newLeft);
 	CEseq* rightEseq = dynamic_cast<CEseq*>(newRight);
@@ -71,9 +71,9 @@ void IRTreeEseqLifter::Visit(const CCjump* node)
 
 void IRTreeEseqLifter::Visit(const CSeq* node)
 {
-	node->left->Visit(*this);
+	node->left->Accept(*this);
 	IStm* newLeft = lastBuildStm;
-	node->right->Visit(*this);
+	node->right->Accept(*this);
 	IStm* newRight = lastBuildStm;
 	CSeq* newNode = new CSeq(newLeft, newRight);
 	lastBuildStm = newNode;
@@ -99,9 +99,9 @@ void IRTreeEseqLifter::Visit(const CTemp* node)
 
 void IRTreeEseqLifter::Visit(const CBinop* node) 
 {
-	node->left->Visit(*this);
+	node->left->Accept(*this);
 	IExp* newLeft = lastBuildExp;
-	node->right->Visit(*this);
+	node->right->Accept(*this);
 	IExp* newRight = lastBuildExp;
 	const CEseq* leftEseq = dynamic_cast<const CEseq*>(newLeft);
 	const CEseq* rightEseq = dynamic_cast<const CEseq*>(newRight);
@@ -143,7 +143,7 @@ void IRTreeEseqLifter::Visit(const CBinop* node)
 
 void IRTreeEseqLifter::Visit(const CMem* node) 
 {
-	node->exp->Visit(*this);
+	node->exp->Accept(*this);
 	IExp* newExp = lastBuildExp;
 	CEseq* eseqCheck = dynamic_cast<CEseq*>(newExp);
 	if (eseqCheck != 0) {
@@ -163,9 +163,9 @@ void IRTreeEseqLifter::Visit(const CCall* node)
 
 void IRTreeEseqLifter::Visit(const CEseq* node) 
 {
-	node->stm->Visit(*this);
+	node->stm->Accept(*this);
 	IStm* newStm = lastBuildStm;
-	node->exp->Visit(*this);
+	node->exp->Accept(*this);
 	IExp* newExp = lastBuildExp;
 	CEseq* eseqCheck = dynamic_cast<CEseq*>(newExp);
 	if (eseqCheck != 0) {

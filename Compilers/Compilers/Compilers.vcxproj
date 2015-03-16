@@ -92,6 +92,7 @@
     <ClInclude Include="Digrapg.h" />
     <ClInclude Include="ExpConverter.h" />
     <ClInclude Include="Frame.h" />
+    <ClInclude Include="IRCanonizer\IRTreeCallLifter.h" />
     <ClInclude Include="IRTree\IRHelpers.h" />
     <ClInclude Include="IRTree\IRExp.h" />
     <ClInclude Include="IRTree\IRTreeVisitor.h" />
@@ -132,6 +133,7 @@
   <ItemGroup>
     <ClCompile Include="Digrapg.cpp" />
     <ClCompile Include="Frame.cpp" />
+    <ClCompile Include="IRCanonizer\IRTreeCallLifter.cpp" />
     <ClCompile Include="IRTree\IRHelpers.cpp" />
     <ClCompile Include="IRTree\IRTreeToDigraphConverter.cpp" />
     <ClCompile Include="IRTree\IRForestBuilder.cpp" />

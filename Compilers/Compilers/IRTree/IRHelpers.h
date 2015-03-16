@@ -16,7 +16,7 @@ public:
 		head( _head ), tail( _tail )
 	{}
 
-	void Visit( IVisitor& printer ) const
+	void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}

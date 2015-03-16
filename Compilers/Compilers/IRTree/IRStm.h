@@ -18,7 +18,7 @@ public:
 		src( _src )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -34,7 +34,7 @@ public:
 		exp( _exp )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -49,7 +49,7 @@ public:
 		label( _label )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -69,7 +69,7 @@ public:
 		iffalse( _iffalse )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -98,7 +98,7 @@ public:
 			const IStm* const arg5, const IStm* const arg6) : 
 		left(arg1), right( new CSeq( arg2, arg3, arg4, arg5, arg6 ) ) {}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
@@ -114,7 +114,7 @@ public:
 		label( _label )
 	{}
 
-	virtual void Visit( IVisitor& printer ) const
+	virtual void Accept( IVisitor& printer ) const
 	{
 		printer.Visit( this );
 	}
