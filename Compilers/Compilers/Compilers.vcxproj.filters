@@ -18,7 +18,7 @@
     <ClCompile Include="IRTree\IRTreeToDigraphConverter.cpp" />
     <ClCompile Include="IRTree\IRForestBuilder.cpp" />
     <ClCompile Include="IRTree\IRHelpers.cpp" />
-    <ClCompile Include="IRTreeEseqLifter.cpp" />
+    <ClCompile Include="IRCanonizer\IRTreeEseqLifter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -64,7 +64,7 @@
     <ClInclude Include="IRTree\IRTreeToDigraphConverter.h" />
     <ClInclude Include="IRTree\IRForestBuilder.h" />
     <ClInclude Include="IRTree\IRTreeVisitor.h" />
-    <ClInclude Include="IRTreeEseqLifter.h" />
+    <ClInclude Include="IRCanonizer\IRTreeEseqLifter.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
