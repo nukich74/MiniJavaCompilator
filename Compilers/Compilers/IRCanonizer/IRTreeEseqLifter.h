@@ -6,9 +6,6 @@
 #include<IRTree.h>
 #include<IRStm.h>
 #include<IRExp.h>
-#include<vector>
-
-using namespace std;
 
 namespace IRTree {
 	//Данный класс строит новое дерево, в котором все узлы Eseq перенесены на наивысший уровень
