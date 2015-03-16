@@ -6,10 +6,12 @@
 #include<IRTree.h>
 #include<IRStm.h>
 #include<IRExp.h>
+#include<IRHelpers.h>
+#include<vector>
 
 namespace IRTree {
 	//Данный класс строит новое дерево, в котором все узлы Eseq перенесены на наивысший уровень
-	class IRTreeEseqLifter : public IRTree::IVisitor  {
+	class CIRTreeEseqLifter : public IRTree::IVisitor  {
 	public:
 		void Visit(const CMove* node) override;
 		void Visit(const CExp* node) override;
@@ -28,6 +30,7 @@ namespace IRTree {
 	private:
 		IExp* lastBuildExp;
 		IStm* lastBuildStm;
+		std::pair<IStm*, CExpList*> lastBuildPair;
 	};
 
 }
