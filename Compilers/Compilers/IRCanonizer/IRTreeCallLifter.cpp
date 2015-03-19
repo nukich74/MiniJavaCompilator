@@ -22,7 +22,7 @@ void CIRTreeCallLifter::Visit( const CExp* node )
 
 void CIRTreeCallLifter::Visit( const CJump* node )
 {
-	Temp::CLabel* tmpLabel = new Temp::CLabel( node->label->Name );
+	Temp::CLabel* tmpLabel = new Temp::CLabel( node->label->Name() );
 	lastStm = new CJump( tmpLabel );
 }
 
@@ -32,8 +32,8 @@ void CIRTreeCallLifter::Visit( const CCjump* node )
 	IExp* tmpLeft = lastExp;
 	node->right->Accept( *this );
 	IExp* tmpRight = lastExp;
-	Temp::CLabel* iffalse = new Temp::CLabel( node->iffalse->Name );
-	Temp::CLabel* iftrue = new Temp::CLabel( node->iftrue->Name );
+	Temp::CLabel* iffalse = new Temp::CLabel( node->iffalse->Name() );
+	Temp::CLabel* iftrue = new Temp::CLabel( node->iftrue->Name() );
 	lastStm = new CCjump( node->relop, tmpLeft, tmpRight, iftrue, iffalse );
 }
 
@@ -53,7 +53,7 @@ void CIRTreeCallLifter::Visit( const CConst* node )
 
 void CIRTreeCallLifter::Visit( const CName* node )
 {
-	Temp::CLabel* tmpLabel = new Temp::CLabel( node->label->Name );
+	Temp::CLabel* tmpLabel = new Temp::CLabel( node->label->Name() );
 	lastExp = new CName( tmpLabel );
 }
 
@@ -80,21 +80,36 @@ void CIRTreeCallLifter::Visit( const CMem* node )
 
 void CIRTreeCallLifter::Visit( const CCall* node )
 {
-	// Тут супервершинка.
+	node->func->Accept( *this );
+	IExp* tmpFunc = lastExp;
+	node->args.Accept( *this );
+	CExpList* tmpExpList = lastExpList;
+	CTemp* newTmp = new CTemp( Temp::CTemp() );
+	lastExp = new CEseq( new CMove( newTmp, new CCall( tmpFunc, *tmpExpList ) ), newTmp );
 }
 
 void CIRTreeCallLifter::Visit( const CEseq* node )
 {
 	node->exp->Accept( *this );
+	IExp* tmpExp = lastExp;
 	node->stm->Accept( *this );
+	IStm* tmpStm = lastStm;
+	lastExp = new CEseq( tmpStm, tmpExp );
 }
 
 void CIRTreeCallLifter::Visit( const CExpList* node )
 {
 	node->head->Accept( *this );
-	node->tail->Accept( *this );
+	IExp* tmpHead = lastExp;
+	if( node->tail != nullptr ) {
+		node->tail->Accept( *this );
+		lastExpList = new CExpList( tmpHead, lastExpList );
+	} else {
+		lastExpList = new CExpList( tmpHead, nullptr );
+	}
 }
 
 void CIRTreeCallLifter::Visit( const CLabel* node )
 {
+	lastStm = new CLabel( node->label );
 }
