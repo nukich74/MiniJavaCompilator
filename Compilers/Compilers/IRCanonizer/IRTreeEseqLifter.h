@@ -27,7 +27,7 @@ namespace IRTree {
 		void Visit(const CEseq* node) override;
 		void Visit(const CExpList* node) override;
 		void Visit(const CLabel* node) override;
-
+		IStm* getResultTree() const { return lastBuildStm; }
 	private:
 		IExp* lastBuildExp;
 		IStm* lastBuildStm;

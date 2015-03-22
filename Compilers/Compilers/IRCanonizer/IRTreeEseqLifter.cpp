@@ -8,16 +8,34 @@ using namespace std;
 
 void CIRTreeEseqLifter::Visit( const CMove* node )
 {
+	const CMem* memCheck = dynamic_cast<const CMem*>( node->dst.get() );
 	node->dst->Accept( *this );
 	IExp* newDst = lastBuildExp;
 	node->src->Accept( *this );
 	IExp* newSrc = lastBuildExp;
 	CCall* callCheck = dynamic_cast<CCall*>( newSrc );
-	if (!callCheck) {
-		CMove* newNode = new CMove( newDst, newSrc );
-		lastBuildStm = newNode;
+	if ( !callCheck ) {
+		if ( memCheck ) {
+			CExpList* expressions = new CExpList( newDst, new CExpList( newSrc, 0 ) );
+			Visit( expressions );
+			CMove* newMove = new CMove( lastBuildPair.second->head.get(), lastBuildPair.second->tail->head.get() );
+			newMove->dst = lastBuildPair.second->head;
+			newMove->src = lastBuildPair.second->tail->head;
+			CSeq* newNode = new CSeq( lastBuildPair.first, newMove );
+			lastBuildStm = newNode;
+		} else {
+			CExpList* expressions = new CExpList( newSrc, 0 );
+			Visit( expressions );
+			CMove* newMove = new CMove( newDst, lastBuildPair.second->head.get() );
+			newMove->src = lastBuildPair.second->head;
+			CSeq* newNode = new CSeq( lastBuildPair.first, newMove );
+			lastBuildStm = newNode;
+		}
 	} else {
-		CCall* newCall = new CCall( callCheck->func, *lastBuildPair.second );
+		//все вызовы call находятся только внутри move, где dst - это CTemp
+		//проверка на mem не нужна
+		CCall* newCall = new CCall( callCheck->func.get(), *lastBuildPair.second );
+		newCall->func = callCheck->func;
 		CMove* newMove = new CMove( newDst, newCall );
 		CSeq* newNode = new CSeq( lastBuildPair.first, newMove );
 		lastBuildStm = newNode;
@@ -28,8 +46,17 @@ void CIRTreeEseqLifter::Visit( const CExp* node )
 {
 	node->exp->Accept( *this );
 	IExp* newExp = lastBuildExp;
-	CExp* newNode = new CExp( newExp );
-	lastBuildStm = newNode;
+	CEseq* eseqCheck = dynamic_cast<CEseq*>( newExp );
+	if ( !eseqCheck ) {
+		CExp* newNode = new CExp( newExp );
+		lastBuildStm = newNode;
+	} else {
+		CExp* newExp = new CExp( eseqCheck->exp.get() );
+		newExp->exp = eseqCheck->exp;
+		CSeq* newSeq = new CSeq( eseqCheck->stm.get(), newExp );
+		newSeq->left = eseqCheck->stm;
+		lastBuildStm = newSeq;
+	}
 }
 
 void CIRTreeEseqLifter::Visit( const CJump* node )
@@ -49,16 +76,16 @@ void CIRTreeEseqLifter::Visit( const CCjump* node )
 	if ( leftEseq != 0 && rightEseq != 0 ) {
 		Temp::CTemp* rightTemp = new Temp::CTemp;
 		CTemp* rightTempIRTree = new CTemp( *rightTemp );
-		CMove* moveRight = new CMove( rightTempIRTree, rightEseq->exp.get() );//���
+		CMove* moveRight = new CMove( rightTempIRTree, rightEseq->exp.get() );
 		moveRight->src = rightEseq->exp;
-		CSeq* seq1 = new CSeq( rightEseq->stm.get(), moveRight );//���
+		CSeq* seq1 = new CSeq( rightEseq->stm.get(), moveRight );
 		seq1->left = rightEseq->stm;
 		Temp::CTemp* leftTemp = new Temp::CTemp;
 		CTemp* leftTempIRTree = new CTemp( *leftTemp );
-		CMove* moveLeft = new CMove( leftTempIRTree, leftEseq->exp.get() );//���
+		CMove* moveLeft = new CMove( leftTempIRTree, leftEseq->exp.get() );
 		moveLeft->src = leftEseq->exp;
 		CSeq* seq2 = new CSeq( moveLeft, seq1 );
-		CSeq* seq3 = new CSeq( leftEseq->stm.get(), seq2 );//���
+		CSeq* seq3 = new CSeq( leftEseq->stm.get(), seq2 );
 		seq3->left = leftEseq->stm;
 		CTemp* rightTempGet = new CTemp( *rightTemp );
 		CTemp* leftTempGet = new CTemp( *leftTemp );
@@ -68,17 +95,17 @@ void CIRTreeEseqLifter::Visit( const CCjump* node )
 	} else if ( leftEseq != 0 && rightEseq == 0 ) {
 		CCjump* newJump = new CCjump( node->relop, leftEseq->exp.get(), newRight, node->iftrue, node->iffalse );//���
 		newJump->left = leftEseq->exp;
-		CSeq* newNode = new CSeq( leftEseq->stm.get(), newJump );//���
+		CSeq* newNode = new CSeq( leftEseq->stm.get(), newJump );
 		newNode->left = leftEseq->stm;
 		lastBuildStm = newNode;
 	} else if ( leftEseq == 0 && rightEseq != 0 ) {
 		Temp::CTemp* leftTemp = new Temp::CTemp;
 		CTemp* leftTempSet = new CTemp( *leftTemp );
 		CMove* leftMove = new CMove( leftTempSet, newLeft );
-		CSeq* seq1 = new CSeq( leftMove, rightEseq->stm.get() );//���
+		CSeq* seq1 = new CSeq( leftMove, rightEseq->stm.get() );
 		seq1->right = rightEseq->stm;
 		CTemp* leftTempGet = new CTemp( *leftTemp );
-		CCjump* newJump = new CCjump( node->relop, leftTempGet, rightEseq->exp.get(), node->iftrue, node->iffalse );//���
+		CCjump* newJump = new CCjump( node->relop, leftTempGet, rightEseq->exp.get(), node->iftrue, node->iffalse );
 		newJump->right = rightEseq->exp;
 		CSeq* seq2 = new CSeq( seq1, newJump );
 		lastBuildStm = seq2;
@@ -129,16 +156,16 @@ void CIRTreeEseqLifter::Visit( const CBinop* node )
 		//если оба потомка Eseq, то сохраняем результаты вычислений, и только потом вычисляем Binop
 		Temp::CTemp* rightTemp = new Temp::CTemp;
 		CTemp* rightTempIRTree = new CTemp( *rightTemp );
-		CMove* moveRight = new CMove( rightTempIRTree, rightEseq->exp.get() );//���
+		CMove* moveRight = new CMove( rightTempIRTree, rightEseq->exp.get() );
 		moveRight->src = rightEseq->exp;
-		CSeq* seq1 = new CSeq( rightEseq->stm.get(), moveRight );//���
+		CSeq* seq1 = new CSeq( rightEseq->stm.get(), moveRight );
 		seq1->left = rightEseq->stm;
 		Temp::CTemp* leftTemp = new Temp::CTemp;
 		CTemp* leftTempIRTree = new CTemp( *leftTemp );
-		CMove* moveLeft = new CMove( leftTempIRTree, leftEseq->exp.get() );//���
+		CMove* moveLeft = new CMove( leftTempIRTree, leftEseq->exp.get() );
 		moveLeft->src = leftEseq->exp;
 		CSeq* seq2 = new CSeq( moveLeft, seq1 );
-		CSeq* seq3 = new CSeq( leftEseq->stm.get(), seq2 );//���
+		CSeq* seq3 = new CSeq( leftEseq->stm.get(), seq2 );
 		seq3->left = leftEseq->stm;
 		CTemp* rightTempGet = new CTemp( *rightTemp );
 		CTemp* leftTempGet = new CTemp( *leftTemp );
@@ -146,9 +173,9 @@ void CIRTreeEseqLifter::Visit( const CBinop* node )
 		CEseq* newNode = new CEseq( seq3, newBinop );
 		lastBuildExp = newNode;
 	} else if ( leftEseq != 0 && rightEseq == 0 ) {
-		CBinop* newBinop = new CBinop( node->binop, leftEseq->exp.get(), newRight );//���
+		CBinop* newBinop = new CBinop( node->binop, leftEseq->exp.get(), newRight );
 		newBinop->left = leftEseq->exp;
-		CEseq* newNode = new CEseq( leftEseq->stm.get(), newBinop );//���
+		CEseq* newNode = new CEseq( leftEseq->stm.get(), newBinop );
 		newNode->stm = leftEseq->stm;
 		lastBuildExp = newNode;
 	} else if ( leftEseq == 0 && rightEseq != 0 ) {
@@ -174,9 +201,9 @@ void CIRTreeEseqLifter::Visit( const CMem* node )
 	IExp* newExp = lastBuildExp;
 	CEseq* eseqCheck = dynamic_cast<CEseq*>( newExp );
 	if ( eseqCheck != 0 ) {
-		CMem* newMem = new CMem( eseqCheck->exp.get() );//���
+		CMem* newMem = new CMem( eseqCheck->exp.get() );
 		newMem->exp = eseqCheck->exp;
-		CEseq* newNode = new CEseq( eseqCheck->stm.get(), newMem );//���
+		CEseq* newNode = new CEseq( eseqCheck->stm.get(), newMem );
 		newNode->stm = eseqCheck->stm;
 		lastBuildExp = newNode;
 	} else {
@@ -198,9 +225,9 @@ void CIRTreeEseqLifter::Visit( const CEseq* node )
 	IExp* newExp = lastBuildExp;
 	CEseq* eseqCheck = dynamic_cast<CEseq*>( newExp );
 	if ( eseqCheck != 0 ) {
-		CSeq* leftSeq = new CSeq( newStm, eseqCheck->stm.get() ); //���
+		CSeq* leftSeq = new CSeq( newStm, eseqCheck->stm.get() );
 		leftSeq->right = eseqCheck->stm;
-		CEseq* newNode = new CEseq( leftSeq, eseqCheck->exp.get() ); //���
+		CEseq* newNode = new CEseq( leftSeq, eseqCheck->exp.get() );
 		newNode->exp = eseqCheck->exp;
 		lastBuildExp = newNode;
 	} else {
@@ -211,7 +238,6 @@ void CIRTreeEseqLifter::Visit( const CEseq* node )
 
 void CIRTreeEseqLifter::Visit( const CExpList* node )
 {
-	//TODO
 	vector<const IExp*> args;
 	vector<const IExp*> newArgs;
 	const IExp* current = node->head.get();
@@ -234,7 +260,7 @@ void CIRTreeEseqLifter::Visit( const CExpList* node )
 		CTemp* newTempGet = new CTemp( *newTemp );
 		const CEseq* eseqCheck = dynamic_cast<const CEseq*>( *iter );
 		if (eseqCheck) {
-			CMove* setTemp = new CMove( newTempSet, eseqCheck->exp.get() );//���
+			CMove* setTemp = new CMove( newTempSet, eseqCheck->exp.get() );
 			setTemp->src = eseqCheck->exp;
 			CSeq* eseqReplacer = new CSeq( eseqCheck->stm.get(), setTemp );
 			eseqReplacer->left = eseqCheck->stm;
