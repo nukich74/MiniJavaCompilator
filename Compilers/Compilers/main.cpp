@@ -7,6 +7,7 @@
 #include <TypeChecker.h>
 #include "IRTree\IRForestBuilder.h"
 #include "IRTree\IRTreeToDigraphConverter.h"
+#include "IRTreeCallLifter.h"
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -36,8 +37,26 @@ int main()
 		Translate::CIRForestBuilder irForestBuilder( tableConstructor.symbolTable );
 		astRoot->Accept( irForestBuilder );
 
-		for( const auto& frame : irForestBuilder.Methods ) {
+		/*for( const auto& frame : irForestBuilder.Methods ) {
 			// Печатаем деревья для отдельной функции
+			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_" ) 
+				+ frame->Name + std::string( ".dot" ) );
+			frame->Stm->Accept( irTreeToDigraphConverter );
+			irTreeToDigraphConverter.Flush();
+		}*/
+
+		IRTree::CIRTreeCallLifter callLifter;
+		vector<const Frame::CFrame* > liftedCallMethods;
+		for( auto& frame : irForestBuilder.Methods ) {
+			frame->Stm->Accept( callLifter );
+			Frame::CFrame* tmp = new Frame::CFrame( frame->Name );
+			tmp->Stm = callLifter.GetLastStm();
+			liftedCallMethods.push_back( tmp );
+			callLifter.ReInit();
+		}
+
+		for( const auto& frame : liftedCallMethods ) {
+			// Вывод деревьев с заменой call на спец. конструкцию.
 			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_" ) 
 				+ frame->Name + std::string( ".dot" ) );
 			frame->Stm->Accept( irTreeToDigraphConverter );
