@@ -31,7 +31,7 @@ namespace IRTree {
 	private:
 		IExp* lastBuildExp;
 		IStm* lastBuildStm;
-		std::pair<IStm*, CExpList*> lastBuildPair;
+		std::pair<const IStm*, const CExpList*> lastBuildPair;
 	};
 
 }

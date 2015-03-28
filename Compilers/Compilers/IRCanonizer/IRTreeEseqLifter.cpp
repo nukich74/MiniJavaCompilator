@@ -252,7 +252,7 @@ void CIRTreeEseqLifter::Visit( const CExpList* node )
 			break;
 		}
 	}
-	IStm* resultStm = new CExp(new CConst(0));
+	const IStm* resultStm = 0;
 	for ( vector<const IExp*>::const_iterator iter = args.begin(); iter != args.end(); ++iter ) 
 	{
 		Temp::CTemp* newTemp = new Temp::CTemp;
@@ -262,16 +262,29 @@ void CIRTreeEseqLifter::Visit( const CExpList* node )
 		if (eseqCheck) {
 			CMove* setTemp = new CMove( newTempSet, 0 );
 			setTemp->src = eseqCheck->exp;
-			CSeq* eseqReplacer = new CSeq( 0, setTemp );
-			eseqReplacer->left = eseqCheck->stm;
-			CSeq* newResultStm = new CSeq( resultStm, eseqReplacer );
+			CSeq* eseqStmReplacer = new CSeq( 0, setTemp );
+			eseqStmReplacer->left = eseqCheck->stm;
+			const IStm* newResultStm = 0;
+			if (resultStm == 0) {
+				newResultStm = eseqStmReplacer;
+			} else {
+				newResultStm = new CSeq( resultStm, eseqStmReplacer );
+			}
 			resultStm = newResultStm;
 		} else {
 			CMove* setTemp = new CMove( newTempSet, *iter );
-			CSeq* expReplacer = new CSeq( resultStm, setTemp );
-			resultStm = expReplacer;
+			const IStm* newResultStm = 0;
+			if (resultStm == 0) {
+				newResultStm = setTemp;
+			} else {
+				newResultStm = new CSeq( resultStm, setTemp );
+			}
+			resultStm = newResultStm;
 		}
 		newArgs.push_back( newTempGet );
+	}
+	if (resultStm == 0) {
+		resultStm = new CExp( new CConst(0) );
 	}
 	CExpList* resultExpList = 0;
 	for ( vector<const IExp*>::const_reverse_iterator iter = newArgs.rbegin(); iter != newArgs.rend(); ++iter )
@@ -284,9 +297,6 @@ void CIRTreeEseqLifter::Visit( const CExpList* node )
 
 void CIRTreeEseqLifter::Visit( const CLabel* node ) 
 {
-	if (node->label->Name() == string("tempLabel1")) {
-		int a = 1;
-	}
 	CLabel* newNode = new CLabel( node->label );
 	lastBuildStm = newNode;
 }
