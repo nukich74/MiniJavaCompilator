@@ -8,6 +8,7 @@
 #include "IRTree\IRForestBuilder.h"
 #include "IRTree\IRTreeToDigraphConverter.h"
 #include "IRTreeCallLifter.h"
+#include "IRTreeEseqLifter.h"
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -55,8 +56,25 @@ int main()
 			callLifter.ReInit();
 		}
 
+		vector<const Frame::CFrame*> liftedEseqMethods;
+		IRTree::CIRTreeEseqLifter eseqLifter;
+		for( auto& frame : liftedCallMethods ) {
+			frame->Stm->Accept( eseqLifter );
+			Frame::CFrame* tmp = new Frame::CFrame( frame->Name );
+			tmp->Stm = eseqLifter.getResultTree();
+			liftedEseqMethods.push_back( tmp );
+		}
+
 		for( const auto& frame : liftedCallMethods ) {
 			// Вывод деревьев с заменой call на спец. конструкцию.
+			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_Eseq_" ) 
+				+ frame->Name + std::string( ".dot" ) );
+			frame->Stm->Accept( irTreeToDigraphConverter );
+			irTreeToDigraphConverter.Flush();
+		}
+
+		for( const auto& frame : liftedEseqMethods ) {
+			// Вывод деревьев с заменой eseq на спец. конструкцию.
 			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_" ) 
 				+ frame->Name + std::string( ".dot" ) );
 			frame->Stm->Accept( irTreeToDigraphConverter );

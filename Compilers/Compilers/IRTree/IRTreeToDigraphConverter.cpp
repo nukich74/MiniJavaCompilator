@@ -12,6 +12,7 @@ int CIRTreeToDigraphConverter::minId = 0;
 
 void CIRTreeToDigraphConverter::Visit( const CMove* node )
 {
+	cout<<"CMove\n";
 	node->dst->Accept( *this );
 	string destString = lastNodeName;
 
@@ -26,6 +27,7 @@ void CIRTreeToDigraphConverter::Visit( const CMove* node )
 
 void CIRTreeToDigraphConverter::Visit( const CExp* node )
 {
+	cout<<"CExp\n";
 	node->exp->Accept( *this );
 	string prevString = lastNodeName;
 
@@ -35,12 +37,14 @@ void CIRTreeToDigraphConverter::Visit( const CExp* node )
 
 void CIRTreeToDigraphConverter::Visit( const CJump* node )
 {
+	cout<<"CJump\n";
 	nextNameWithId( "jump" );
 	treeRepresentation.AddEdge( lastNodeName, node->label->Name(), "to_label" );
 }
 
 void CIRTreeToDigraphConverter::Visit( const CCjump* node )
 {
+	cout<<"CCJjump\n";
 	node->right->Accept( *this );
 	string rightString = lastNodeName;
 	node->left->Accept( *this );
@@ -56,6 +60,7 @@ void CIRTreeToDigraphConverter::Visit( const CCjump* node )
 
 void CIRTreeToDigraphConverter::Visit( const CSeq* node )
 {
+	cout<<"CSeq\n";
 	if( node->left != nullptr ) {
 		node->left->Accept( *this );
 		string leftString = lastNodeName;
@@ -76,21 +81,25 @@ void CIRTreeToDigraphConverter::Visit( const CSeq* node )
 
 void CIRTreeToDigraphConverter::Visit( const CConst* node )
 {
+	cout<<"CConst\n";
 	nextNameWithId( string( "const_" ) + to_string( node->value ) );
 }
 
 void CIRTreeToDigraphConverter::Visit( const CName* node )
 {
+	cout<<"CName\n";
 	nextNameWithId( string( "name_" ) + node->label->Name() );
 }
 
 void CIRTreeToDigraphConverter::Visit( const CTemp* node )
 {
+	cout<<"CTemp\n";
 	nextNameWithId( string( "temp_" ) + node->temp.Name() );
 }
 
 void CIRTreeToDigraphConverter::Visit( const CBinop* node )
 {
+	cout<<"CBinop\n";
 	node->left->Accept( *this );
 	string leftString = lastNodeName;
 	node->right->Accept( *this );
@@ -102,6 +111,7 @@ void CIRTreeToDigraphConverter::Visit( const CBinop* node )
 
 void CIRTreeToDigraphConverter::Visit( const CMem* node )
 {
+	cout<<"CMem\n";
 	node->exp->Accept( *this );
 	string prevString = lastNodeName;
 	nextNameWithId( "mem" );
@@ -110,6 +120,7 @@ void CIRTreeToDigraphConverter::Visit( const CMem* node )
 
 void CIRTreeToDigraphConverter::Visit( const CCall* node )
 {
+	cout<<"CCall\n";
 	node->func->Accept( *this );
 	string funcString = lastNodeName;
 	node->args.Accept( *this );
@@ -121,6 +132,7 @@ void CIRTreeToDigraphConverter::Visit( const CCall* node )
 
 void CIRTreeToDigraphConverter::Visit( const CEseq* node )
 {
+	cout<<"CEseq\n";
 	node->stm->Accept( *this );
 	string stmString = lastNodeName;
 	node->exp->Accept( *this );
@@ -132,6 +144,7 @@ void CIRTreeToDigraphConverter::Visit( const CEseq* node )
 
 void CIRTreeToDigraphConverter::Visit( const CExpList* node )
 {
+	cout<<"CExpList\n";
 	if( node->head != nullptr ) {
 		node->head->Accept( *this );
 		string headString = lastNodeName;
@@ -153,6 +166,10 @@ void CIRTreeToDigraphConverter::Visit( const CExpList* node )
 
 void CIRTreeToDigraphConverter::Visit( const CLabel* node )
 {
+	if (node->label->Name() == "tempLabel1") {
+		int a = 1;
+	}
+	cout<<"CLabel\n"<<node->label->Name();
 	nextNameWithId( string( "label:" ) + node->label->Name() );
 }
 
