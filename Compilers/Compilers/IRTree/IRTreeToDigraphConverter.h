@@ -24,7 +24,7 @@ class CLabel;
 
 class CIRTreeToDigraphConverter : public IVisitor {
 public:
-	CIRTreeToDigraphConverter( std::string treeFileName ) : treeRepresentation( treeFileName ) {}
+	CIRTreeToDigraphConverter( std::string treeFileName ) : treeRepresentation( treeFileName ), minId( 0 ) {}
 
 	virtual void Visit( const CMove* node ) override;
 
@@ -58,7 +58,7 @@ public:
 
 private:
 
-	static int minId;
+	int minId;
 
 	std::string lastNodeName;
 

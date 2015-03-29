@@ -1,14 +1,10 @@
 ﻿#include "IRTreeToDigraphConverter.h"
 #include <IRStm.h>
 #include <IRExp.h>
-#include <sstream>
-#include <iostream>
 
 using namespace std;
 
 namespace IRTree {
-
-int CIRTreeToDigraphConverter::minId = 0;
 
 void CIRTreeToDigraphConverter::Visit( const CMove* node )
 {
@@ -172,7 +168,7 @@ void CIRTreeToDigraphConverter::Visit( const CLabel* node )
 
 void CIRTreeToDigraphConverter::nextNameWithId( std::string label )
 {
-	lastNodeName = label + "__id_"+ to_string( minId++ );
+	lastNodeName = label + string( "__id_" ) + to_string( minId++ );
 	treeRepresentation.SetNodeLabel( lastNodeName, label );
 }
 
