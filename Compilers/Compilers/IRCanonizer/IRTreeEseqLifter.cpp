@@ -19,7 +19,7 @@ void CIRTreeEseqLifter::Visit( const CMove* node )
 		if ( memCheck ) {
 			CExpList* expressions = new CExpList( newDst, new CExpList( newSrc, 0 ) );
 			Visit( expressions );
-			CMove* newMove = new CMove( lastBuildPair.second->head.get(), lastBuildPair.second->tail->head.get() );
+			CMove* newMove = new CMove( 0, 0 );
 			newMove->dst = lastBuildPair.second->head;
 			newMove->src = lastBuildPair.second->tail->head;
 			CSeq* newNode = new CSeq( lastBuildPair.first, newMove );
