@@ -19,11 +19,11 @@ void CLinearizer::Linearize( std::shared_ptr<const IStm> root )
 	}
 	const CEseq* eseq = dynamic_cast< const CEseq* >( root.get() );
 	if( eseq != nullptr ) {
-		linearized.push_back( new CExp( eseq->exp.get() ) );
+		linearized.emplace_back( shared_ptr<IStm>( new CExp( eseq->exp.get() ) ) );
 		Linearize( eseq->stm );
 		return;
 	}
-	linearized.push_back( root )
+	linearized.push_back( root );
 }
 
 } // namespace IRTree
