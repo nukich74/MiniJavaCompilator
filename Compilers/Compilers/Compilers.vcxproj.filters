@@ -20,6 +20,7 @@
     <ClCompile Include="IRTree\IRHelpers.cpp" />
     <ClCompile Include="IRCanonizer\IRTreeEseqLifter.cpp" />
     <ClCompile Include="IRCanonizer\IRTreeCallLifter.cpp" />
+    <ClCompile Include="IRCanonizer\IRTreeLinearizer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -67,6 +68,7 @@
     <ClInclude Include="IRTree\IRTreeVisitor.h" />
     <ClInclude Include="IRCanonizer\IRTreeEseqLifter.h" />
     <ClInclude Include="IRCanonizer\IRTreeCallLifter.h" />
+    <ClInclude Include="IRCanonizer\IRTreeLinearizer.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
