@@ -30,20 +30,23 @@ void CLinearizer::SplitByLabelAndJump()
 		if( jumpNode != nullptr || cjumpNode != nullptr ) {
 			IndependentBlocks.push_back( currentBlock );
 			currentBlock.clear();
-		}
-
-		// Если следующий блок Label, то нужно сейчас разрезать и добавить CJump на этот блок
-		if( i < Linearized.size() ) {
-			const IRTree::CLabel* labelNode = dynamic_cast<const CLabel*>( Linearized[i + 1].get() );
-			if( labelNode != nullptr ) {
-				currentBlock.emplace_back( shared_ptr<const IStm>( new CJump( labelNode->label ) ) );
-				IndependentBlocks.push_back( currentBlock );
-				currentBlock.clear();
+			continue;
+		} else {
+			// Если следующий блок Label, а мы не в переходе то надо надо добавить Jump на этот Label
+			if( i + 1 < Linearized.size() ) {
+				const IRTree::CLabel* labelNode = dynamic_cast<const CLabel*>( Linearized[i + 1].get() );
+				if( labelNode != nullptr ) {
+					currentBlock.emplace_back( shared_ptr<const IStm>( new CJump( labelNode->label ) ) );
+					IndependentBlocks.push_back( currentBlock );
+					currentBlock.clear();
+					continue;
+				}
 			}
 		}
 		
 	}
 	currentBlock.emplace_back( shared_ptr<const IStm>( new CJump( new Temp::CLabel( std::string( "epilog_of__" ) + frame->Name ) ) ) );
+	IndependentBlocks.push_back( currentBlock );
 }
 
 void CLinearizer::Reorder()
