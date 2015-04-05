@@ -9,6 +9,7 @@
 #include "IRTree\IRTreeToDigraphConverter.h"
 #include "IRTreeCallLifter.h"
 #include "IRTreeEseqLifter.h"
+#include "IRTreeLinearizer.h"
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -79,6 +80,15 @@ int main()
 				+ frame->Name + std::string( ".dot" ) );
 			frame->Stm->Accept( irTreeToDigraphConverter );
 			irTreeToDigraphConverter.Flush();
+		}
+
+		for( const auto& frame : liftedEseqMethods ) {
+			// Линеаризум деревья в std::vector<std::shared_ptr<const IStm> > 
+			IRTree::CLinearizer linearizer( frame );
+			linearizer.Linearize();
+			linearizer.SplitByLabelAndJump();
+			linearizer.Reorder();
+			linearizer.IndependentBlocks;
 		}
 	}
 
