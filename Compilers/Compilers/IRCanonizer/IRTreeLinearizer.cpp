@@ -51,26 +51,26 @@ void CLinearizer::SplitByLabelAndJump()
 
 void CLinearizer::Reorder()
 {
-	for( auto& i = IndependentBlocks.begin(); i != IndependentBlocks.end(); i++ ) {
+	for( auto i = IndependentBlocks.begin(); i != IndependentBlocks.end(); i++ ) {
 		const CCjump* cjumpNode = dynamic_cast<const CCjump*>( i->back().get() );
 		if( cjumpNode != nullptr ) {
 			// Нашли блок заканчивающийсся на СJump ставим после него его false метку
-			auto& j = i;
+			auto j = i;
 			j++;
 			for( ; j != IndependentBlocks.end(); j++ ) {
 				const CLabel* labelNode = dynamic_cast<const CLabel*>( j->front().get() );
-				if( labelNode != nullptr && labelNode->label == cjumpNode->iffalse ) {
+				if( labelNode != nullptr && labelNode->label->Name() == cjumpNode->iffalse->Name() ) {
 					break;
 				}
 			}
 			if( j != IndependentBlocks.end() ) {
 				i++;
 				i = IndependentBlocks.insert( i, *j );
-				i++;
 				IndependentBlocks.erase( j );
 			} else {
 				assert( false );
 			}
+			continue;
 		}
 
 		const CJump* jumpNode = dynamic_cast<const CJump*>( i->back().get() );
@@ -80,16 +80,17 @@ void CLinearizer::Reorder()
 			j++;
 			for( ; j != IndependentBlocks.end(); j++ ) {
 				const CLabel* labelNode = dynamic_cast<const CLabel*>( j->front().get() );
-				if( labelNode != nullptr && labelNode->label == jumpNode->label ) {
+				if( labelNode != nullptr && labelNode->label->Name() == jumpNode->label->Name() ) {
 					break;
 				}
 			}
 			if( j != IndependentBlocks.end() ) {
 				// Если удалось найти метку на которую ведет Jump
 				i++;
-				IndependentBlocks.insert( i, *j );
+				i = IndependentBlocks.insert( i, *j );
 				IndependentBlocks.erase( j );
 			}
+			continue;
 		}
 
 	}
