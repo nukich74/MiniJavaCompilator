@@ -8,7 +8,7 @@ class Factorial {
 class a {
 	int a;
 	int b;
-	public int a() {
+	public int a1() {
 		return a;
 	}
 }
