@@ -12,7 +12,7 @@ namespace CodeGeneration {
 
 class IInstruction {
 public:
-	const char* AsmCode();
+	const char* AsmCode;
 	virtual const std::list<Temp::CTemp>& UsedVars() const = 0;
 	virtual const std::list<Temp::CTemp>& DefinedVars() const = 0;
 	virtual const std::list<Temp::CLabel>& JumpTargets() const = 0;
