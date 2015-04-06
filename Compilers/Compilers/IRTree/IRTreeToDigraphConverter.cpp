@@ -178,9 +178,6 @@ void CIRTreeToDigraphConverter::Visit( const CExpList* node )
 
 void CIRTreeToDigraphConverter::Visit( const CLabel* node )
 {
-	if (node->label->Name() == "tempLabel1") {
-		int a = 1;
-	}
 	nextNameWithId( string( "label:" ) + node->label->Name() );
 }
 

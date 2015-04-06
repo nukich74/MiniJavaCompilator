@@ -39,13 +39,13 @@ int main()
 		Translate::CIRForestBuilder irForestBuilder( tableConstructor.symbolTable );
 		astRoot->Accept( irForestBuilder );
 
-		/*for( const auto& frame : irForestBuilder.Methods ) {
+		for( const auto& frame : irForestBuilder.Methods ) {
 			// Печатаем деревья для отдельной функции
-			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_" ) 
+			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_BASE_" ) 
 				+ frame->Name + std::string( ".dot" ) );
 			frame->Stm->Accept( irTreeToDigraphConverter );
 			irTreeToDigraphConverter.Flush();
-		}*/
+		}
 
 		IRTree::CIRTreeCallLifter callLifter;
 		vector<const Frame::CFrame* > liftedCallMethods;
@@ -68,7 +68,7 @@ int main()
 
 		for( const auto& frame : liftedCallMethods ) {
 			// Вывод деревьев с заменой call на спец. конструкцию.
-			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_Eseq_" ) 
+			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_LIFTEDCALL_" ) 
 				+ frame->Name + std::string( ".dot" ) );
 			frame->Stm->Accept( irTreeToDigraphConverter );
 			irTreeToDigraphConverter.Flush();
@@ -76,7 +76,7 @@ int main()
 
 		for( const auto& frame : liftedEseqMethods ) {
 			// Вывод деревьев с заменой eseq на спец. конструкцию.
-			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_" ) 
+			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_LIFTEDESEQ_" ) 
 				+ frame->Name + std::string( ".dot" ) );
 			frame->Stm->Accept( irTreeToDigraphConverter );
 			irTreeToDigraphConverter.Flush();
