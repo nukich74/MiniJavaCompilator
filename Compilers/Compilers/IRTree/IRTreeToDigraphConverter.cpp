@@ -92,16 +92,34 @@ void CIRTreeToDigraphConverter::Visit( const CBinop* node )
 	node->right->Accept( *this );
 	string rightString = lastNodeName;
 	//graphviz отказывается работать с символами типа + *
-	if (node->binop == B_Mul) {
-		nextNameWithId( "binop__Mul" );
-	} else if (node->binop == B_Plus) {
-		nextNameWithId( "binop__Sum" );
-	} else if (node->binop == B_Division) {
-		nextNameWithId( "binop__Div" );
-	} else if (node->binop == B_Minus) {
-		nextNameWithId( "binop__Minus" );
-	} else {
-		nextNameWithId( "binop__" + ToString(node->binop) );
+	switch( node->binop ) {
+		case B_Mul:
+			nextNameWithId( "binop__Mul" );
+			break;
+		case B_Plus:
+			nextNameWithId( "binop__Plus" );
+			break;
+		case B_Division:
+			nextNameWithId( "binop__Division" );
+			break;
+		case B_Minus:
+			nextNameWithId( "binop__Minus" );
+			break;
+		case B_Xor: 
+			nextNameWithId( "binop__Xor" );
+			break;
+		case B_Less:
+			nextNameWithId( "binop__Less" );
+			break;
+		case B_Greater:
+			nextNameWithId( "binop__Greater" );
+			break;
+		case B_And:
+			nextNameWithId( "binop__And" );
+			break;
+		default:
+			assert( false );
+			break;
 	}
 	treeRepresentation.AddEdge( lastNodeName, rightString, "right" );
 	treeRepresentation.AddEdge( lastNodeName, leftString, "left" );
