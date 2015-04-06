@@ -178,6 +178,9 @@ void CIRTreeToDigraphConverter::Visit( const CExpList* node )
 
 void CIRTreeToDigraphConverter::Visit( const CLabel* node )
 {
+	if (node->label->Name() == "tempLabel1") {
+		int a = 1;
+	}
 	nextNameWithId( string( "label:" ) + node->label->Name() );
 }
 
@@ -185,6 +188,22 @@ void CIRTreeToDigraphConverter::nextNameWithId( std::string label )
 {
 	lastNodeName = label + string( "__id_" ) + to_string( minId++ );
 	treeRepresentation.SetNodeLabel( lastNodeName, label );
+}
+
+void CIRTreeToDigraphConverter::LinkedVisit( const IStm* node )
+{
+	string fromName = lastNodeName;
+	node->Accept( *this );
+	string toName = lastNodeName;
+	treeRepresentation.AddEdge( fromName, toName, "next" );
+}
+
+void CIRTreeToDigraphConverter::LinkedVisit( const IExp* node )
+{
+	string fromName = lastNodeName;
+	node->Accept( *this );
+	string toName = lastNodeName;
+	treeRepresentation.AddEdge( fromName, toName, "next" );
 }
 
 } //namespace IRTree 

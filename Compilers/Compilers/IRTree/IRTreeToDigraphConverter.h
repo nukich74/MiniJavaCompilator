@@ -20,11 +20,17 @@ class CCall;
 class CEseq;
 class CExpList;
 class CLabel;
+class IStm;
+class IExp;
 
 
 class CIRTreeToDigraphConverter : public IVisitor {
 public:
 	CIRTreeToDigraphConverter( std::string treeFileName ) : treeRepresentation( treeFileName ), minId( 0 ) {}
+
+	// ћетоды позвол€ют строить линейно св€занные деревь€
+	void LinkedVisit( const IStm* node );
+	void LinkedVisit( const IExp* node );
 
 	virtual void Visit( const CMove* node ) override;
 
