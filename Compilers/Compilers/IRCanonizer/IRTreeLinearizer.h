@@ -20,12 +20,12 @@ public:
 	// ѕерегруппирует IndependentBlocks таким образом чтобы после каждого CJump шла его false метка
 	void Reorder();
 
-	std::vector< std::shared_ptr<const IStm> > Linearized;
 	std::list< std::vector< std::shared_ptr<const IStm> > > IndependentBlocks;
 private:
 	
 	// ”казатель на тот фрейм с которым сейчас работаем
-	const Frame::CFrame* frame;
+	const Frame::CFrame* frame;	
+	std::vector< std::shared_ptr<const IStm> > linearized;
 	void CLinearizer::linearize( std::shared_ptr<const IStm> root );
 	
 };

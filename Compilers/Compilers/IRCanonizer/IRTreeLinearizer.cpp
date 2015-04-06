@@ -21,23 +21,23 @@ void CLinearizer::SplitByLabelAndJump()
 	// Функция начинается со специального Label. Jump на него из пролога
 	currentBlock.emplace_back( shared_ptr<IStm>( new CLabel( new Temp::CLabel( std::string( "start_of_function__" ) + frame->Name ) ) ) );
 	// Проходим по линеаризованному дереву и режем по CJump и CLabel добавляя недостающие
-	for( int i = 0; i < Linearized.size(); i++ ) {
-		currentBlock.push_back( Linearized[i] );
+	for( int i = 0; i < linearized.size(); i++ ) {
+		currentBlock.push_back( linearized[i] );
 
 		// Если текущий узел Jump или СJump то это конец независимого куска
-		const IRTree::CJump* jumpNode = dynamic_cast<const CJump*>( Linearized[i].get() );
-		const IRTree::CCjump* cjumpNode = dynamic_cast<const CCjump*>( Linearized[i].get( ) );
+		const IRTree::CJump* jumpNode = dynamic_cast<const CJump*>( linearized[i].get() );
+		const IRTree::CCjump* cjumpNode = dynamic_cast<const CCjump*>( linearized[i].get( ) );
 		if( jumpNode != nullptr || cjumpNode != nullptr ) {
-			IndependentBlocks.push_back( currentBlock );
+			independentBlocks.push_back( currentBlock );
 			currentBlock.clear();
 			continue;
 		} else {
 			// Если следующий блок Label, а мы не в переходе то надо надо добавить Jump на этот Label
-			if( i + 1 < Linearized.size() ) {
-				const IRTree::CLabel* labelNode = dynamic_cast<const CLabel*>( Linearized[i + 1].get() );
+			if( i + 1 < linearized.size() ) {
+				const IRTree::CLabel* labelNode = dynamic_cast<const CLabel*>( linearized[i + 1].get() );
 				if( labelNode != nullptr ) {
 					currentBlock.emplace_back( shared_ptr<const IStm>( new CJump( labelNode->label ) ) );
-					IndependentBlocks.push_back( currentBlock );
+					independentBlocks.push_back( currentBlock );
 					currentBlock.clear();
 					continue;
 				}
@@ -46,27 +46,27 @@ void CLinearizer::SplitByLabelAndJump()
 		
 	}
 	currentBlock.emplace_back( shared_ptr<const IStm>( new CJump( new Temp::CLabel( std::string( "epilog_of__" ) + frame->Name ) ) ) );
-	IndependentBlocks.push_back( currentBlock );
+	independentBlocks.push_back( currentBlock );
 }
 
 void CLinearizer::Reorder()
 {
-	for( auto i = IndependentBlocks.begin(); i != IndependentBlocks.end(); i++ ) {
+	for( auto i = independentBlocks.begin(); i != independentBlocks.end(); i++ ) {
 		const CCjump* cjumpNode = dynamic_cast<const CCjump*>( i->back().get() );
 		if( cjumpNode != nullptr ) {
 			// Нашли блок заканчивающийсся на СJump ставим после него его false метку
 			auto j = i;
 			j++;
-			for( ; j != IndependentBlocks.end(); j++ ) {
+			for( ; j != independentBlocks.end(); j++ ) {
 				const CLabel* labelNode = dynamic_cast<const CLabel*>( j->front().get() );
 				if( labelNode != nullptr && labelNode->label->Name() == cjumpNode->iffalse->Name() ) {
 					break;
 				}
 			}
-			if( j != IndependentBlocks.end() ) {
+			if( j != independentBlocks.end() ) {
 				i++;
-				i = IndependentBlocks.insert( i, *j );
-				IndependentBlocks.erase( j );
+				i = independentBlocks.insert( i, *j );
+				independentBlocks.erase( j );
 			} else {
 				assert( false );
 			}
@@ -78,22 +78,33 @@ void CLinearizer::Reorder()
 			// Нашли блок заканчивающийсся на Jump ставим после него его метку
 			auto& j = i;
 			j++;
-			for( ; j != IndependentBlocks.end(); j++ ) {
+			for( ; j != independentBlocks.end(); j++ ) {
 				const CLabel* labelNode = dynamic_cast<const CLabel*>( j->front().get() );
 				if( labelNode != nullptr && labelNode->label->Name() == jumpNode->label->Name() ) {
 					break;
 				}
 			}
-			if( j != IndependentBlocks.end() ) {
+			if( j != independentBlocks.end() ) {
 				// Если удалось найти метку на которую ведет Jump
 				i++;
-				i = IndependentBlocks.insert( i, *j );
-				IndependentBlocks.erase( j );
+				i = independentBlocks.insert( i, *j );
+				independentBlocks.erase( j );
 			}
 			continue;
 		}
 
 	}
+}
+
+std::vector< std::shared_ptr<const IStm> > CLinearizer::GetReordered()
+{
+	std::vector< std::shared_ptr<const IStm> > reordered;
+	for( auto i : independentBlocks ) {
+		for( auto j : i ) {
+			reordered.push_back( j );
+		}
+	}
+	return reordered;
 }
 
 void CLinearizer::linearize( std::shared_ptr<const IStm> root )
@@ -106,11 +117,11 @@ void CLinearizer::linearize( std::shared_ptr<const IStm> root )
 	}
 	const CEseq* eseq = dynamic_cast<const CEseq*>( root.get() );
 	if( eseq != nullptr ) {
-		Linearized.emplace_back( shared_ptr<const IStm>( new CExp( eseq->exp.get() ) ) );
+		linearized.emplace_back( shared_ptr<const IStm>( new CExp( eseq->exp.get() ) ) );
 		linearize( eseq->stm );
 		return;
 	}
-	Linearized.push_back( root );
+	linearized.push_back( root );
 }
 
 } // namespace IRTree
