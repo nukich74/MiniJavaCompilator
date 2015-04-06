@@ -489,9 +489,9 @@ void CIRForestBuilder::Visit( const CWhileStatement& whileStatement )
 	Temp::CLabel* beforeConditionLabelTemp = new Temp::CLabel();
 	Temp::CLabel* inLoopLabelTemp = new Temp::CLabel();
 	Temp::CLabel* endLabelTemp = new Temp::CLabel();
-	IRTree::CLabel* beforeConditionLabel = new IRTree::CLabel(new Temp::CLabel());
-	IRTree::CLabel* inLoopLabel = new IRTree::CLabel(new Temp::CLabel());
-	IRTree::CLabel* endLabel = new IRTree::CLabel(new Temp::CLabel());
+	IRTree::CLabel* beforeConditionLabel = new IRTree::CLabel( beforeConditionLabelTemp );
+	IRTree::CLabel* inLoopLabel = new IRTree::CLabel( inLoopLabelTemp );
+	IRTree::CLabel* endLabel = new IRTree::CLabel( endLabelTemp );
 	whileStatement.Exp()->Accept( *this );
 	Translate::CExpConverter converter( lastReturnedExp );
 	const IRTree::IStm* whileStm = converter.ToConditional( inLoopLabelTemp, endLabelTemp );
