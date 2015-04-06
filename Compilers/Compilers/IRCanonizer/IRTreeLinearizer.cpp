@@ -1,5 +1,5 @@
-// Автор: Владислав Воротилов
-// Описание: Класс реализующий обход дерева, с преобразованием его в линейную структуру
+п»ї// РђРІС‚РѕСЂ: Р’Р»Р°РґРёСЃР»Р°РІ Р’РѕСЂРѕС‚РёР»РѕРІ
+// РћРїРёСЃР°РЅРёРµ: РљР»Р°СЃСЃ СЂРµР°Р»РёР·СѓСЋС‰РёР№ РѕР±С…РѕРґ РґРµСЂРµРІР°, СЃ РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµРј РµРіРѕ РІ Р»РёРЅРµР№РЅСѓСЋ СЃС‚СЂСѓРєС‚СѓСЂСѓ
 
 #include "IRTreeLinearizer.h"
 #include <assert.h>
@@ -16,15 +16,15 @@ void CLinearizer::Linearize( )
 
 void CLinearizer::SplitByLabelAndJump()
 {
-	// Текущий конструируемый независимый блок
+	// РўРµРєСѓС‰РёР№ РєРѕРЅСЃС‚СЂСѓРёСЂСѓРµРјС‹Р№ РЅРµР·Р°РІРёСЃРёРјС‹Р№ Р±Р»РѕРє
 	vector< std::shared_ptr<const IStm> > currentBlock;
-	// Функция начинается со специального Label. Jump на него из пролога
+	// Р¤СѓРЅРєС†РёСЏ РЅР°С‡РёРЅР°РµС‚СЃСЏ СЃРѕ СЃРїРµС†РёР°Р»СЊРЅРѕРіРѕ Label. Jump РЅР° РЅРµРіРѕ РёР· РїСЂРѕР»РѕРіР°
 	currentBlock.emplace_back( shared_ptr<IStm>( new CLabel( new Temp::CLabel( std::string( "start_of_function__" ) + frame->Name ) ) ) );
-	// Проходим по линеаризованному дереву и режем по CJump и CLabel добавляя недостающие
-	for( int i = 0; i < Linearized.size(); i++ ) {
+	// РџСЂРѕС…РѕРґРёРј РїРѕ Р»РёРЅРµР°СЂРёР·РѕРІР°РЅРЅРѕРјСѓ РґРµСЂРµРІСѓ Рё СЂРµР¶РµРј РїРѕ CJump Рё CLabel РґРѕР±Р°РІР»СЏСЏ РЅРµРґРѕСЃС‚Р°СЋС‰РёРµ
+	for( size_t i = 0; i < Linearized.size(); i++ ) {
 		currentBlock.push_back( Linearized[i] );
 
-		// Если текущий узел Jump или СJump то это конец независимого куска
+		// Р•СЃР»Рё С‚РµРєСѓС‰РёР№ СѓР·РµР» Jump РёР»Рё РЎJump С‚Рѕ СЌС‚Рѕ РєРѕРЅРµС† РЅРµР·Р°РІРёСЃРёРјРѕРіРѕ РєСѓСЃРєР°
 		const IRTree::CJump* jumpNode = dynamic_cast<const CJump*>( Linearized[i].get() );
 		const IRTree::CCjump* cjumpNode = dynamic_cast<const CCjump*>( Linearized[i].get( ) );
 		if( jumpNode != nullptr || cjumpNode != nullptr ) {
@@ -32,7 +32,7 @@ void CLinearizer::SplitByLabelAndJump()
 			currentBlock.clear();
 			continue;
 		} else {
-			// Если следующий блок Label, а мы не в переходе то надо надо добавить Jump на этот Label
+			// Р•СЃР»Рё СЃР»РµРґСѓСЋС‰РёР№ Р±Р»РѕРє Label, Р° РјС‹ РЅРµ РІ РїРµСЂРµС…РѕРґРµ С‚Рѕ РЅР°РґРѕ РЅР°РґРѕ РґРѕР±Р°РІРёС‚СЊ Jump РЅР° СЌС‚РѕС‚ Label
 			if( i + 1 < Linearized.size() ) {
 				const IRTree::CLabel* labelNode = dynamic_cast<const CLabel*>( Linearized[i + 1].get() );
 				if( labelNode != nullptr ) {
@@ -54,7 +54,7 @@ void CLinearizer::Reorder()
 	for( auto i = IndependentBlocks.begin(); i != IndependentBlocks.end(); i++ ) {
 		const CCjump* cjumpNode = dynamic_cast<const CCjump*>( i->back().get() );
 		if( cjumpNode != nullptr ) {
-			// Нашли блок заканчивающийсся на СJump ставим после него его false метку
+			// РќР°С€Р»Рё Р±Р»РѕРє Р·Р°РєР°РЅС‡РёРІР°СЋС‰РёР№СЃСЃСЏ РЅР° РЎJump СЃС‚Р°РІРёРј РїРѕСЃР»Рµ РЅРµРіРѕ РµРіРѕ false РјРµС‚РєСѓ
 			auto j = i;
 			j++;
 			for( ; j != IndependentBlocks.end(); j++ ) {
@@ -75,7 +75,7 @@ void CLinearizer::Reorder()
 
 		const CJump* jumpNode = dynamic_cast<const CJump*>( i->back().get() );
 		if( cjumpNode != nullptr ) {
-			// Нашли блок заканчивающийсся на Jump ставим после него его метку
+			// РќР°С€Р»Рё Р±Р»РѕРє Р·Р°РєР°РЅС‡РёРІР°СЋС‰РёР№СЃСЃСЏ РЅР° Jump СЃС‚Р°РІРёРј РїРѕСЃР»Рµ РЅРµРіРѕ РµРіРѕ РјРµС‚РєСѓ
 			auto& j = i;
 			j++;
 			for( ; j != IndependentBlocks.end(); j++ ) {
@@ -85,7 +85,7 @@ void CLinearizer::Reorder()
 				}
 			}
 			if( j != IndependentBlocks.end() ) {
-				// Если удалось найти метку на которую ведет Jump
+				// Р•СЃР»Рё СѓРґР°Р»РѕСЃСЊ РЅР°Р№С‚Рё РјРµС‚РєСѓ РЅР° РєРѕС‚РѕСЂСѓСЋ РІРµРґРµС‚ Jump
 				i++;
 				i = IndependentBlocks.insert( i, *j );
 				IndependentBlocks.erase( j );
