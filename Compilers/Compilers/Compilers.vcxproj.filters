@@ -71,6 +71,7 @@
     <ClInclude Include="IRCanonizer\IRTreeCallLifter.h" />
     <ClInclude Include="IRCanonizer\IRTreeLinearizer.h" />
     <ClInclude Include="CodeGeneration\Instruction.h" />
+    <ClInclude Include="CodeGeneration\InstructionsMuncher.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
