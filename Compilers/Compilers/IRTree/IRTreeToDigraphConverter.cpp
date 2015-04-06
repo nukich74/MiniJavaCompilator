@@ -195,7 +195,9 @@ void CIRTreeToDigraphConverter::LinkedVisit( const IStm* node )
 	string fromName = lastNodeName;
 	node->Accept( *this );
 	string toName = lastNodeName;
-	treeRepresentation.AddEdge( fromName, toName, "next" );
+	if( !fromName.empty() ) {
+		treeRepresentation.AddEdge( fromName, toName, "next" );
+	}
 }
 
 void CIRTreeToDigraphConverter::LinkedVisit( const IExp* node )
@@ -203,7 +205,9 @@ void CIRTreeToDigraphConverter::LinkedVisit( const IExp* node )
 	string fromName = lastNodeName;
 	node->Accept( *this );
 	string toName = lastNodeName;
-	treeRepresentation.AddEdge( fromName, toName, "next" );
+	if( !fromName.empty() ) {
+		treeRepresentation.AddEdge( fromName, toName, "next" );
+	}
 }
 
 } //namespace IRTree 
