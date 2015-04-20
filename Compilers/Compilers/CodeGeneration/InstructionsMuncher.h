@@ -1,6 +1,6 @@
-// Автор: Азат Давлетшин
-// Описание: класс-механизм, который из упорядоченного списка Stm-ов получает список листинг программы в виде
-// списка IInstruction
+п»ї// РђРІС‚РѕСЂ: РђР·Р°С‚ Р”Р°РІР»РµС‚С€РёРЅ
+// РћРїРёСЃР°РЅРёРµ: РєР»Р°СЃСЃ-РјРµС…Р°РЅРёР·Рј, РєРѕС‚РѕСЂС‹Р№ РёР· СѓРїРѕСЂСЏРґРѕС‡РµРЅРЅРѕРіРѕ СЃРїРёСЃРєР° Stm-РѕРІ РїРѕР»СѓС‡Р°РµС‚ СЃРїРёСЃРѕРє Р»РёСЃС‚РёРЅРі РїСЂРѕРіСЂР°РјРјС‹ РІ РІРёРґРµ
+// СЃРїРёСЃРєР° IInstruction
 
 #pragma once
 
@@ -15,14 +15,14 @@ namespace CodeGeneration {
 
 class CInstructionsMuncher {
 public:
-	// Передаем упорядоченный список IStm-ов как аргумент механизма
+	// РџРµСЂРµРґР°РµРј СѓРїРѕСЂСЏРґРѕС‡РµРЅРЅС‹Р№ СЃРїРёСЃРѕРє IStm-РѕРІ РєР°Рє Р°СЂРіСѓРјРµРЅС‚ РјРµС…Р°РЅРёР·РјР°
 	CInstructionsMuncher( const std::vector< std::shared_ptr<const IRTree::IStm> >& _reorderedStmList ) :
 		reorderedStmList( _reorderedStmList ) {}
 
-	// Построить спискок ассемблерных инструкций
-	void Process();
+	// РџРѕСЃС‚СЂРѕРёС‚СЊ СЃРїРёСЃРєРѕРє Р°СЃСЃРµРјР±Р»РµСЂРЅС‹С… РёРЅСЃС‚СЂСѓРєС†РёР№
+	void CodeGen();
 
-	// Результат работы механизма
+	// Р РµР·СѓР»СЊС‚Р°С‚ СЂР°Р±РѕС‚С‹ РјРµС…Р°РЅРёР·РјР°
 	const std::vector<IInstruction>& GetInstructionsList() const
 		{ return instructionsList; }
 
@@ -30,9 +30,14 @@ private:
 	const std::vector< std::shared_ptr<const IRTree::IStm> >& reorderedStmList;
 	std::vector<IInstruction> instructionsList;
 
-	// методы, обрабатывающие различные случаи
+	// РјРµС‚РѕРґС‹, РѕР±СЂР°Р±Р°С‚С‹РІР°СЋС‰РёРµ СЂР°Р·Р»РёС‡РЅС‹Рµ СЃР»СѓС‡Р°Рё
 	void munchMove( const IRTree::CMem* dst, const IRTree::IExp* src );
 	// ....
+
+	// РћР±СЂР°Р±РѕС‚РєР° statement.
+	void munchStm( const IRTree::IStm* stm );
+	// РћР±СЂР°Р±РѕС‚РєР° expression.
+	void munchExp( const IRTree::IExp* exp );
 };
 
 }
