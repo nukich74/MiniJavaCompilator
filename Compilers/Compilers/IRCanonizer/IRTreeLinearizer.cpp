@@ -54,7 +54,7 @@ void CLinearizer::Reorder()
 	for( auto i = independentBlocks.begin(); i != independentBlocks.end(); i++ ) {
 		const CCjump* cjumpNode = dynamic_cast<const CCjump*>( i->back().get() );
 		if( cjumpNode != nullptr ) {
-			// Нашли блок заканчивающийсся на СJump ставим после него его false метку
+			// Нашли блок заканчивающийся на СJump ставим после него его false метку
 			auto j = i;
 			j++;
 			for( ; j != independentBlocks.end(); j++ ) {
@@ -75,7 +75,7 @@ void CLinearizer::Reorder()
 
 		const CJump* jumpNode = dynamic_cast<const CJump*>( i->back().get() );
 		if( cjumpNode != nullptr ) {
-			// Нашли блок заканчивающийсся на Jump ставим после него его метку
+			// Нашли блок заканчивающийся на Jump ставим после него его метку
 			auto& j = i;
 			j++;
 			for( ; j != independentBlocks.end(); j++ ) {
@@ -86,6 +86,8 @@ void CLinearizer::Reorder()
 			}
 			if( j != independentBlocks.end() ) {
 				// Если удалось найти метку на которую ведет Jump
+				// Удаляем только Jump тк на эту метку может ссылаться кто-то еще то ее удалять нельзя
+				i->pop_back();
 				i++;
 				i = independentBlocks.insert( i, *j );
 				independentBlocks.erase( j );
