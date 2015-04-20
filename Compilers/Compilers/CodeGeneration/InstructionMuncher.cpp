@@ -2,6 +2,7 @@
 
 #include "InstructionsMuncher.h"
 #include <IRTree\IRStm.h>
+#include <IRTree\IRExp.h>
 
 using namespace CodeGeneration;
 
@@ -23,4 +24,9 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 	}
 
 	// Перебор других случаев (TODO Влад)
+}
+
+void CInstructionsMuncher::munchMove( const IRTree::CMem* dst, const IRTree::IExp* src )
+{
+
 }
