@@ -23,12 +23,12 @@ public:
 	void CodeGen();
 
 	// Результат работы механизма
-	const std::vector< std::unique_ptr<IInstruction> >& GetInstructionsList() const
+	const std::vector<IInstruction*>& GetInstructionsList() const
 		{ return instructionsList; }
 
 private:
 	const std::vector< std::shared_ptr<const IRTree::IStm> >& reorderedStmList;
-	std::vector< std::unique_ptr<IInstruction> > instructionsList;
+	std::vector<IInstruction*> instructionsList;
 
 	// методы, обрабатывающие различные случаи
 	void munchMove( const IRTree::CMem* dst, const IRTree::IExp* src );
