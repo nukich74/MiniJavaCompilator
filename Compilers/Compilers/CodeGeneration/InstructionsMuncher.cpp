@@ -40,7 +40,7 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 	// Jump
 	const IRTree::CJump* asJump = dynamic_cast< const IRTree::CJump* >(stm);
 	if( asJump != nullptr ) {
-		emit( new CodeGeneration::COper( std::string( "jmp l0" ), std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), std::list<Temp::CLabel>( 1, *asJump->label ) ) );
+		emit( new CodeGeneration::COper( std::string( "jmp l0" ), nullptr, nullptr, std::list<Temp::CLabel>( 1, *asJump->label ) ) );
 	}
 }
 
