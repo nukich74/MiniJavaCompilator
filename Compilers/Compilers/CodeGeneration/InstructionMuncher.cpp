@@ -2,6 +2,7 @@
 
 #include "InstructionsMuncher.h"
 #include <IRTree\IRStm.h>
+#include <list>
 
 using namespace CodeGeneration;
 
@@ -22,5 +23,18 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 		return munchMove( dstAsMem, asMove->src.get() );
 	}
 
-	// Перебор других случаев (TODO Влад)
+	// Seq
+	const IRTree::CSeq* asSeq = dynamic_cast< const IRTree::CSeq* >( stm );
+	if( asSeq != nullptr ) {
+		munchStm( asSeq->left.get() );
+		munchStm( asSeq->right.get() );
+	}
+
+	// Label
+	const IRTree::CLabel* asLabel = dynamic_cast< const IRTree::CLabel* >( stm );
+	if( asLabel != nullptr ) {
+		emit( new CodeGeneration::CLabel( asLabel ) );
+	}
+
+
 }
