@@ -62,7 +62,7 @@ private:
 
 class CLabel : public IInstruction {
 public:
-	CLabel( const std::list<Temp::CLabel>& _labelList );
+	CLabel( const Temp::CLabel& _labelList );
 
 	const std::list<Temp::CTemp>& UsedVars() const { return std::list<Temp::CTemp>(); }
 
@@ -71,7 +71,7 @@ public:
 	const std::list<Temp::CLabel>& JumpTargets() const { return labelList; }
 
 private:
-	const std::list<Temp::CLabel>& labelList;
+	std::list<Temp::CLabel> labelList;
 };
 
 } // namespace CodeGeneration

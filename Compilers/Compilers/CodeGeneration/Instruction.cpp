@@ -27,6 +27,7 @@ CMove::CMove( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, con
 	, src( _src )
 { }
 
-CLabel::CLabel( const std::list<Temp::CLabel>& _labelList )
-	: labelList( _labelList )
-{ }
+CLabel::CLabel( const Temp::CLabel& _label )
+{
+	labelList.push_back( _label );
+}
