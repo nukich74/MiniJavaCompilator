@@ -40,7 +40,7 @@ private:
 	// Обработка statement.
 	void munchStm( const IRTree::IStm* stm );
 	// Обработка expression.
-	void munchExp( const IRTree::IExp* exp );
+	const Temp::CTemp*  munchExp( const IRTree::IExp* exp );
 };
 
 void CInstructionsMuncher::emit( IInstruction* instruction )
