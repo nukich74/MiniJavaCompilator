@@ -32,6 +32,7 @@ private:
 
 	// методы, обрабатывающие различные случаи
 	void munchMove( const IRTree::CMem* dst, const IRTree::IExp* src );
+	void munchMove( const IRTree::IExp* dst, const IRTree::CMem* src );
 	// ....
 
 	// Обработка statement.
