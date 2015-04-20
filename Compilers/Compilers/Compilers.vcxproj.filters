@@ -22,6 +22,7 @@
     <ClCompile Include="IRCanonizer\IRTreeCallLifter.cpp" />
     <ClCompile Include="IRCanonizer\IRTreeLinearizer.cpp" />
     <ClCompile Include="CodeGeneration\Instruction.cpp" />
+    <ClCompile Include="CodeGeneration\InstructionMuncher.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
