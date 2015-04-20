@@ -42,4 +42,9 @@ private:
 	void munchExp( const IRTree::IExp* exp );
 };
 
+void CInstructionsMuncher::emit( IInstruction* instruction )
+{
+	assert( false );
+}
+
 }

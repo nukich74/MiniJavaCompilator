@@ -33,8 +33,18 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 	// Label
 	const IRTree::CLabel* asLabel = dynamic_cast< const IRTree::CLabel* >( stm );
 	if( asLabel != nullptr ) {
-		emit( new CodeGeneration::CLabel( asLabel ) );
+		emit( new CodeGeneration::CLabel( *asLabel->label ) );
 	}
 
+	// Jump
+	const IRTree::CJump* asJump = dynamic_cast< const IRTree::CJump* >( stm );
+	if( asJump != nullptr ) {
+		emit( new CodeGeneration::COper( std::string( "jmp l0" ), std::list<Temp::CTemp>(), std::list<Temp::CTemp>(), std::list<Temp::CLabel>( 1, *asJump->label ) ) );
+	}
 
+}
+
+void CInstructionsMuncher::emit( IInstruction* instruction )
+{
+	assert( false );
 }
