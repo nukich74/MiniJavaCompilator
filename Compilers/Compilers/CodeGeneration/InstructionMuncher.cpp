@@ -10,3 +10,13 @@ void CInstructionsMuncher::CodeGen()
 		munchStm( stm.get() );
 	}
 }
+
+void CInstructionsMuncher::emit( IInstruction* instr )
+{
+	instructionsList.push_back( instr );
+}
+
+Temp::CTemp* CInstructionsMuncher::munchExp( const IRTree::IExp* exp )
+{
+
+}
