@@ -1,5 +1,5 @@
-// Автор: Азат Давлетшин
-// Описание: Реализация функции Format (подстановка в строку инструкции названий регистров)
+п»ї// РђРІС‚РѕСЂ: РђР·Р°С‚ Р”Р°РІР»РµС‚С€РёРЅ
+// РћРїРёСЃР°РЅРёРµ: Р РµР°Р»РёР·Р°С†РёСЏ С„СѓРЅРєС†РёРё Format (РїРѕРґСЃС‚Р°РЅРѕРІРєР° РІ СЃС‚СЂРѕРєСѓ РёРЅСЃС‚СЂСѓРєС†РёРё РЅР°Р·РІР°РЅРёР№ СЂРµРіРёСЃС‚СЂРѕРІ)
 
 #include <CodeGeneration\Instruction.h>
 #include <assert.h>
@@ -8,8 +8,26 @@ using namespace CodeGeneration;
 
 std::string IInstruction::Format( const std::map<Temp::CTemp, std::string>& varsMapping ) const
 {
+	// РќРµ РЅСѓР¶РЅРѕ РґРѕ СЂР°СЃРїСЂРµРґРµР»РµРЅРёСЏ СЂРµРіРёСЃС‚СЂРѕРІ.
 	assert( false );
-
 	return std::string();
 }
 
+COper::COper( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, const std::list<Temp::CTemp>& _src,
+	const std::list<Temp::CLabel>& _labelList = std::list<Temp::CLabel>() )
+		: Assem( _Assem )
+		, src( _src )
+		, dst( _dst )
+		, labelList( _labelList )
+{ }
+
+CMove::CMove( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, const std::list<Temp::CTemp>& _src )
+	: Assem( _Assem )
+	, dst( _dst )
+	, src( _src )
+{ }
+
+CLabel::CLabel( const Temp::CLabel& _label )
+{
+	labelList.push_back( _label );
+}

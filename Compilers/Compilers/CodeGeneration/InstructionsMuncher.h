@@ -30,6 +30,8 @@ private:
 	const std::vector< std::shared_ptr<const IRTree::IStm> >& reorderedStmList;
 	std::vector< std::unique_ptr<IInstruction> > instructionsList;
 
+	void emit( IInstruction* instruction );
+
 	// методы, обрабатывающие различные случаи
 	void munchMove( const IRTree::CMem* dst, const IRTree::IExp* src );
 	void munchMove( const IRTree::IExp* dst, const IRTree::CMem* src );
@@ -40,5 +42,10 @@ private:
 	// Обработка expression.
 	void munchExp( const IRTree::IExp* exp );
 };
+
+void CInstructionsMuncher::emit( IInstruction* instruction )
+{
+	assert( false );
+}
 
 }
