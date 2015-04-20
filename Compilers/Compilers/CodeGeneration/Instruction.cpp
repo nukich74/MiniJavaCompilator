@@ -13,7 +13,7 @@ std::string IInstruction::Format( const std::map<Temp::CTemp, std::string>& vars
 	return std::string();
 }
 
-COper::COper( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, const std::list<Temp::CTemp>& _src,
+COper::COper( const std::string& _Assem, const std::list<Temp::CTemp*>* _dst, const std::list<Temp::CTemp*>* _src,
 	const std::list<Temp::CLabel>& _labelList = std::list<Temp::CLabel>() )
 		: Assem( _Assem )
 		, src( _src )
@@ -21,7 +21,7 @@ COper::COper( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, con
 		, labelList( _labelList )
 { }
 
-CMove::CMove( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, const std::list<Temp::CTemp>& _src )
+CMove::CMove( const std::string& _Assem, const std::list<Temp::CTemp*>* _dst, const std::list<Temp::CTemp*>* _src )
 	: Assem( _Assem )
 	, dst( _dst )
 	, src( _src )
