@@ -16,7 +16,7 @@ public:
 
 	virtual const std::list<Temp::CTemp*>* DefinedVars() const = 0;
 
-	virtual const std::list<Temp::CLabel>& JumpTargets() const = 0;
+	virtual const std::list<Temp::CLabel>* JumpTargets() const = 0;
 
 	std::string Format( const std::map<Temp::CTemp, std::string>& varsMapping ) const;
 };
@@ -26,20 +26,20 @@ public:
 	std::string Assem;
 
 	COper( const std::string& _Assem, const std::list<Temp::CTemp*>* _dst, const std::list<Temp::CTemp*>* _src,
-		const std::list<Temp::CLabel>& _labelList = std::list<Temp::CLabel>() );
+		const std::list<Temp::CLabel>* _labelList = 0 );
 
 	const std::list<Temp::CTemp*>* UsedVars() const { return src; }
 
 	const std::list<Temp::CTemp*>* DefinedVars() const { return dst; }
 
-	const std::list<Temp::CLabel>& JumpTargets() const { return labelList; }
+	const std::list<Temp::CLabel>* JumpTargets() const { return labelList; }
 
 private:
 	const std::list<Temp::CTemp*>* dst;
 
 	const std::list<Temp::CTemp*>* src;
 
-	const std::list<Temp::CLabel>& labelList;
+	const std::list<Temp::CLabel>* labelList;
 };
 
 class CMove : public IInstruction {
@@ -52,7 +52,7 @@ public:
 
 	const std::list<Temp::CTemp*>* DefinedVars() const { return dst; }
 
-	const std::list<Temp::CLabel>& JumpTargets() const { return std::list<Temp::CLabel>(); }
+	const std::list<Temp::CLabel>* JumpTargets() const { return 0; }
 
 private:
 	const std::list<Temp::CTemp*>* dst;
@@ -68,10 +68,10 @@ public:
 
 	const std::list<Temp::CTemp*>* DefinedVars() const { return 0; }
 
-	const std::list<Temp::CLabel>& JumpTargets() const { return labelList; }
+	const std::list<Temp::CLabel>* JumpTargets() const { return labelList; }
 
 private:
-	std::list<Temp::CLabel> labelList;
+	std::list<Temp::CLabel>* labelList;
 };
 
 } // namespace CodeGeneration

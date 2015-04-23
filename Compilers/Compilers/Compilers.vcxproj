@@ -135,7 +135,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CodeGeneration\Instruction.cpp" />
-    <ClCompile Include="CodeGeneration\InstructionMuncher.cpp" />
+    <ClCompile Include="CodeGeneration\InstructionsMuncherMunchExp.cpp" />
+    <ClCompile Include="CodeGeneration\InsturctionsMuncher.cpp" />
     <ClCompile Include="Digrapg.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="IRCanonizer\IRTreeCallLifter.cpp" />

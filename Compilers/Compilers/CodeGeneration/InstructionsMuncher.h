@@ -40,12 +40,11 @@ private:
 	// Обработка statement.
 	void munchStm( const IRTree::IStm* stm );
 	// Обработка expression.
-	const Temp::CTemp*  munchExp( const IRTree::IExp* exp );
+	Temp::CTemp* munchExp( const IRTree::IExp* exp );
+	Temp::CTemp* munchExpMem( const IRTree::CMem* exp );
+	Temp::CTemp* munchExpBinopInMem( const IRTree::CBinop* exp );
+	Temp::CTemp* munchExpBinop( const IRTree::CBinop* exp );
+
 };
 
-void CInstructionsMuncher::emit( IInstruction* instruction )
-{
-	assert( false );
-}
-
-}
+} // namespace CodeGeneration
