@@ -6,6 +6,14 @@
 
 using namespace CodeGeneration;
 
+IInstruction::IInstruction( const std::string& _Assem, std::list<Temp::CTemp*>* _dst, std::list<Temp::CTemp*>* _src,
+	std::list<Temp::CLabel>* _labelList = 0 ) :
+	Assem( _Assem ),
+	dst( _dst ),
+	src( _src ),
+	labelList( _labelList )
+{ }
+
 std::string IInstruction::Format( const std::map<Temp::CTemp, std::string>& varsMapping ) const
 {
 	// Не нужно до распределения регистров.
@@ -13,21 +21,15 @@ std::string IInstruction::Format( const std::map<Temp::CTemp, std::string>& vars
 	return std::string();
 }
 
-COper::COper( const std::string& _Assem, const std::list<Temp::CTemp*>* _dst, const std::list<Temp::CTemp*>* _src,
-	const std::list<Temp::CLabel>* _labelList )
-		: Assem( _Assem )
-		, src( _src )
-		, dst( _dst )
-		, labelList( _labelList )
+COper::COper( const std::string& _Assem, std::list<Temp::CTemp*>* _dst, std::list<Temp::CTemp*>* _src,
+	std::list<Temp::CLabel>* _labelList ) :
+	IInstruction( _Assem, _dst, _src, _labelList )
 { }
 
-CMove::CMove( const std::string& _Assem, const std::list<Temp::CTemp*>* _dst, const std::list<Temp::CTemp*>* _src )
-	: Assem( _Assem )
-	, dst( _dst )
-	, src( _src )
+CMove::CMove( const std::string& _Assem, std::list<Temp::CTemp*>* _dst, std::list<Temp::CTemp*>* _src ) :
+	IInstruction( _Assem, _dst, _src, 0 )
 { }
 
-CLabel::CLabel( const Temp::CLabel& _label )
-{	labelList = new std::list<Temp::CLabel>();
-	labelList->push_back( _label );
-}
+CLabel::CLabel( const Temp::CLabel& _label ) :
+	IInstruction( 0, 0, 0, new std::list<Temp::CLabel>( 1, _label ) )
+{ }

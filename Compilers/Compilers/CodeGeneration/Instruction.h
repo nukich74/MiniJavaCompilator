@@ -6,72 +6,50 @@
 #include <list>
 #include <string>
 #include <map>
+#include <memory>
 #include <Temp.h>
 
 namespace CodeGeneration {
 
 class IInstruction {
 public:
-	virtual const std::list<Temp::CTemp*>* UsedVars() const = 0;
+	std::string Assem;
 
-	virtual const std::list<Temp::CTemp*>* DefinedVars() const = 0;
+	IInstruction( const std::string& _Assem, std::list<Temp::CTemp*>* _dst, std::list<Temp::CTemp*>* _src,
+		std::list<Temp::CLabel>* _labelList );
 
-	virtual const std::list<Temp::CLabel>* JumpTargets() const = 0;
+	const std::list<Temp::CTemp*>* UsedVars( ) const { return src.get( ); }
+
+	const std::list<Temp::CTemp*>* DefinedVars( ) const { return dst.get( ); }
+
+	const std::list<Temp::CLabel>* JumpTargets( ) const { return labelList.get( ); }
 
 	std::string Format( const std::map<Temp::CTemp, std::string>& varsMapping ) const;
+
+	// Для того, чтобы сделать класс абстрактным
+	virtual ~IInstruction() = 0 {}
+protected:
+	const std::unique_ptr< std::list<Temp::CTemp*> > dst;
+
+	const std::unique_ptr< std::list<Temp::CTemp*> > src;
+
+	const std::unique_ptr< std::list<Temp::CLabel> > labelList;
 };
 
 class COper : public IInstruction {
 public:
-	std::string Assem;
-
-	COper( const std::string& _Assem, const std::list<Temp::CTemp*>* _dst, const std::list<Temp::CTemp*>* _src,
-		const std::list<Temp::CLabel>* _labelList = 0 );
-
-	const std::list<Temp::CTemp*>* UsedVars() const { return src; }
-
-	const std::list<Temp::CTemp*>* DefinedVars() const { return dst; }
-
-	const std::list<Temp::CLabel>* JumpTargets() const { return labelList; }
-
-private:
-	const std::list<Temp::CTemp*>* dst;
-
-	const std::list<Temp::CTemp*>* src;
-
-	const std::list<Temp::CLabel>* labelList;
+	COper( const std::string& _Assem, std::list<Temp::CTemp*>* _dst, std::list<Temp::CTemp*>* _src,
+		std::list<Temp::CLabel>* _labelList = 0 );
 };
 
 class CMove : public IInstruction {
 public:
-	std::string Assem;
-
-	CMove( const std::string& _Assem, const std::list<Temp::CTemp*>* _dst, const std::list<Temp::CTemp*>* _src );
-
-	const std::list<Temp::CTemp*>* UsedVars() const { return src; }
-
-	const std::list<Temp::CTemp*>* DefinedVars() const { return dst; }
-
-	const std::list<Temp::CLabel>* JumpTargets() const { return 0; }
-
-private:
-	const std::list<Temp::CTemp*>* dst;
-
-	const std::list<Temp::CTemp*>* src;
+	CMove( const std::string& _Assem, std::list<Temp::CTemp*>* _dst, std::list<Temp::CTemp*>* _src );
 };
 
 class CLabel : public IInstruction {
 public:
 	CLabel( const Temp::CLabel& _labelList );
-
-	const std::list<Temp::CTemp*>* UsedVars() const { return 0; }
-
-	const std::list<Temp::CTemp*>* DefinedVars() const { return 0; }
-
-	const std::list<Temp::CLabel>* JumpTargets() const { return labelList; }
-
-private:
-	std::list<Temp::CLabel>* labelList;
 };
 
 } // namespace CodeGeneration
