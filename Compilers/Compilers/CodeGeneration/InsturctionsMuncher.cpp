@@ -19,9 +19,7 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 	// MOVE(...)
 	const IRTree::CMove* asMove = dynamic_cast<const IRTree::CMove*>(stm);
 	if( asMove != 0 ) {
-		const IRTree::CMem* dstAsMem = dynamic_cast<const IRTree::CMem*>(asMove->dst.get());
-		assert( dstAsMem != 0 );
-		return munchMove( dstAsMem, asMove->src.get() );
+		return munchMove( asMove->dst.get(), asMove->src.get() );
 	}
 
 	// Seq
@@ -40,7 +38,7 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 	// Jump
 	const IRTree::CJump* asJump = dynamic_cast< const IRTree::CJump* >(stm);
 	if( asJump != nullptr ) {
-		emit( new CodeGeneration::COper( std::string( "jmp l0" ), nullptr, nullptr, new std::list<Temp::CLabel>( 1, *asJump->label ) ) );
+		emit( new CodeGeneration::COper( std::string( "jmp l0" ), std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), std::list<Temp::CLabel>( 1, *asJump->label ) ) );
 	}
 
 	// Exp (тот который забывает про результат)
@@ -54,41 +52,36 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 	if( asCjump != nullptr ) {
 		auto left = munchExp( asCjump->left.get() );
 		auto right = munchExp( asCjump->right.get() );
-		auto cmp = new std::list<Temp::CTemp*>( );
-		auto labelList = new std::list<Temp::CLabel>();
-		labelList->push_back( *(asCjump->iftrue) );
-		cmp->push_back( left );
-		cmp->push_back( right );
-		emit( new CodeGeneration::COper( std::string( "cmp s0 s1" ), nullptr, cmp, nullptr ) );
+		std::list<Temp::CTemp> cmp;
+		std::list<Temp::CLabel> labelList;
+		labelList.push_back( *(asCjump->iftrue) );
+		cmp.push_back( left );
+		cmp.push_back( right );
+		emit( new CodeGeneration::COper( std::string( "cmp s0 s1" ), std::list<Temp::CTemp>( ), cmp, std::list<Temp::CLabel>( ) ) );
 		switch( asCjump->relop ) {
 		case IRTree::CJ_Less:
-			emit( new CodeGeneration::COper( std::string( "jl l0" ), nullptr, nullptr, labelList ) );
+			emit( new CodeGeneration::COper( std::string( "jl l0" ), std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), labelList ) );
 			break;
 		case IRTree::CJ_Greater:
-			emit( new CodeGeneration::COper( std::string( "jg l0" ), nullptr, nullptr, labelList ) );
+			emit( new CodeGeneration::COper( std::string( "jg l0" ), std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), labelList ) );
 			break;
 		case IRTree::CJ_EqLess:
-			emit( new CodeGeneration::COper( std::string( "jle l0" ), nullptr, nullptr, labelList ) );
+			emit( new CodeGeneration::COper( std::string( "jle l0" ), std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), labelList ) );
 			break;
 		case IRTree::CJ_EqGreater:
-			emit( new CodeGeneration::COper( std::string( "jge l0" ), nullptr, nullptr, labelList ) );
+			emit( new CodeGeneration::COper( std::string( "jge l0" ), std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), labelList ) );
 			break;
 		case IRTree::CJ_Equal:
-			emit( new CodeGeneration::COper( std::string( "je l0" ), nullptr, nullptr, labelList ) );
+			emit( new CodeGeneration::COper( std::string( "je l0" ), std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), labelList ) );
 			break;
 		case IRTree::CJ_NotEqual:
-			emit( new CodeGeneration::COper( std::string( "jne l0" ), nullptr, nullptr, labelList ) );
+			emit( new CodeGeneration::COper( std::string( "jne l0" ), std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), labelList ) );
 			break;
 		default:
 			assert( false );
 			break;
 		}
 	}
-
-}
-
-void CInstructionsMuncher::munchMove( const IRTree::CMem* dst, const IRTree::IExp* src )
-{
 
 }
 

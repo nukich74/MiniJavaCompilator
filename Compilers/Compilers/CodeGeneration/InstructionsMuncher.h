@@ -32,19 +32,20 @@ private:
 
 	void emit( IInstruction* instruction );
 
-	// методы, обрабатывающие различные случаи
-	void munchMove( const IRTree::CMem* dst, const IRTree::IExp* src );
-	void munchMove( const IRTree::IExp* dst, const IRTree::CMem* src );
-	// ....
-
 	// Обработка statement.
 	void munchStm( const IRTree::IStm* stm );
-	// Обработка expression.
-	Temp::CTemp* munchExp( const IRTree::IExp* exp );
-	Temp::CTemp* munchExpMem( const IRTree::CMem* exp );
-	Temp::CTemp* munchExpBinopInMem( const IRTree::CBinop* exp );
-	Temp::CTemp* munchExpBinop( const IRTree::CBinop* exp );
+	// Обработка statement MOVE
+	void munchMove( const IRTree::IExp* dst, const IRTree::IExp* src );
+	// MOVE из регистра в память
+	void munchMove( const IRTree::CMem* dst, const IRTree::IExp* src );
+	// MOVE из памяти в регистр
+	void munchMove( const IRTree::CTemp* dst, const IRTree::CMem* src );
 
+	// Обработка expression.
+	Temp::CTemp munchExp( const IRTree::IExp* exp );
+	Temp::CTemp munchExpMem( const IRTree::CMem* exp );
+	Temp::CTemp munchExpBinopInMem( const IRTree::CBinop* exp );
+	Temp::CTemp munchExpBinop( const IRTree::CBinop* exp );
 };
 
 } // namespace CodeGeneration

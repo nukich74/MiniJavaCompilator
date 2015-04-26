@@ -5,7 +5,41 @@
 
 using namespace CodeGeneration;
 
+void CInstructionsMuncher::munchMove( const IRTree::IExp* dst, const IRTree::IExp* src )
+{
+	const IRTree::CMem* dstAsMem = dynamic_cast<const IRTree::CMem*>(dst);
+	if( dstAsMem != 0 ) {
+		// MOVE(MEM(e1), e2)
+		return munchMove( dstAsMem, src );
+	}
+
+	// MOVE(TEMP(i), e2)
+	const IRTree::CTemp* dstAsTemp = dynamic_cast<const IRTree::CTemp*>(dst);
+	assert( dstAsTemp != 0 );
+
+	const IRTree::CTemp* srcAsTemp = dynamic_cast<const IRTree::CTemp*>(src);
+	if( srcAsTemp != 0 ) {
+		// MOVE(TEMP(i), TEMP(j))
+		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, dstAsTemp->temp ), std::list<Temp::CTemp>( 1, srcAsTemp->temp ) ) );
+	}
+
+	const IRTree::CMem* srcAsMem = dynamic_cast<const IRTree::CMem*>(src);
+	assert( srcAsMem != 0 );
+	return munchMove( dstAsTemp, srcAsMem );
+
+}
+
 void CInstructionsMuncher::munchMove( const IRTree::CMem* dst, const IRTree::IExp* src )
 {
+	const IRTree::CTemp* srcAsTemp = dynamic_cast<const IRTree::CTemp*>(src);
+	// src не может быть CMem, т.к. dst CMem
+	assert( srcAsTemp != 0 );
 
+	emit( new CMove( "mov ['d0], 's0", std::list<Temp::CTemp>( 1, munchExp( dst->exp.get() ) ), std::list<Temp::CTemp>( 1, srcAsTemp->temp ) ) );
+}
+
+void CInstructionsMuncher::munchMove( const IRTree::CTemp* dst, const IRTree::CMem* src )
+{
+	emit( new CMove( "mov 'd0, ['s0]", std::list<Temp::CTemp>( 1, dst->temp ), std::list<Temp::CTemp>( 1, munchExp( src->exp.get( ) ) ) ) );
+	// TODO оптимизация: другие шаблоны
 }

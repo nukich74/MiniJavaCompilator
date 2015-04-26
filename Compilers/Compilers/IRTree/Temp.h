@@ -9,6 +9,7 @@ class CLabel {
 public:
 	// Создать метку с уникальным именем
 	CLabel();
+	CLabel( const CLabel& src ) : name( src.name ) {}
 	// Создать метку с заданным именем
 	explicit CLabel( const std::string& name );
 
@@ -27,6 +28,7 @@ class CTemp {
 public:
 	// Новая переменная с уникальным именем
 	CTemp();
+	CTemp( const CTemp& src ) : name( src.name ) {}
 	// Новая переменная с заданным именем
 	explicit CTemp( const std::string& name );
 
