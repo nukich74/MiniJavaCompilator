@@ -15,36 +15,33 @@ class IInstruction {
 public:
 	std::string Assem;
 
-	IInstruction( const std::string& _Assem, std::list<Temp::CTemp*>* _dst, std::list<Temp::CTemp*>* _src,
-		std::list<Temp::CLabel>* _labelList );
+	IInstruction( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, const std::list<Temp::CTemp>& _src,
+		const std::list<Temp::CLabel>& _labelList );
 
-	const std::list<Temp::CTemp*>* UsedVars( ) const { return src.get( ); }
-
-	const std::list<Temp::CTemp*>* DefinedVars( ) const { return dst.get( ); }
-
-	const std::list<Temp::CLabel>* JumpTargets( ) const { return labelList.get( ); }
+	const std::list<Temp::CTemp>& UsedVars( ) const { return src; }
+	const std::list<Temp::CTemp>& DefinedVars( ) const { return dst; }
+	const std::list<Temp::CLabel>& JumpTargets( ) const { return labelList; }
 
 	std::string Format( const std::map<Temp::CTemp, std::string>& varsMapping ) const;
 
 	// Для того, чтобы сделать класс абстрактным
 	virtual ~IInstruction() = 0 {}
+
 protected:
-	const std::unique_ptr< std::list<Temp::CTemp*> > dst;
-
-	const std::unique_ptr< std::list<Temp::CTemp*> > src;
-
-	const std::unique_ptr< std::list<Temp::CLabel> > labelList;
+	std::list<Temp::CTemp> dst;
+	std::list<Temp::CTemp> src;
+	std::list<Temp::CLabel> labelList;
 };
 
 class COper : public IInstruction {
 public:
-	COper( const std::string& _Assem, std::list<Temp::CTemp*>* _dst, std::list<Temp::CTemp*>* _src,
-		std::list<Temp::CLabel>* _labelList = 0 );
+	COper( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, const std::list<Temp::CTemp>& _src,
+		const std::list<Temp::CLabel> _labelList = std::list<Temp::CLabel>() );
 };
 
 class CMove : public IInstruction {
 public:
-	CMove( const std::string& _Assem, std::list<Temp::CTemp*>* _dst, std::list<Temp::CTemp*>* _src );
+	CMove( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, const std::list<Temp::CTemp>& _src );
 };
 
 class CLabel : public IInstruction {
