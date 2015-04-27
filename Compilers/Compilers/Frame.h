@@ -19,6 +19,8 @@ enum TRegisters {
 	R_Count
 };
 
+std::string to_string( TRegisters registerType );
+
 class CFrame;
 
 // Интерфейс для переменной фрейма
@@ -73,7 +75,12 @@ public:
 		Name( _name ), ThisCounter( 0 ), LocalCounter( 0 ), 
 		framePointer( new Temp::CTemp( _name + "_FP" ) ), 
 		thisPointer( new Temp::CTemp( _name + "_thisPointer" ) ),
-		returnValue( new Temp::CTemp( _name + "_returnValue" ) ) {}
+		returnValue( new Temp::CTemp( _name + "_returnValue" ) ) 
+	{
+		for( int i = 0; i < R_Count; ++i ) {
+			registers.emplace_back( std::shared_ptr<const Temp::CTemp>( new const Temp::CTemp( to_string( static_cast< TRegisters >( i ) ) ) ) );
+		}
+	}
 
 	// Зарезервированные регистры
 
@@ -129,6 +136,7 @@ private:
 	std::shared_ptr<const Temp::CTemp> framePointer;
 	std::shared_ptr<const Temp::CTemp> thisPointer;
 	std::shared_ptr<const Temp::CTemp> returnValue;
+	std::vector< std::shared_ptr<const Temp::CTemp> > registers;
 };
 
 } // namespace Frame

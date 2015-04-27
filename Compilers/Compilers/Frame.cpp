@@ -81,4 +81,29 @@ const IRTree::IExp* CInObject::ToExp( const Frame::CFrame* frame ) const
 		new IRTree::CConst( offsetInWords ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
 }
 
+std::string to_string( TRegisters registerType )
+{
+	switch( registerType ) {
+		case Frame::R_EAX:
+			return std::string( "EAX" );
+		case Frame::R_EBX:
+			return std::string( "EAX" );
+		case Frame::R_EDX:
+			return std::string( "EAX" );
+		case Frame::R_ECX:
+			return std::string( "EAX" );
+		case Frame::R_EBP:
+			return std::string( "EAX" );
+		case Frame::R_ESI:
+			return std::string( "EAX" );
+		case Frame::R_EDI:
+			return std::string( "EAX" );
+		case Frame::R_ESP:
+			return std::string( "EAX" );
+		default:
+			assert( false );
+			return std::string( "Unknown register" );
+	}
+}
+
 } // namespace Frame
