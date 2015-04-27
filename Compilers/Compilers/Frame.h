@@ -84,7 +84,11 @@ public:
 
 	// Зарезервированные регистры
 
-	const Temp::CTemp* GetRegister( TRegisters registerType ) const;
+	const Temp::CTemp* GetRegister( TRegisters registerType ) const
+	{
+		assert( registerType > 0 && registerType < R_Count );
+		return registers.at( registerType ).get();
+	}
 
 	// FP нужен для того чтобы получать смещение для локальных переменных внутри функции
 	const Temp::CTemp* FramePointer() const {
