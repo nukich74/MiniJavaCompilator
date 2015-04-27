@@ -6,6 +6,19 @@
 
 namespace Frame {
 
+enum TRegisters {
+	R_EAX,
+	R_EBX,
+	R_EDX,
+	R_ECX,
+	R_EBP,
+	R_ESI,
+	R_EDI,
+	R_ESP,
+
+	R_Count
+};
+
 class CFrame;
 
 // Интерфейс для переменной фрейма
@@ -63,6 +76,8 @@ public:
 		returnValue( new Temp::CTemp( _name + "_returnValue" ) ) {}
 
 	// Зарезервированные регистры
+
+	const Temp::CTemp* GetRegister( TRegisters registerType ) const;
 
 	// FP нужен для того чтобы получать смещение для локальных переменных внутри функции
 	const Temp::CTemp* FramePointer() const {
