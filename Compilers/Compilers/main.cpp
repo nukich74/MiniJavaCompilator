@@ -105,7 +105,7 @@ int main()
 			// Выводим все в файл 
 			std::ofstream programmListing( std::string( "Listing__" ) + frame->Name + std::string( ".asm" ) );
 			for( const auto& line : instructionMuncher.GetInstructionsList() ) {
-				programmListing << line->Assem;
+				programmListing << line->Assem << std::endl;
 			}
 			programmListing.close();
 

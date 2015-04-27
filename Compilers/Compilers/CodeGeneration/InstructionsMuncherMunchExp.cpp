@@ -53,16 +53,21 @@ Temp::CTemp CInstructionsMuncher::munchExpBinopInMem( const IRTree::CBinop* exp 
 {
 	std::string command = "mov";
 	std::string binopOperation;
-	if( exp->binop == IRTree::B_Plus || exp->binop == IRTree::B_Minus ) {
+	if( exp->binop == IRTree::B_Plus || exp->binop == IRTree::B_Minus || exp->binop == IRTree::B_Mul ) {
 		binopOperation = IRTree::ToString( exp->binop );
 	} else {
-		// Если в binop в mem не + и не -, то значит затесалась ошибка.
+		// Если в binop в mem не +, не * и не -, то значит затесалась ошибка.
 		assert( false );
 	}
 	if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 && dynamic_cast<const IRTree::CConst*>( exp->right.get() ) != 0 ) {
-		// Если запрашиваем адрес по двум binop от двух констант - то что-то не так.
-		assert( false );
-		return Temp::CTemp();
+		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
+		int rightValue = dynamic_cast<const IRTree::CConst*>( exp->right.get() )->value;
+		Temp::CTemp tmp1;
+		emit( new COper( "mov 'd0, " + std::to_string( rightValue ), std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, *frame->FramePointer() ) ) );
+		Temp::CTemp tmp2;
+		emit( new COper( command + " 'd0, ['s0 + " + std::to_string( leftValue ) + binopOperation + std::to_string( rightValue ) + "]",
+			std::list<Temp::CTemp>( 1, tmp2 ), std::list<Temp::CTemp>( 1, tmp1 ) ) );
+		return tmp2;
 	} else if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 ) {
 		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
 		Temp::CTemp tmp1;
@@ -159,12 +164,12 @@ Temp::CTemp CInstructionsMuncher::munchExpBinop( const IRTree::CBinop* exp )
 
 Temp::CTemp CInstructionsMuncher::munchExpCall( const IRTree::CCall* exp )
 {
-	Temp::CTemp tmp;
-	emit( new COper( "mov 's0, 'd0", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>( 1, munchExp( exp->func.get() ) ) ) );
-	std::list<Temp::CTemp> source( 1, tmp );
-	std::list<Temp::CTemp> args = munchArgs( exp->args );
-	source.insert( source.end(), args.begin(), args.end() );
-	emit( new COper( "call 'd0", std::list<Temp::CTemp>(), source ) );
+	const IRTree::CName* functionName = dynamic_cast<const IRTree::CName*>( exp->func.get() );
+	if( functionName == 0 ) {
+		assert( false );
+	}
+	std::list<Temp::CTemp> source = munchArgs( exp->args );
+	emit( new COper( "call " + functionName->label->Name(), std::list<Temp::CTemp>(), source ) );
 	return Temp::CTemp();
 }
 
