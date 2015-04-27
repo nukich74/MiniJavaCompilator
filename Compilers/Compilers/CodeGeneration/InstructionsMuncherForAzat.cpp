@@ -24,6 +24,8 @@ void CInstructionsMuncher::munchMove( const IRTree::IExp* dst, const IRTree::IEx
 	}
 
 	const IRTree::CMem* srcAsMem = dynamic_cast<const IRTree::CMem*>(src);
+
+	// Тут падает по assert Java6
 	assert( srcAsMem != 0 );
 	return munchMove( dstAsTemp, srcAsMem );
 

@@ -11,6 +11,8 @@
 #include "IRTreeEseqLifter.h"
 #include "IRTreeLinearizer.h"
 #include "CodeGeneration\InstructionsMuncher.h"
+#include "IRStm.h"
+#include "IRExp.h"
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -93,16 +95,19 @@ int main()
 
 			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_linearized_" )
 				+ frame->Name + std::string( ".dot" ) );
-			for( auto stm : linearizer.GetReordered() ) {
+			std::vector< std::shared_ptr<const IRTree::IStm> > reordered = linearizer.GetReordered();
+			for( const std::shared_ptr<const IRTree::IStm>& stm : reordered ) {
 				irTreeToDigraphConverter.LinkedVisit( stm.get() );
-				CodeGeneration::CInstructionsMuncher instructionMuncher( linearizer.GetReordered(), frame );
-				instructionMuncher.CodeGen();
-				// Выводим все в файл 
-				std::ofstream programmListing( std::string( "Listing__" ) + frame->Name + std::string( ".asm" ) );
-				for( const auto& line : instructionMuncher.GetInstructionsList() ) {
-					programmListing << line->Assem;
-				}
 			}
+
+			CodeGeneration::CInstructionsMuncher instructionMuncher( reordered, frame );
+			instructionMuncher.CodeGen();
+			// Выводим все в файл 
+			std::ofstream programmListing( std::string( "Listing__" ) + frame->Name + std::string( ".asm" ) );
+			for( const auto& line : instructionMuncher.GetInstructionsList() ) {
+				programmListing << line->Assem;
+			}
+			programmListing.close();
 
 		}
 	}
