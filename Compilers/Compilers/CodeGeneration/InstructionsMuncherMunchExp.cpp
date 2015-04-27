@@ -20,6 +20,8 @@ Temp::CTemp CInstructionsMuncher::munchExp( const IRTree::IExp* exp )
 		return tmp;
 	} else if( dynamic_cast<const IRTree::CTemp*>( exp ) != 0 ) {
 		return Temp::CTemp( dynamic_cast<const IRTree::CTemp*>( exp )->temp );
+	} else if( dynamic_cast<const IRTree::CCall*>( exp ) != 0 ) {
+		return munchExpCall( dynamic_cast<const IRTree::CCall*>( exp ) );
 	} else {
 		assert( false );
 		return Temp::CTemp();
@@ -153,4 +155,32 @@ Temp::CTemp CInstructionsMuncher::munchExpBinop( const IRTree::CBinop* exp )
 		emit( new COper( command + " 'd0, 's0",	std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, tmp2 ) ) );
 		return tmp1;
 	}
+}
+
+Temp::CTemp CInstructionsMuncher::munchExpCall( const IRTree::CCall* exp )
+{
+	Temp::CTemp tmp;
+	emit( new COper( "mov 's0, 'd0", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>( 1, munchExp( exp->func.get() ) ) ) );
+	std::list<Temp::CTemp> source( 1, tmp );
+	std::list<Temp::CTemp> args = munchArgs( exp->args );
+	source.insert( source.end(), args.begin(), args.end() );
+	emit( new COper( "call 'd0", std::list<Temp::CTemp>(), source ) );
+	return Temp::CTemp();
+}
+
+std::list<Temp::CTemp> CInstructionsMuncher::munchArgs( const IRTree::CExpList exp )
+{
+	std::list<const IRTree::IExp*> args;
+	IRTree::CExpList tmp = exp;
+	while( tmp.tail.get() != 0 ) {
+		args.push_back( tmp.head.get() );
+	}
+	std::list<Temp::CTemp> argsTempList;
+	for( auto iter = args.rbegin(); iter != args.rend(); ++iter ) {
+		Temp::CTemp tmpArg;
+		emit( new COper( "mov 'd0 's0", std::list<Temp::CTemp>( 1, tmpArg ), std::list<Temp::CTemp>( 1, munchExp( *iter ) ) ) );
+		emit( new COper( "push 's0" , std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, tmpArg ) ) );
+		argsTempList.push_front( tmpArg );
+	}
+	return argsTempList;
 }

@@ -47,6 +47,8 @@ private:
 	Temp::CTemp munchExpMem( const IRTree::CMem* exp );
 	Temp::CTemp munchExpBinopInMem( const IRTree::CBinop* exp );
 	Temp::CTemp munchExpBinop( const IRTree::CBinop* exp );
+	Temp::CTemp munchExpCall( const IRTree::CCall* exp );
+	std::list<Temp::CTemp> munchArgs( const IRTree::CExpList exp );
 };
 
 } // namespace CodeGeneration
