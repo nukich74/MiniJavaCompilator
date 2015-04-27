@@ -96,6 +96,12 @@ int main()
 			for( auto stm : linearizer.GetReordered() ) {
 				irTreeToDigraphConverter.LinkedVisit( stm.get() );
 				CodeGeneration::CInstructionsMuncher instructionMuncher( linearizer.GetReordered(), frame );
+				instructionMuncher.CodeGen();
+				// Выводим все в файл 
+				std::ofstream programmListing( std::string( "Listing__" ) + frame->Name + std::string( ".asm" ) );
+				for( const auto& line : instructionMuncher.GetInstructionsList() ) {
+					programmListing << line->Assem;
+				}
 			}
 
 		}
