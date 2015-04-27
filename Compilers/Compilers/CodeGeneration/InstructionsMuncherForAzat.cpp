@@ -17,27 +17,21 @@ void CInstructionsMuncher::munchMove( const IRTree::IExp* dst, const IRTree::IEx
 	const IRTree::CTemp* dstAsTemp = dynamic_cast<const IRTree::CTemp*>(dst);
 	assert( dstAsTemp != 0 );
 
-	const IRTree::CTemp* srcAsTemp = dynamic_cast<const IRTree::CTemp*>(src);
-	if( srcAsTemp != 0 ) {
-		// MOVE(TEMP(i), TEMP(j))
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, dstAsTemp->temp ), std::list<Temp::CTemp>( 1, srcAsTemp->temp ) ) );
-	}
-
 	const IRTree::CMem* srcAsMem = dynamic_cast<const IRTree::CMem*>(src);
 
-	// “ут падает по assert Java6
-	assert( srcAsMem != 0 );
-	return munchMove( dstAsTemp, srcAsMem );
+	if( srcAsMem != 0 ) {
+		// MOVE(TEMP(i), MEM(e2))
+		return munchMove( dstAsTemp, srcAsMem );
+	}
+
+	// MOVE(TEMP(i), e2)
+	emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, dstAsTemp->temp ), std::list<Temp::CTemp>( 1, munchExp( src ) ) ) );
 
 }
 
 void CInstructionsMuncher::munchMove( const IRTree::CMem* dst, const IRTree::IExp* src )
 {
-	const IRTree::CTemp* srcAsTemp = dynamic_cast<const IRTree::CTemp*>(src);
-	// src не может быть CMem, т.к. dst CMem
-	assert( srcAsTemp != 0 );
-
-	emit( new CMove( "mov ['d0], 's0", std::list<Temp::CTemp>( 1, munchExp( dst->exp.get() ) ), std::list<Temp::CTemp>( 1, srcAsTemp->temp ) ) );
+	emit( new CMove( "mov ['d0], 's0", std::list<Temp::CTemp>( 1, munchExp( dst->exp.get() ) ), std::list<Temp::CTemp>( 1, munchExp( src ) ) ) );
 }
 
 void CInstructionsMuncher::munchMove( const IRTree::CTemp* dst, const IRTree::CMem* src )
