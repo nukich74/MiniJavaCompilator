@@ -57,7 +57,7 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 		labelList.push_back( *(asCjump->iftrue) );
 		cmp.push_back( left );
 		cmp.push_back( right );
-		emit( new CodeGeneration::COper( std::string( "cmp s0 s1" ), std::list<Temp::CTemp>( ), cmp, std::list<Temp::CLabel>( ) ) );
+		emit( new CodeGeneration::COper( std::string( "cmp s0 s1" ), std::list<Temp::CTemp>(), cmp, std::list<Temp::CLabel>() ) );
 		switch( asCjump->relop ) {
 		case IRTree::CJ_Less:
 			emit( new CodeGeneration::COper( std::string( "jl l0" ), std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), labelList ) );

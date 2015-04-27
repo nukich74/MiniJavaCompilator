@@ -48,10 +48,8 @@ Temp::CTemp CInstructionsMuncher::munchExpBinopInMem( const IRTree::CBinop* exp 
 	std::string binopOperation;
 	switch( exp->binop ) {
 		case IRTree::B_Plus:
-			binopOperation = "+";
-			break;
 		case IRTree::B_Minus:
-			binopOperation = "-";
+			binopOperation = IRTree::ToString( exp->binop );
 			break;
 		default:
 			// смещение только по + и -.
