@@ -16,8 +16,8 @@ namespace CodeGeneration {
 class CInstructionsMuncher {
 public:
 	// Передаем упорядоченный список IStm-ов как аргумент механизма
-	CInstructionsMuncher( const std::vector< std::shared_ptr<const IRTree::IStm> >& _reorderedStmList ) :
-		reorderedStmList( _reorderedStmList ) {}
+	CInstructionsMuncher( const std::vector< std::shared_ptr<const IRTree::IStm> >& _reorderedStmList, const Frame::CFrame* _frame ) :
+		reorderedStmList( _reorderedStmList ), frame( _frame ) {}
 
 	// Построить спискок ассемблерных инструкций
 	void CodeGen();
@@ -29,6 +29,7 @@ public:
 private:
 	const std::vector< std::shared_ptr<const IRTree::IStm> >& reorderedStmList;
 	std::vector< std::unique_ptr<IInstruction> > instructionsList;
+	const Frame::CFrame* frame;
 
 	void emit( IInstruction* instruction );
 

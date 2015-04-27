@@ -10,6 +10,7 @@
 #include "IRTreeCallLifter.h"
 #include "IRTreeEseqLifter.h"
 #include "IRTreeLinearizer.h"
+#include "CodeGeneration\InstructionsMuncher.h"
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -94,7 +95,9 @@ int main()
 				+ frame->Name + std::string( ".dot" ) );
 			for( auto stm : linearizer.GetReordered() ) {
 				irTreeToDigraphConverter.LinkedVisit( stm.get() );
+				CodeGeneration::CInstructionsMuncher instructionMuncher( linearizer.GetReordered(), frame );
 			}
+
 		}
 	}
 
