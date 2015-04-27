@@ -10,6 +10,7 @@
 #include <IRTree.h>
 #include <IRExp.h>
 #include <IRStm.h>
+#include <Frame.h>
 
 namespace CodeGeneration {
 
@@ -23,8 +24,7 @@ public:
 	void CodeGen();
 
 	// Результат работы механизма
-	const std::vector< std::unique_ptr<IInstruction> >& GetInstructionsList() const
-		{ return instructionsList; }
+	const std::vector< std::unique_ptr<IInstruction> >& GetInstructionsList() const { return instructionsList; }
 
 private:
 	const std::vector< std::shared_ptr<const IRTree::IStm> >& reorderedStmList;
