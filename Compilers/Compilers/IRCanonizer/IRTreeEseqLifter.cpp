@@ -10,24 +10,29 @@ using namespace std;
 void CIRTreeEseqLifter::Visit( const CMove* node )
 {
 	const CMem* memCheck = dynamic_cast<const CMem*>( node->dst.get() );
-	node->dst->Accept( *this );
-	IExp* newDst = lastBuildExp;
-	node->src->Accept( *this );
-	IExp* newSrc = lastBuildExp;
+	//node->dst->Accept( *this );
+	//IExp* newDst = lastBuildExp;
+	//node->src->Accept( *this );
+	//IExp* newSrc = lastBuildExp;
 	const CCall* callCheck = dynamic_cast<const CCall*>( node->src.get() );
 	if ( !callCheck ) {
 		if ( memCheck ) {
-			CExpList* expressions = new CExpList( newDst, new CExpList( newSrc, 0 ) );
-			Visit( expressions );
+			CExpList* innerList = new CExpList( 0, 0 );
+			innerList->head = node->src;
+			CExpList* outList = new CExpList( 0, innerList );
+			outList->head = node->src;
+			Visit( outList );
 			CMove* newMove = new CMove( 0, 0 );
 			newMove->dst = lastBuildPair.second->head;
 			newMove->src = lastBuildPair.second->tail->head;
 			CSeq* newNode = new CSeq( lastBuildPair.first, newMove );
 			lastBuildStm = newNode;
 		} else {
-			CExpList* expressions = new CExpList( newSrc, 0 );
+			CExpList* expressions = new CExpList( 0, 0 );
+			expressions->head = node->src;
 			Visit( expressions );
-			CMove* newMove = new CMove( newDst, 0 );
+			CMove* newMove = new CMove( 0, 0 );
+			newMove->dst = node->dst;
 			newMove->src = lastBuildPair.second->head;
 			CSeq* newNode = new CSeq( lastBuildPair.first, newMove );
 			lastBuildStm = newNode;
@@ -35,10 +40,14 @@ void CIRTreeEseqLifter::Visit( const CMove* node )
 	} else {
 		//все вызовы call находятся только внутри move, где dst - это CTemp
 		//проверка на mem не нужна
-		CCall* newCall = new CCall( 0, *lastBuildPair.second );
-		newCall->func = callCheck->func;
-		CMove* newMove = new CMove( newDst, newCall );
-		CSeq* newNode = new CSeq( lastBuildPair.first, newMove );
+		Visit( callCheck );
+		CEseq* buildEseq = dynamic_cast<CEseq*>(lastBuildExp);
+		node->dst->Accept( *this );
+		IExp* newTemp = lastBuildExp;
+		CMove* newMove = new CMove( newTemp, 0 );
+		newMove->src = buildEseq->exp;
+		CSeq* newNode = new CSeq( 0, newMove );
+		newNode->left = buildEseq->stm;
 		lastBuildStm = newNode;
 	}
 }
@@ -215,6 +224,10 @@ void CIRTreeEseqLifter::Visit( const CMem* node )
 void CIRTreeEseqLifter::Visit( const CCall* node )
 {
 	Visit( &( node->args ) );
+	CCall* newCall = new CCall( 0, *lastBuildPair.second );
+	newCall->func = node->func;
+	CEseq* resultEseq = new CEseq(lastBuildPair.first, newCall);
+	lastBuildExp = resultEseq;
 }
 
 void CIRTreeEseqLifter::Visit( const CEseq* node )
@@ -223,7 +236,7 @@ void CIRTreeEseqLifter::Visit( const CEseq* node )
 	IStm* newStm = lastBuildStm;
 	node->exp->Accept( *this );
 	IExp* newExp = lastBuildExp;
-	CEseq* eseqCheck = dynamic_cast<CEseq*>( newExp );
+ 	CEseq* eseqCheck = dynamic_cast<CEseq*>( newExp );
 	if ( eseqCheck != 0 ) {
 		CSeq* leftSeq = new CSeq( newStm, 0 );
 		leftSeq->right = eseqCheck->stm;
@@ -258,8 +271,10 @@ void CIRTreeEseqLifter::Visit( const CExpList* node )
 		Temp::CTemp* newTemp = new Temp::CTemp;
 		CTemp* newTempSet = new CTemp( *newTemp );
 		CTemp* newTempGet = new CTemp( *newTemp );
-		const CEseq* eseqCheck = dynamic_cast<const CEseq*>( *iter );
-		if (eseqCheck) {
+		( *iter )->Accept( *this );
+		IExp* modifiedExp = lastBuildExp;
+		const CEseq* eseqCheck = dynamic_cast<const CEseq*>( modifiedExp );
+		if ( eseqCheck ) {
 			CMove* setTemp = new CMove( newTempSet, 0 );
 			setTemp->src = eseqCheck->exp;
 			CSeq* eseqStmReplacer = new CSeq( 0, setTemp );
@@ -272,7 +287,7 @@ void CIRTreeEseqLifter::Visit( const CExpList* node )
 			}
 			resultStm = newResultStm;
 		} else {
-			CMove* setTemp = new CMove( newTempSet, *iter );
+			CMove* setTemp = new CMove( newTempSet, modifiedExp );
 			const IStm* newResultStm = 0;
 			if (resultStm == 0) {
 				newResultStm = setTemp;
