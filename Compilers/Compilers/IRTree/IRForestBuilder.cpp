@@ -53,7 +53,7 @@ void CIRForestBuilder::Visit( const CExpBinOpExp& exp )
 			assert( false );
 	}
 	// Берем то что лежит по first, second и применяем бинарную операцию
-	lastReturnedExp = new IRTree::CMem( new IRTree::CBinop( binOp, first, second ) ) ;
+	lastReturnedExp = new IRTree::CBinop( binOp, first, second );
 }
 
 void CIRForestBuilder::Visit( const CUnMinExp& exp )
@@ -76,7 +76,7 @@ void CIRForestBuilder::Visit( const CExpWithIndex& exp )
 	lastReturnedExp = nullptr;
 	IRTree::IExp* offset = new IRTree::CBinop( IRTree::B_Mul, new IRTree::CConst( Frame::CFrame::WordSize() ), indexExp );
 	// Возвращаем адрес переменной
-	lastReturnedExp =  new IRTree::CBinop( IRTree::B_Plus, varExp, offset );
+	lastReturnedExp =  new IRTree::CMem( new IRTree::CBinop( IRTree::B_Plus, varExp, offset ) );
 }
 
 void CIRForestBuilder::Visit( const CExpDotLength& exp )
