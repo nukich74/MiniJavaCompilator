@@ -12,17 +12,13 @@ class CConditionalWrapper : public ISubtreeWrapper {
 
 class CAndWrapper : public CConditionalWrapper {
 public:
-	const IRTree::IStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f);
+	CAndWrapper( const IRTree::IExp* _left, const IRTree::IExp* _right ) : left( _left ), right( _right ) {}
+
+	const virtual IRTree::IStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f ) const override;
+
 private:
 	const IRTree::IExp* left;
 	const IRTree::IExp* right;
 };
 
-class CLessWrapper : public CConditionalWrapper {
-public:
-	const IRTree::IStm* ToConditional( const Temp::CLabel* t, const Temp::CLabel* f );
-private:
-	const IRTree::IExp* left;
-	const IRTree::IExp* right;
-};
 }

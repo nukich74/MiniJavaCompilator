@@ -13,6 +13,7 @@
 #include "ExpConverter.h"
 #include "IRExp.h"
 #include "StmConverter.h"
+#include "StatementWrapper.h"
 
 namespace Translate {
 
@@ -479,9 +480,16 @@ void CIRForestBuilder::Visit( const CIfStatement& ifStatement )
 		lastReturnedExp = nullptr;
 		lastReturnedStm = nullptr;
 	}
-	Translate::CExpConverter converter( ifExpr );
-	// Предполагается что ToConditional правильно обрабатывает если второй аргумент 0
-	lastReturnedStm = new IRTree::CSeq( converter.ToConditional( trueLabelTemp, falseLabelTemp ), trueStm, falseStm );
+	const IRTree::CBinop* asBinop = dynamic_cast<const IRTree::CBinop*>( ifExpr );
+	if( asBinop != nullptr && asBinop->binop == IRTree::B_And ) {
+		Translate::CAndWrapper wrapper( asBinop->left.get(), asBinop->right.get() );
+		lastReturnedStm = new IRTree::CSeq( wrapper.ToConditional( trueLabelTemp, falseLabelTemp ), trueStm, falseStm );
+	} else {
+		Translate::CExpConverter converter( ifExpr );
+		// Предполагается что ToConditional правильно обрабатывает если второй аргумент 0
+		lastReturnedStm = new IRTree::CSeq( converter.ToConditional( trueLabelTemp, falseLabelTemp ), trueStm, falseStm );
+	}
+
 }
 
 void CIRForestBuilder::Visit( const CWhileStatement& whileStatement )
