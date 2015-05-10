@@ -103,6 +103,7 @@
     <ClInclude Include="IRTree\IRTree.h" />
     <ClInclude Include="IRTree\IRTreeToDigraphConverter.h" />
     <ClInclude Include="IRTree\IRForestBuilder.h" />
+    <ClInclude Include="RegisterAllocation\DirectedGraph.hpp" />
     <ClInclude Include="StmConverter.h" />
     <ClInclude Include="SubtreeWrapper.h" />
     <ClInclude Include="SymbolsTable\ClassDescriptor.h" />

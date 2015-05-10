@@ -75,6 +75,7 @@
     <ClInclude Include="IRCanonizer\IRTreeLinearizer.h" />
     <ClInclude Include="CodeGeneration\Instruction.h" />
     <ClInclude Include="CodeGeneration\InstructionsMuncher.h" />
+    <ClInclude Include="RegisterAllocation\DirectedGraph.hpp" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
