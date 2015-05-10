@@ -7,15 +7,17 @@
 #include <map>
 #include <assert.h>
 #include <algorithm>
+#include <memory>
 
 using std::vector;
 using std::map;
 using std::find;
+using std::shared_ptr;
 
 namespace RegisterAllocation {
 
 // Ориетированный граф. Так как графы в наших задачах разреженные, то целесообразно представить граф в виде списков
-// смежности. Не владеет памятью. Все объекты вершин должны быть живыми, пока работаем с графом.
+// смежности. Владеет памятью через unique_ptr
 template <typename T>
 class CDirectedGraph {
 public:
@@ -38,7 +40,7 @@ public:
 	// Доступ к ребрам, входящих в toVertex. Если такой вершины нет, то сработает assert
 	const vector<T*>& GetEdgesToVertex( T* toVertex ) const;
 	// Доступ к вершинам
-	const vector<T*>& GetVertices() const
+	const vector<shared_ptr<T> >& GetVertices( ) const
 		{ return vertices; }
 
 
@@ -46,10 +48,10 @@ public:
 private:
 	// adjacencyListOut[i] - список вершин, в которые входят ребра, исходящие из i-ой вершины
 	map<T*, vector<T*> > adjacencyListsOut;
-	// adjacencyListsIn[i] - список вершин, из которые исходят ребра, входящие в i-ю вершину
+	// adjacencyListsIn[i] - список вершин, из которых исходят ребра, входящие в i-ю вершину
 	map<T*, vector<T*> > adjacencyListsIn;
 	// Массив всех вершин
-	vector<T*> vertices;
+	vector<shared_ptr<T> > vertices;
 
 };
 
@@ -62,11 +64,10 @@ void CDirectedGraph<T>::AddVertex( T* objectPtr )
 	assert( objectPtr != 0 );
 	assert( adjacencyListsOut.find( objectPtr ) == adjacencyListsOut.end( ) );
 	assert( adjacencyListsIn.find( objectPtr ) == adjacencyListsIn.end( ) );
-	assert( find( vertices.begin( ), vertices.end( ), objectPtr ) == vertices.end( ) );
 	// Добавляем пустые списки
+	vertices.emplace_back( objectPtr );
 	adjacencyListsOut[objectPtr];
 	adjacencyListsIn[objectPtr];
-	vertices.push_back( objectPtr );
 }
 
 template <typename T>
@@ -78,9 +79,6 @@ void CDirectedGraph<T>::AddEdge( T* fromVertex, T* toVertex )
 
 	assert( adjacencyListsIn.find( fromVertex ) != adjacencyListsIn.end( ) );
 	assert( adjacencyListsIn.find( toVertex ) != adjacencyListsIn.end( ) );
-
-	assert( find( vertices.begin( ), vertices.end( ), fromVertex ) != vertices.end( ) );
-	assert( find( vertices.begin( ), vertices.end( ), toVertex ) != vertices.end( ) );
 
 	adjacencyListsOut[fromVertex].push_back( toVertex );
 	adjacencyListsIn[toVertex].push_back( fromVertex );
@@ -104,14 +102,14 @@ template <typename T>
 const vector<T*>& CDirectedGraph<T>::GetEdgesFromVertex( T* fromVertex ) const
 {
 	assert( adjacencyListsOut.find( fromVertex ) != adjacencyListsOut.end( ) );
-	return adjacencyListsOut[fromVertex];
+	return adjacencyListsOut.find( fromVertex )->second;
 }
 
 template <typename T>
 const vector<T*>& CDirectedGraph<T>::GetEdgesToVertex( T* toVertex ) const
 {
 	assert( adjacencyListsIn.find( toVertex ) != adjacencyListsIn.end( ) );
-	return adjacencyListsIn[toVertex];
+	return adjacencyListsIn.find( toVertex )->second;
 }
 
 template <typename T>

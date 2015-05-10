@@ -13,6 +13,7 @@
 #include "CodeGeneration\InstructionsMuncher.h"
 #include "IRStm.h"
 #include "IRExp.h"
+#include <RegisterAllocation\FlowControlGraphBuilder.h>
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -108,7 +109,11 @@ int main()
 				programmListing << line->Assem << std::endl;
 			}
 			programmListing.close();
-
+			
+			// Тестируем построение графа потока управления, выводим все в файл
+			RegisterAllocation::CFlowControlGraphBuilder flowControlGraphBuilder;
+			flowControlGraphBuilder.BuildFlowControlGraph( instructionMuncher.GetInstructionsList() );
+			flowControlGraphBuilder.GetFlowControlGraph();
 		}
 	}
 
