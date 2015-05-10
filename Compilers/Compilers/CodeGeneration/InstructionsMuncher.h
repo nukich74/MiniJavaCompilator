@@ -48,6 +48,8 @@ private:
 	Temp::CTemp munchExpBinopInMem( const IRTree::CBinop* exp );
 	Temp::CTemp munchExpBinop( const IRTree::CBinop* exp );
 	Temp::CTemp munchExpCall( const IRTree::CCall* exp );
+	Temp::CTemp CInstructionsMuncher::munchExpBinopMul( const IRTree::CBinop* exp );
+	Temp::CTemp CInstructionsMuncher::munchExpBinopLess( const IRTree::CBinop* exp );
 	std::list<Temp::CTemp> munchArgs( const IRTree::CExpList exp );
 };
 

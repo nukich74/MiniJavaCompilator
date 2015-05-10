@@ -120,17 +120,19 @@ Temp::CTemp CInstructionsMuncher::munchExpBinop( const IRTree::CBinop* exp )
 			command = "sub";
 			break;
 		case IRTree::B_Mul:
-			command = "mul";
-			break;
+			return munchExpBinopMul( exp );
 		case IRTree::B_Division:
 			command = "div";
 			break;
 		case IRTree::B_Xor:
 			command = "xor";
 			break;
+		case IRTree::B_Less:
+			return munchExpBinopLess( exp );
 		default:
 			assert( false );
 	}
+
 	if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 && dynamic_cast<const IRTree::CConst*>( exp->right.get() ) != 0 ) {
 		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
 		int rightValue = dynamic_cast<const IRTree::CConst*>( exp->right.get() )->value;
@@ -160,6 +162,16 @@ Temp::CTemp CInstructionsMuncher::munchExpBinop( const IRTree::CBinop* exp )
 		emit( new COper( command + " 'd0, 's0",	std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, tmp2 ) ) );
 		return tmp1;
 	}
+}
+
+Temp::CTemp CInstructionsMuncher::munchExpBinopMul( const IRTree::CBinop* exp )
+{
+	return Temp::CTemp();
+}
+
+Temp::CTemp CInstructionsMuncher::munchExpBinopLess( const IRTree::CBinop* exp )
+{
+	return Temp::CTemp();
 }
 
 Temp::CTemp CInstructionsMuncher::munchExpCall( const IRTree::CCall* exp )
