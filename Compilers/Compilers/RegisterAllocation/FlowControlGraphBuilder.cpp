@@ -11,14 +11,17 @@ void CFlowControlGraphBuilder::BuildFlowControlGraph( const vector<unique_ptr<II
 	// Создаем вершины графа
 	addInstructionsToGraph( instructionsList );
 
+	// Упорядочиваем вершины в порядке DFS для оптимизации
+	vector<CFlowControlVertex*> orderedVertices;
+	flowControlGraph.SortVertices( orderedVertices, VO_DFS );
+
 	bool hasAnyChanges = false;
 
 	do {
 		hasAnyChanges = false;
-		auto vertices = flowControlGraph.GetVertices();
 
-		for( int i = 0; i < vertices.size(); i++ ) {
-			bool hasChangesInVertex = updateLiveSetsInVertex( vertices[i].get() );
+		for( int i = 0; i < orderedVertices.size( ); i++ ) {
+			bool hasChangesInVertex = updateLiveSetsInVertex( orderedVertices[i] );
 
 			if( hasChangesInVertex ) {
 				hasAnyChanges = true;

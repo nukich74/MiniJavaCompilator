@@ -16,6 +16,11 @@ using std::shared_ptr;
 
 namespace RegisterAllocation {
 
+// Тип упорядочивания вершин графа
+enum TVerticesOrder {
+	VO_DFS
+};
+
 // Ориетированный граф. Так как графы в наших задачах разреженные, то целесообразно представить граф в виде списков
 // смежности. Владеет памятью через unique_ptr
 template <typename T>
@@ -43,6 +48,8 @@ public:
 	const vector<shared_ptr<T> >& GetVertices( ) const
 		{ return vertices; }
 
+	// Упорядочить вершины в порядке обхода в глубины (пригодится для оптимизаций)
+	void SortVertices( vector<T*>& orderedVertices, TVerticesOrder type ) const;
 
 
 private:
@@ -52,6 +59,9 @@ private:
 	map<T*, vector<T*> > adjacencyListsIn;
 	// Массив всех вершин
 	vector<shared_ptr<T> > vertices;
+
+	// Обход в глубину
+	void walkDFS( T* vertex, vector<T*>& orderedVertices ) const;
 
 };
 
@@ -127,6 +137,34 @@ bool CDirectedGraph<T>::HasEdge( T* fromVertex, T* toVertex ) const
 
 	vector<T*>& outList = adjacencyListsOut[fromVertex];
 	return find( outList.begin( ), outList.end( ), toVertex ) != outList.end( );
+}
+
+template <typename T>
+void CDirectedGraph<T>::SortVertices( vector<T*>& orderedVertices, TVerticesOrder type ) const
+{
+	assert( type == VO_DFS );
+
+	orderedVertices.clear();
+
+	for( int i = 0; i < vertices.size(); i++ ) {
+		walkDFS( vertices[i].get(), orderedVertices );
+	}
+
+	assert( orderedVertices.size() == vertices.size() );
+}
+
+template <typename T>
+void CDirectedGraph<T>::walkDFS( T* vertex, vector<T*>& orderedVertices ) const
+{
+	if( find( orderedVertices.begin(), orderedVertices.end(), vertex ) != orderedVertices.end() ) {
+		return;
+	}
+
+	orderedVertices.push_back( vertex );
+	const vector<T*>& edgesFromVertex = GetEdgesFromVertex( vertex );
+	for( int i = 0; i < edgesFromVertex.size(); i++ ) {
+		walkDFS( edgesFromVertex[i], orderedVertices );
+	}
 }
 
 } // RegisterAllocation
