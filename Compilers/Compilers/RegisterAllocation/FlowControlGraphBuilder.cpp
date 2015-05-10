@@ -43,7 +43,7 @@ void CFlowControlGraphBuilder::addInstructionsToGraph( const vector<unique_ptr<I
 		}
 
 		bool isMove = dynamic_cast<CodeGeneration::CMove*>( instructionsList[i].get() ) != 0;
-		flowControlGraph.AddVertex( new CFlowControlVertex( std::move( defs ), std::move( uses ), isMove ) );
+		flowControlGraph.AddVertex( CFlowControlVertex( std::move( defs ), std::move( uses ), isMove, instructionsList[i].get() ) );
 	}
 }
 
@@ -81,6 +81,13 @@ bool CFlowControlGraphBuilder::updateLiveSetsInVertex( CFlowControlVertex* verte
 	}
 
 	return hasChangesInVertex;
+}
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+bool CFlowControlVertex::operator == ( const CFlowControlVertex& other ) const
+{
+	return Instruction == other.Instruction;
 }
 
 } // namespace RegisterAllocation

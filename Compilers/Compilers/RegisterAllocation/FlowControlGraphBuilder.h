@@ -39,13 +39,21 @@ struct CFlowControlVertex {
 	// Является ли инструкция, соответствующая данной вершине, инструкцией Move
 	bool IsMoveInstruction;
 
-	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses, SetOfVars&& liveIn, SetOfVars&& liveOut, bool isMove ) :
-		Defs( defs ), Uses( uses ), LiveIn( liveIn ), LiveOut( liveOut ), IsMoveInstruction( isMove )
+	// Инструкция, которой соответствует вершина
+	const CodeGeneration::IInstruction* const Instruction;
+
+	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses, SetOfVars&& liveIn, SetOfVars&& liveOut, bool isMove, 
+			const CodeGeneration::IInstruction* instruction ) :
+		Defs( defs ), Uses( uses ), LiveIn( liveIn ), LiveOut( liveOut ), IsMoveInstruction( isMove ),
+		Instruction( instruction )
 	{}
 
-	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses, bool isMove ) :
-		Defs( defs ), Uses( uses ), IsMoveInstruction( isMove )
+	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses, bool isMove,
+			const CodeGeneration::IInstruction* instruction ) :
+		Defs( defs ), Uses( uses ), IsMoveInstruction( isMove ), Instruction( instruction )
 	{}
+
+	bool operator == ( const CFlowControlVertex& other ) const;
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -26,19 +26,21 @@ enum TVerticesOrder {
 template <typename T>
 class CDirectedGraph {
 public:
-	// Добавляет вершину для объекта. Если объект уже есть в графе, то сработет assert
-	void AddVertex( T* objectPtr );
+	// Добавляет вершину для объекта. Если такое же значение уже есть в графе, то сработет assert
+	void AddVertex( const T& value );
 	// Добавляем ориентированное ребро. Если какой-нибудь вершины нет, то сработает assert
 	void AddEdge( T* fromVertex, T* toVertex );
+	// Добавляет ребра в обе стороны
+	void AddBothEdges( T* firstVertex, T* secondVertex );
 
 	// Методы удаления нереализованы
-	void DeleteVertex( T* objectPtr );
+	void DeleteVertex( const T& value );
 	void DeleteEdge( T* fromVertex, T* toVertex );
 
 	// Есть ли такое ребро?
 	bool HasEdge( T* fromVertex, T* toVertex ) const;
-	// Есть ли такая вершина?
-	bool HasVertex( T* objectPtr ) const;
+	// Поиск вершины по значению, если не найдено, то возвращает 0
+	T* FindVertex( const T& value ) const;
 
 	// Доступ к ребрам, выходящих из fromVertex. Если такой вершины нет, то сработает assert
 	const vector<T*>& GetEdgesFromVertex( T* fromVertex ) const;
@@ -69,13 +71,12 @@ private:
 // Реализация методов шаблонного класса CDirectedGraph
 
 template <typename T>
-void CDirectedGraph<T>::AddVertex( T* objectPtr )
+void CDirectedGraph<T>::AddVertex( const T& value )
 {
-	assert( objectPtr != 0 );
-	assert( adjacencyListsOut.find( objectPtr ) == adjacencyListsOut.end( ) );
-	assert( adjacencyListsIn.find( objectPtr ) == adjacencyListsIn.end( ) );
+	assert( FindVertex( value ) == 0 );
 	// Добавляем пустые списки
-	vertices.emplace_back( objectPtr );
+	vertices.emplace_back( new T( value ) );
+	T* objectPtr = vertices.back().get();
 	adjacencyListsOut[objectPtr];
 	adjacencyListsIn[objectPtr];
 }
@@ -95,7 +96,14 @@ void CDirectedGraph<T>::AddEdge( T* fromVertex, T* toVertex )
 }
 
 template <typename T>
-void CDirectedGraph<T>::DeleteVertex( T* objectPtr )
+void CDirectedGraph<T>::AddBothEdges( T* firstVertex, T* secondVertex )
+{
+	AddEdge( fromVertex, toVertex );
+	AddEdge( toVertex, fromVertex );
+}
+
+template <typename T>
+void CDirectedGraph<T>::DeleteVertex( const T& value )
 {
 	// Not implemented
 	assert( false );
@@ -123,9 +131,15 @@ const vector<T*>& CDirectedGraph<T>::GetEdgesToVertex( T* toVertex ) const
 }
 
 template <typename T>
-bool CDirectedGraph<T>::HasVertex( T* objectPtr ) const
+T* CDirectedGraph<T>::FindVertex( const T& value ) const
 {
-	return adjacencyListsIn.find( objectPtr ) != adjacencyListsIn.end( );
+	for( int i = 0; i < vertices.size(); i++ ) {
+		if( *vertices[i] == value ) {
+			return vertices[i].get();
+		}
+	}
+
+	return 0;
 }
 
 template <typename T>
