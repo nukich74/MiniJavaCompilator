@@ -35,13 +35,16 @@ struct CFlowControlVertex {
 	SetOfVars LiveIn;
 	// Множество переменных, которые живы на каком-лиюо выходящем ребре
 	SetOfVars LiveOut;
+	
+	// Является ли инструкция, соответствующая данной вершине, инструкцией Move
+	bool IsMoveInstruction;
 
-	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses, SetOfVars&& liveIn, SetOfVars&& liveOut ) :
-		Defs( defs ), Uses( uses ), LiveIn( liveIn ), LiveOut( liveOut )
+	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses, SetOfVars&& liveIn, SetOfVars&& liveOut, bool isMove ) :
+		Defs( defs ), Uses( uses ), LiveIn( liveIn ), LiveOut( liveOut ), IsMoveInstruction( isMove )
 	{}
 
-	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses ) :
-		Defs( defs ), Uses( uses )
+	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses, bool isMove ) :
+		Defs( defs ), Uses( uses ), IsMoveInstruction( isMove )
 	{}
 };
 

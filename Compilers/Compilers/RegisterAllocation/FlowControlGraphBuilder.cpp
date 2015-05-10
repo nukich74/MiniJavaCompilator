@@ -39,7 +39,8 @@ void CFlowControlGraphBuilder::addInstructionsToGraph( const vector<unique_ptr<I
 			uses.insert( &*it );
 		}
 
-		flowControlGraph.AddVertex( new CFlowControlVertex( std::move( defs ), std::move( uses ) ) );
+		bool isMove = dynamic_cast<CodeGeneration::CMove*>( instructionsList[i].get() ) != 0;
+		flowControlGraph.AddVertex( new CFlowControlVertex( std::move( defs ), std::move( uses ), isMove ) );
 	}
 }
 
