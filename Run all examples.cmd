@@ -1,0 +1,12 @@
+compilers.exe < ../../ExampleFromTheBook.java
+compilers.exe < ../../MiniJavaSample.txt
+compilers.exe < ../../MiniJavaSample2.txt
+compilers.exe < ../../MiniJavaSample3.txt
+compilers.exe < ../../MiniJavaSample4.txt
+compilers.exe < ../../MiniJavaSample5.txt
+compilers.exe < ../../MiniJavaSample6.txt
+compilers.exe < ../../MiniJavaSampleError.txt
+compilers.exe < ../../Test3.java
+compilers.exe < ../../Test4.java
+compilers.exe < ../../Test5.java
+compilers.exe < ../../Test6.java
