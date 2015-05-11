@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 
 #include "Frame.h"
 
@@ -66,7 +66,7 @@ void CFrame::AddField( const std::string _name, const IAccess* _var )
 
 const IRTree::IExp* CInFrame::ToExp( const Frame::CFrame* frame ) const
 {
-	// Ñìåùàåìñÿ â îáëàñòü ìåíüøèõ àäðåñîâ
+	// Ð¡Ð¼ÐµÑ‰Ð°ÐµÐ¼ÑÑ Ð² Ð¾Ð±Ð»Ð°ÑÑ‚ÑŒ Ð¼ÐµÐ½ÑŒÑˆÐ¸Ñ… Ð°Ð´Ñ€ÐµÑÐ¾Ð²
 	return new IRTree::CMem( new IRTree::CBinop(
 		IRTree::B_Minus, new IRTree::CTemp( *( frame->FramePointer() ) ),
 		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
