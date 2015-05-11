@@ -31,11 +31,11 @@ void CInstructionsMuncher::munchMove( const IRTree::IExp* dst, const IRTree::IEx
 
 void CInstructionsMuncher::munchMove( const IRTree::CMem* dst, const IRTree::IExp* src )
 {
-	emit( new CMove( "mov ['d0], 's0", std::list<Temp::CTemp>( 1, munchExp( dst->exp.get() ) ), std::list<Temp::CTemp>( 1, munchExp( src ) ) ) );
+	emit( new COper( "mov ['d0], 's0", std::list<Temp::CTemp>( 1, munchExp( dst->exp.get() ) ), std::list<Temp::CTemp>( 1, munchExp( src ) ) ) );
 }
 
 void CInstructionsMuncher::munchMove( const IRTree::CTemp* dst, const IRTree::CMem* src )
 {
-	emit( new CMove( "mov 'd0, ['s0]", std::list<Temp::CTemp>( 1, dst->temp ), std::list<Temp::CTemp>( 1, munchExp( src->exp.get( ) ) ) ) );
+	emit( new COper( "mov 'd0, ['s0]", std::list<Temp::CTemp>( 1, dst->temp ), std::list<Temp::CTemp>( 1, munchExp( src->exp.get( ) ) ) ) );
 	// TODO оптимизация: другие шаблоны
 }
