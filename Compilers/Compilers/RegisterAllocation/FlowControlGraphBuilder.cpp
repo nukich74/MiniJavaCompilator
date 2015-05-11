@@ -2,6 +2,8 @@
 // Описание: Реализация алгоритма построения графа потока управления
 
 #include <RegisterAllocation\FlowControlGraphBuilder.h>
+#include <unordered_map>
+#include <string>
 #include <algorithm>
 
 namespace RegisterAllocation {
@@ -20,8 +22,8 @@ void CFlowControlGraphBuilder::BuildFlowControlGraph( const vector<unique_ptr<II
 	do {
 		hasAnyChanges = false;
 
-		for( int i = 0; i < orderedVertices.size( ); i++ ) {
-			bool hasChangesInVertex = updateLiveSetsInVertex( orderedVertices[i] );
+		for( auto& vertex : orderedVertices ) {
+			bool hasChangesInVertex = updateLiveSetsInVertex( vertex );
 
 			if( hasChangesInVertex ) {
 				hasAnyChanges = true;
@@ -32,18 +34,35 @@ void CFlowControlGraphBuilder::BuildFlowControlGraph( const vector<unique_ptr<II
 
 void CFlowControlGraphBuilder::addInstructionsToGraph( const vector<unique_ptr<IInstruction> >& instructionsList )
 {
-	for( int i = 0; i < instructionsList.size(); i++ ) {
-		CFlowControlVertex::SetOfVars defs, uses;
-		for( auto it = instructionsList[i]->DefinedVars().begin(); it != instructionsList[i]->DefinedVars().end(); it++ ) {
-			defs.insert( &*it );
-		}
+	std::unordered_map<Temp::CLabel, CFlowControlVertex*> labels;
+	vector<CFlowControlVertex*> notLabels;
 
-		for( auto it = instructionsList[i]->UsedVars( ).begin( ); it != instructionsList[i]->UsedVars( ).end( ); it++ ) {
-			uses.insert( &*it );
-		}
+	CFlowControlVertex* prevVertex = 0;
+	for( const auto& instruction : instructionsList ) {
+		auto vertex = new CFlowControlVertex( instruction.get() );
+		flowControlGraph.AttachVertex( vertex );
 
-		bool isMove = dynamic_cast<CodeGeneration::CMove*>( instructionsList[i].get() ) != 0;
-		flowControlGraph.AddVertex( CFlowControlVertex( std::move( defs ), std::move( uses ), isMove, instructionsList[i].get() ) );
+		if( prevVertex != 0 ) {
+			flowControlGraph.AddEdge( prevVertex, vertex );
+		}
+		prevVertex = vertex;
+
+		const CodeGeneration::CLabel* instrAsLabel = dynamic_cast<const CodeGeneration::CLabel*>( vertex->Instruction );
+		if( instrAsLabel != 0 ) {
+			assert( instrAsLabel->JumpTargets().size( ) == 1 );
+			labels.insert( std::make_pair( *instrAsLabel->JumpTargets().begin(), vertex ) );
+		} else {
+			notLabels.push_back( vertex );
+		}
+	}
+
+	for( auto& vertex : notLabels ) {
+		for( const Temp::CLabel& label : vertex->Instruction->JumpTargets() ) {
+			auto it = labels.find( label );
+			if( it != labels.end() ) {
+				flowControlGraph.AddEdge( vertex, it->second );
+			}
+		}
 	}
 }
 
@@ -55,18 +74,18 @@ bool CFlowControlGraphBuilder::updateLiveSetsInVertex( CFlowControlVertex* verte
 	CFlowControlVertex::SetOfVars liveIn;
 	liveIn.insert( vertex->Uses.begin(), vertex->Uses.end() );
 	
-	for( auto it = vertex->LiveOut.begin(); it != vertex->LiveOut.end(); it++ ) {
+	for( const auto& var : vertex->LiveOut ) {
 		// Проверям, что переменная отсутствует в Defs
-		if( vertex->Defs.find( *it ) == vertex->Defs.end() ) {
-			liveIn.insert( *it );
+		if( vertex->Defs.find( var ) == vertex->Defs.end() ) {
+			liveIn.insert( var );
 		}
 	}
 
 	// out[n] <- U_{s in succ[n]} in[s]
 	CFlowControlVertex::SetOfVars liveOut;
 	auto successors = flowControlGraph.GetEdgesFromVertex( vertex );
-	for( auto it = successors.begin(); it != successors.end(); it++ ) {
-		liveOut.insert( (*it)->LiveIn.begin(), (*it)->LiveIn.end() );
+	for( const auto& successor : successors ) {
+		liveOut.insert( successor->LiveIn.begin(), successor->LiveIn.end() );
 	}
 
 	// Проверяем изменения
@@ -84,6 +103,15 @@ bool CFlowControlGraphBuilder::updateLiveSetsInVertex( CFlowControlVertex* verte
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CFlowControlVertex::CFlowControlVertex( const CodeGeneration::IInstruction* instruction ) :
+	Instruction( instruction )
+{
+	Defs.insert( instruction->DefinedVars().begin(), instruction->DefinedVars().end() );
+	Uses.insert( instruction->UsedVars().begin(), instruction->UsedVars().end() );
+
+	IsMoveInstruction = dynamic_cast<const CodeGeneration::CMove*>( instruction ) != 0;
+}
 
 bool CFlowControlVertex::operator == ( const CFlowControlVertex& other ) const
 {

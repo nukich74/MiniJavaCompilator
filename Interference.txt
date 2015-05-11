@@ -1,0 +1,19 @@
+class Interference {
+	public static void main(String[] a) {
+		System.out.println(1);
+	}
+}
+
+class MyClass {
+	public int Func(int num) {
+		int a;
+		int b;
+		int c;
+		a = 10;
+		b = a;
+		a = 5;
+		c = a + b;
+		return c;
+	}
+}
+	
