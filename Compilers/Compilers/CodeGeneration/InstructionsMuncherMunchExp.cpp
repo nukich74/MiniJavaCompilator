@@ -33,19 +33,12 @@ Temp::CTemp CInstructionsMuncher::munchExpMem( const IRTree::CMem* exp )
 	if( dynamic_cast<const IRTree::CBinop*>( exp->exp.get() ) != 0 ) {
 		return munchExpBinopInMem( dynamic_cast<const IRTree::CBinop*>( exp->exp.get() ) );
 	} else {
-		// Кладем exp из mem во временную переменную.
-		Temp::CTemp tmp1;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, munchExp( exp->exp.get() ) ) ) );
-		// Кладем framePointer во временную переменную.
-		Temp::CTemp tmp2;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp2 ), std::list<Temp::CTemp>( 1, *frame->FramePointer() ) ) );
-		// Кладем во временную переменную значение по заданному адресу.
-		Temp::CTemp tmp3;
-		std::list<Temp::CTemp> source = std::list<Temp::CTemp>( 1, tmp1 );
-		source.push_back( tmp2 );
-		emit( new CMove( "mov 'd0, ['s0 + 's1]", std::list<Temp::CTemp>( 1, tmp3 ),
+		Temp::CTemp tmp;
+		std::list<Temp::CTemp> source = std::list<Temp::CTemp>( 1, munchExp( exp->exp.get() ) );
+		source.push_back( *frame->FramePointer() );
+		emit( new CMove( "mov 'd0, ['s0 + 's1]", std::list<Temp::CTemp>( 1, tmp ),
 			source ) );
-		return tmp3;
+		return tmp;
 	}
 }
 
@@ -59,54 +52,12 @@ Temp::CTemp CInstructionsMuncher::munchExpBinopInMem( const IRTree::CBinop* exp 
 		// Если в binop в mem не +, не * и не -, то значит затесалась ошибка.
 		assert( false );
 	}
-	if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 && dynamic_cast<const IRTree::CConst*>( exp->right.get() ) != 0 ) {
-		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
-		int rightValue = dynamic_cast<const IRTree::CConst*>( exp->right.get() )->value;
-		Temp::CTemp tmp1;
-		emit( new CMove( "mov 'd0, " + std::to_string( rightValue ), std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, *frame->FramePointer() ) ) );
-		Temp::CTemp tmp2;
-		emit( new COper( command + " 'd0, ['s0 + " + std::to_string( leftValue ) + binopOperation + std::to_string( rightValue ) + "]",
-			std::list<Temp::CTemp>( 1, tmp2 ), std::list<Temp::CTemp>( 1, tmp1 ) ) );
-		return tmp2;
-	} else if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 ) {
-		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
-		Temp::CTemp tmp1;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, munchExp( exp->right.get() ) ) ) );
-		Temp::CTemp tmp2;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp2 ), std::list<Temp::CTemp>( 1, *frame->FramePointer() ) ) );
-		Temp::CTemp tmp3;
-		std::list<Temp::CTemp> source = std::list<Temp::CTemp>( 1, tmp2 );
-		source.push_back( tmp1 );
-		emit( new COper( command + " 'd0, ['s0 + " + std::to_string( leftValue ) + binopOperation + "'s1]",
-			std::list<Temp::CTemp>( 1, tmp3 ), source ) );
-		return tmp3;
-	} else if( dynamic_cast<const IRTree::CConst*>( exp->right.get() ) != 0 ) {
-		int rightValue = dynamic_cast<const IRTree::CConst*>( exp->right.get() )->value;
-		Temp::CTemp tmp1;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, munchExp( exp->left.get() ) ) ) );
-		Temp::CTemp tmp2;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp2 ), std::list<Temp::CTemp>( 1, *frame->FramePointer() ) ) );
-		Temp::CTemp tmp3;
-		std::list<Temp::CTemp> source = std::list<Temp::CTemp>( 1, tmp2 );
-		source.push_back( tmp1 );
-		emit( new COper( command + " 'd0, ['s0 + 's1 " + binopOperation + std::to_string( rightValue ) + "]",
-			std::list<Temp::CTemp>( 1, tmp3 ), source ) );
-		return tmp3;
-	} else {
-		Temp::CTemp tmp1;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, munchExp( exp->left.get() ) ) ) );
-		Temp::CTemp tmp2;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp2 ), std::list<Temp::CTemp>( 1, munchExp( exp->right.get() ) ) ) );
-		Temp::CTemp tmp3;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp3 ), std::list<Temp::CTemp>( 1, *frame->FramePointer() ) ) );
-		Temp::CTemp tmp4;
-		std::list<Temp::CTemp> source = std::list<Temp::CTemp>( 1, tmp3 );
-		source.push_back( tmp1 );
-		source.push_back( tmp2 );
-		emit( new COper( command + " 'd0, ['s0 + 's1 " + binopOperation + "'s2]",
-			std::list<Temp::CTemp>( 1, tmp4 ), source ) );
-		return tmp4;
-	}
+	Temp::CTemp tmp;
+	std::list<Temp::CTemp> source( 1, munchExp( exp->left.get() ) );
+	source.push_back( munchExp( exp->right.get() ) );
+	emit( new CMove( "mov 'd0, ['s0 + 's1 " + binopOperation + "'s2]",
+		std::list<Temp::CTemp>( 1, tmp ), source ) );
+	return tmp;
 }
 
 Temp::CTemp CInstructionsMuncher::munchExpBinop( const IRTree::CBinop* exp )
@@ -132,36 +83,10 @@ Temp::CTemp CInstructionsMuncher::munchExpBinop( const IRTree::CBinop* exp )
 		default:
 			assert( false );
 	}
-
-	if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 && dynamic_cast<const IRTree::CConst*>( exp->right.get() ) != 0 ) {
-		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
-		int rightValue = dynamic_cast<const IRTree::CConst*>( exp->right.get() )->value;
-		Temp::CTemp tmp;
-		emit( new CMove( "mov 'd0, " + std::to_string( leftValue ), std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
-		emit( new COper( command + " 'd0, " + std::to_string( rightValue ), std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
-		return tmp;
-	} else if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 ) {
-		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
-		Temp::CTemp tmp1;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, munchExp( exp->right.get() ) ) ) );
-		Temp::CTemp tmp2;
-		emit( new CMove( "mov 'd0, "  + std::to_string( leftValue ), std::list<Temp::CTemp>( 1, tmp2 ), std::list<Temp::CTemp>() ) );
-		emit( new COper( command + " 'd0, 's0", std::list<Temp::CTemp>( 1, tmp2 ), std::list<Temp::CTemp>( 1, tmp1 ) ) );
-		return tmp2;
-	} else if( dynamic_cast<const IRTree::CConst*>( exp->right.get() ) != 0 ) {
-		int rightValue = dynamic_cast<const IRTree::CConst*>( exp->right.get() )->value;
-		Temp::CTemp tmp;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>( 1, munchExp( exp->left.get() ) ) ) );
-		emit( new COper( command + " 'd0, " + std::to_string( rightValue ), std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
-		return tmp;
-	} else {
-		Temp::CTemp tmp1;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, munchExp( exp->left.get() ) ) ) );
-		Temp::CTemp tmp2;
-		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp2 ), std::list<Temp::CTemp>( 1, munchExp( exp->right.get() ) ) ) );
-		emit( new COper( command + " 'd0, 's0",	std::list<Temp::CTemp>( 1, tmp1 ), std::list<Temp::CTemp>( 1, tmp2 ) ) );
-		return tmp1;
-	}
+	Temp::CTemp tmp;
+	emit( new CMove( "mov 'd0 's0", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>( 1, munchExp( exp->left.get() )  ) ) );
+	emit( new COper( command + " 's0, 'd0" , std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>( 1, munchExp( exp->right.get() ) ) ) );
+	return tmp;
 }
 
 Temp::CTemp CInstructionsMuncher::munchExpBinopMul( const IRTree::CBinop* exp )
@@ -200,7 +125,7 @@ Temp::CTemp CInstructionsMuncher::munchExpBinopMul( const IRTree::CBinop* exp )
 
 Temp::CTemp CInstructionsMuncher::munchExpBinopLess( const IRTree::CBinop* exp )
 {
-	assert( false );
+	// assert( false );
 	return Temp::CTemp();
 }
 
