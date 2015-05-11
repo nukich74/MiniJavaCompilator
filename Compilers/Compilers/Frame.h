@@ -102,11 +102,7 @@ public:
 
 	const Temp::CTemp* GetRegister( TRegisters registerType ) const
 	{
-<<<<<<< HEAD
-		assert( registerType >= 0 && registerType < R_Count );
-=======
 		assert( registerType >= R_EAX && registerType < R_Count );
->>>>>>> 958d64bc398f5e36a74d2bca34475163378e2af8
 		return registers.at( registerType ).get();
 	}
 
