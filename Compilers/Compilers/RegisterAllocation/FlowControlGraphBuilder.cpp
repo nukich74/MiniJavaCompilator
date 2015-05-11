@@ -2,6 +2,8 @@
 // Описание: Реализация алгоритма построения графа потока управления
 
 #include <RegisterAllocation\FlowControlGraphBuilder.h>
+#include <unordered_map>
+#include <string>
 #include <algorithm>
 
 namespace RegisterAllocation {
@@ -32,8 +34,35 @@ void CFlowControlGraphBuilder::BuildFlowControlGraph( const vector<unique_ptr<II
 
 void CFlowControlGraphBuilder::addInstructionsToGraph( const vector<unique_ptr<IInstruction> >& instructionsList )
 {
-	for( const auto& instrutcion : instructionsList ) {
-		flowControlGraph.AttachVertex( new CFlowControlVertex( instrutcion.get() ) );
+	std::unordered_map<Temp::CLabel, CFlowControlVertex*> labels;
+	vector<CFlowControlVertex*> notLabels;
+
+	CFlowControlVertex* prevVertex = 0;
+	for( const auto& instruction : instructionsList ) {
+		auto vertex = new CFlowControlVertex( instruction.get() );
+		flowControlGraph.AttachVertex( vertex );
+
+		if( prevVertex != 0 ) {
+			flowControlGraph.AddEdge( prevVertex, vertex );
+		}
+		prevVertex = vertex;
+
+		const CodeGeneration::CLabel* instrAsLabel = dynamic_cast<const CodeGeneration::CLabel*>( vertex->Instruction );
+		if( instrAsLabel != 0 ) {
+			assert( instrAsLabel->JumpTargets().size( ) == 1 );
+			labels.insert( std::make_pair( *instrAsLabel->JumpTargets().begin(), vertex ) );
+		} else {
+			notLabels.push_back( vertex );
+		}
+	}
+
+	for( auto& vertex : notLabels ) {
+		for( const Temp::CLabel& label : vertex->Instruction->JumpTargets() ) {
+			auto it = labels.find( label );
+			if( it != labels.end() ) {
+				flowControlGraph.AddEdge( vertex, it->second );
+			}
+		}
 	}
 }
 
@@ -78,13 +107,8 @@ bool CFlowControlGraphBuilder::updateLiveSetsInVertex( CFlowControlVertex* verte
 CFlowControlVertex::CFlowControlVertex( const CodeGeneration::IInstruction* instruction ) :
 	Instruction( instruction )
 {
-	for( const auto& var : instruction->DefinedVars() ) {
-		Defs.insert( &var );
-	}
-
-	for( const auto& var : instruction->UsedVars() ) {
-		Uses.insert( &var );
-	}
+	Defs.insert( instruction->DefinedVars().begin(), instruction->DefinedVars().end() );
+	Uses.insert( instruction->UsedVars().begin(), instruction->UsedVars().end() );
 
 	IsMoveInstruction = dynamic_cast<const CodeGeneration::CMove*>( instruction ) != 0;
 }

@@ -116,7 +116,9 @@ int main()
 			flowControlGraphBuilder.BuildFlowControlGraph( instructionMuncher.GetInstructionsList() );
 			// Тестируем построение графа взаимодействия
 			RegisterAllocation::CVarInterferenceGraphBuilder varInterferenceGraphBuilder;
-			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlGraphBuilder.GetFlowControlGraph() );
+			std::vector<RegisterAllocation::CFlowControlVertex*> flowControlVertices;
+			flowControlGraphBuilder.GetFlowControlGraph().CopyVerticesTo( flowControlVertices );
+			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlVertices );
 			varInterferenceGraphBuilder.GetVarInterferenceGraph();
 		}
 	}

@@ -13,16 +13,13 @@ namespace RegisterAllocation {
 class CVarInterferenceGraphBuilder {
 public:
 	// Собственно построить граф взаимодействия переменных по графу потока управления
-	void BuildVarInterferenceGraph( const CDirectedGraph<CFlowControlVertex>& flowControlGraph );
+	void BuildVarInterferenceGraph( const vector<CFlowControlVertex*>& flowControlVertices );
 	// Получить ГВП (результат работы алгоритма)
-	const CDirectedGraph<const Temp::CTemp*>& GetVarInterferenceGraph()
+	const CDirectedGraph<Temp::CTemp>& GetVarInterferenceGraph()
 		{ return varInterferenceGraph; }
 
 private:
-	CDirectedGraph<const Temp::CTemp*> varInterferenceGraph;
-
-	// Добавляем вершины (переменные) в граф
-	void addVerticesFromFlowControlGraph( const CDirectedGraph<CFlowControlVertex>& flowControlGraph );
+	CDirectedGraph<Temp::CTemp> varInterferenceGraph;
 };
 
 } // namespace RegisterAllocation

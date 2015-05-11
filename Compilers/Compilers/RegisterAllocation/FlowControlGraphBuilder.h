@@ -22,7 +22,7 @@ using CodeGeneration::IInstruction;
 
 // Вершина графа потока управления. Не владеет памятью
 struct CFlowControlVertex {
-	typedef unordered_set<const Temp::CTemp*> SetOfVars;
+	typedef unordered_set<Temp::CTemp> SetOfVars;
 	// Множество переменных, определяемых в данной вершине
 	SetOfVars Defs;
 	// Множество используемых в данной вершине переменных
@@ -58,7 +58,7 @@ public:
 	void BuildFlowControlGraph( const vector<unique_ptr<IInstruction> >& instructionsList );
 
 	// Получить результат работы алгоритма (построенный граф)
-	const CDirectedGraph<CFlowControlVertex>& GetFlowControlGraph() const
+	CDirectedGraph<CFlowControlVertex>& GetFlowControlGraph()
 		{ return flowControlGraph; }
 private:
 	// Граф потока управления (результат работы алгоритма)
