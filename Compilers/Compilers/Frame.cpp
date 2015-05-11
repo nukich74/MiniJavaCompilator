@@ -87,19 +87,19 @@ std::string to_string( TRegisters registerType )
 		case Frame::R_EAX:
 			return std::string( "EAX" );
 		case Frame::R_EBX:
-			return std::string( "EAX" );
+			return std::string( "EBX" );
 		case Frame::R_EDX:
-			return std::string( "EAX" );
+			return std::string( "EDX" );
 		case Frame::R_ECX:
-			return std::string( "EAX" );
+			return std::string( "ECX" );
 		case Frame::R_EBP:
-			return std::string( "EAX" );
+			return std::string( "EBP" );
 		case Frame::R_ESI:
-			return std::string( "EAX" );
+			return std::string( "ESI" );
 		case Frame::R_EDI:
-			return std::string( "EAX" );
+			return std::string( "EDI" );
 		case Frame::R_ESP:
-			return std::string( "EAX" );
+			return std::string( "ESP" );
 		default:
 			assert( false );
 			return std::string( "Unknown register" );
