@@ -204,8 +204,8 @@ bool CDirectedGraph<T>::HasEdge( T* fromVertex, T* toVertex ) const
 		return false;
 	}
 
-	const vector<T*>& outList = adjacencyListsOut.find( fromVertex )->second;
-	return find( outList.begin( ), outList.end( ), toVertex ) != outList.end( );
+	const vector<T*>& outList = it->second;
+	return find( outList.begin( ), outList.end( ), toVertex ) != outList.end();
 }
 
 template <typename T>
