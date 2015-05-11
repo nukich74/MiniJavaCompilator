@@ -20,8 +20,8 @@ void CFlowControlGraphBuilder::BuildFlowControlGraph( const vector<unique_ptr<II
 	do {
 		hasAnyChanges = false;
 
-		for( int i = 0; i < orderedVertices.size( ); i++ ) {
-			bool hasChangesInVertex = updateLiveSetsInVertex( orderedVertices[i] );
+		for( auto& vertex : orderedVertices ) {
+			bool hasChangesInVertex = updateLiveSetsInVertex( vertex );
 
 			if( hasChangesInVertex ) {
 				hasAnyChanges = true;
@@ -32,18 +32,8 @@ void CFlowControlGraphBuilder::BuildFlowControlGraph( const vector<unique_ptr<II
 
 void CFlowControlGraphBuilder::addInstructionsToGraph( const vector<unique_ptr<IInstruction> >& instructionsList )
 {
-	for( int i = 0; i < instructionsList.size(); i++ ) {
-		CFlowControlVertex::SetOfVars defs, uses;
-		for( auto it = instructionsList[i]->DefinedVars().begin(); it != instructionsList[i]->DefinedVars().end(); it++ ) {
-			defs.insert( &*it );
-		}
-
-		for( auto it = instructionsList[i]->UsedVars( ).begin( ); it != instructionsList[i]->UsedVars( ).end( ); it++ ) {
-			uses.insert( &*it );
-		}
-
-		bool isMove = dynamic_cast<CodeGeneration::CMove*>( instructionsList[i].get() ) != 0;
-		flowControlGraph.AddVertex( CFlowControlVertex( std::move( defs ), std::move( uses ), isMove, instructionsList[i].get() ) );
+	for( const auto& instrutcion : instructionsList ) {
+		flowControlGraph.AttachVertex( new CFlowControlVertex( instrutcion.get() ) );
 	}
 }
 
@@ -55,18 +45,18 @@ bool CFlowControlGraphBuilder::updateLiveSetsInVertex( CFlowControlVertex* verte
 	CFlowControlVertex::SetOfVars liveIn;
 	liveIn.insert( vertex->Uses.begin(), vertex->Uses.end() );
 	
-	for( auto it = vertex->LiveOut.begin(); it != vertex->LiveOut.end(); it++ ) {
+	for( const auto& var : vertex->LiveOut ) {
 		// Проверям, что переменная отсутствует в Defs
-		if( vertex->Defs.find( *it ) == vertex->Defs.end() ) {
-			liveIn.insert( *it );
+		if( vertex->Defs.find( var ) == vertex->Defs.end() ) {
+			liveIn.insert( var );
 		}
 	}
 
 	// out[n] <- U_{s in succ[n]} in[s]
 	CFlowControlVertex::SetOfVars liveOut;
 	auto successors = flowControlGraph.GetEdgesFromVertex( vertex );
-	for( auto it = successors.begin(); it != successors.end(); it++ ) {
-		liveOut.insert( (*it)->LiveIn.begin(), (*it)->LiveIn.end() );
+	for( const auto& successor : successors ) {
+		liveOut.insert( successor->LiveIn.begin(), successor->LiveIn.end() );
 	}
 
 	// Проверяем изменения
@@ -84,6 +74,20 @@ bool CFlowControlGraphBuilder::updateLiveSetsInVertex( CFlowControlVertex* verte
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+CFlowControlVertex::CFlowControlVertex( const CodeGeneration::IInstruction* instruction ) :
+	Instruction( instruction )
+{
+	for( const auto& var : instruction->DefinedVars() ) {
+		Defs.insert( &var );
+	}
+
+	for( const auto& var : instruction->UsedVars() ) {
+		Uses.insert( &var );
+	}
+
+	IsMoveInstruction = dynamic_cast<const CodeGeneration::CMove*>( instruction ) != 0;
+}
 
 bool CFlowControlVertex::operator == ( const CFlowControlVertex& other ) const
 {

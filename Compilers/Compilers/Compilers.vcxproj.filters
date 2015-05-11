@@ -26,6 +26,7 @@
     <ClCompile Include="CodeGeneration\InsturctionsMuncher.cpp" />
     <ClCompile Include="CodeGeneration\InstructionsMuncherForAzat.cpp" />
     <ClCompile Include="RegisterAllocation\FlowControlGraphBuilder.cpp" />
+    <ClCompile Include="RegisterAllocation\VarInterferenceGraphBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -78,6 +79,7 @@
     <ClInclude Include="CodeGeneration\InstructionsMuncher.h" />
     <ClInclude Include="RegisterAllocation\DirectedGraph.hpp" />
     <ClInclude Include="RegisterAllocation\FlowControlGraphBuilder.h" />
+    <ClInclude Include="RegisterAllocation\VarInterferenceGraphBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

@@ -105,6 +105,7 @@
     <ClInclude Include="IRTree\IRForestBuilder.h" />
     <ClInclude Include="RegisterAllocation\DirectedGraph.hpp" />
     <ClInclude Include="RegisterAllocation\FlowControlGraphBuilder.h" />
+    <ClInclude Include="RegisterAllocation\VarInterferenceGraphBuilder.h" />
     <ClInclude Include="StmConverter.h" />
     <ClInclude Include="SubtreeWrapper.h" />
     <ClInclude Include="SymbolsTable\ClassDescriptor.h" />
@@ -152,6 +153,7 @@
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
     <ClCompile Include="RegisterAllocation\FlowControlGraphBuilder.cpp" />
+    <ClCompile Include="RegisterAllocation\VarInterferenceGraphBuilder.cpp" />
     <ClCompile Include="StatementWrapper.cpp" />
     <ClCompile Include="SubtreeWrapper.cpp" />
     <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />

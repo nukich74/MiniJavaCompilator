@@ -9,20 +9,20 @@
 namespace RegisterAllocation {
 
 // Класс-механизм для построения графа взаимодействия переменных (ГВП). ГВП - граф, вершины которого - 
-// переменные, а ребро означает наличие взаимодействия
+// указатели на переменные, а ребро означает наличие взаимодействия
 class CVarInterferenceGraphBuilder {
 public:
 	// Собственно построить граф взаимодействия переменных по графу потока управления
 	void BuildVarInterferenceGraph( const CDirectedGraph<CFlowControlVertex>& flowControlGraph );
 	// Получить ГВП (результат работы алгоритма)
-	const CDirectedGraph<Temp::CTemp>& GetVarInterferenceGraph()
+	const CDirectedGraph<const Temp::CTemp*>& GetVarInterferenceGraph()
 		{ return varInterferenceGraph; }
 
 private:
-	CDirectedGraph<Temp::CTemp> varInterferenceGraph;
+	CDirectedGraph<const Temp::CTemp*> varInterferenceGraph;
 
 	// Добавляем вершины (переменные) в граф
-	void addVerticesToGraph( const CDirectedGraph<CFlowControlVertex>& flowControlGraph );
+	void addVerticesFromFlowControlGraph( const CDirectedGraph<CFlowControlVertex>& flowControlGraph );
 };
 
 } // namespace RegisterAllocation

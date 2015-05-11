@@ -28,6 +28,8 @@ class CDirectedGraph {
 public:
 	// Добавляет вершину для объекта. Если такое же значение уже есть в графе, то сработет assert
 	void AddVertex( const T& value );
+	// Добавляет созданный ранее с помощью оператора new объект, который переходит во владение этого класса.
+	void AttachVertex( T* objectPtr );
 	// Добавляем ориентированное ребро. Если какой-нибудь вершины нет, то сработает assert
 	void AddEdge( T* fromVertex, T* toVertex );
 	// Добавляет ребра в обе стороны
@@ -75,8 +77,18 @@ void CDirectedGraph<T>::AddVertex( const T& value )
 {
 	assert( FindVertex( value ) == 0 );
 	// Добавляем пустые списки
-	vertices.emplace_back( new T( value ) );
+	vertices.push_back( shared_ptr<T>( new T( value ) ) );
 	T* objectPtr = vertices.back().get();
+	adjacencyListsOut[objectPtr];
+	adjacencyListsIn[objectPtr];
+}
+
+template <typename T>
+void CDirectedGraph<T>::AttachVertex( T* objectPtr )
+{
+	assert( FindVertex( *objectPtr ) == 0 );
+	// Добавляем пустые списки
+	vertices.push_back( shared_ptr<T>( objectPtr ) );
 	adjacencyListsOut[objectPtr];
 	adjacencyListsIn[objectPtr];
 }
@@ -98,8 +110,8 @@ void CDirectedGraph<T>::AddEdge( T* fromVertex, T* toVertex )
 template <typename T>
 void CDirectedGraph<T>::AddBothEdges( T* firstVertex, T* secondVertex )
 {
-	AddEdge( fromVertex, toVertex );
-	AddEdge( toVertex, fromVertex );
+	AddEdge( firstVertex, secondVertex );
+	AddEdge( secondVertex, firstVertex );
 }
 
 template <typename T>
@@ -133,9 +145,9 @@ const vector<T*>& CDirectedGraph<T>::GetEdgesToVertex( T* toVertex ) const
 template <typename T>
 T* CDirectedGraph<T>::FindVertex( const T& value ) const
 {
-	for( int i = 0; i < vertices.size(); i++ ) {
-		if( *vertices[i] == value ) {
-			return vertices[i].get();
+	for( const auto& vertex : vertices ) {
+		if( *vertex == value ) {
+			return vertex.get();
 		}
 	}
 
@@ -160,8 +172,8 @@ void CDirectedGraph<T>::SortVertices( vector<T*>& orderedVertices, TVerticesOrde
 
 	orderedVertices.clear();
 
-	for( int i = 0; i < vertices.size(); i++ ) {
-		walkDFS( vertices[i].get(), orderedVertices );
+	for( const auto& vertex : vertices ) {
+		walkDFS( vertex.get(), orderedVertices );
 	}
 
 	assert( orderedVertices.size() == vertices.size() );
@@ -175,9 +187,8 @@ void CDirectedGraph<T>::walkDFS( T* vertex, vector<T*>& orderedVertices ) const
 	}
 
 	orderedVertices.push_back( vertex );
-	const vector<T*>& edgesFromVertex = GetEdgesFromVertex( vertex );
-	for( int i = 0; i < edgesFromVertex.size(); i++ ) {
-		walkDFS( edgesFromVertex[i], orderedVertices );
+	for( const auto& vertexPtr : GetEdgesFromVertex( vertex ) ) {
+		walkDFS( vertexPtr, orderedVertices );
 	}
 }
 

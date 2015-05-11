@@ -42,17 +42,9 @@ struct CFlowControlVertex {
 	// Инструкция, которой соответствует вершина
 	const CodeGeneration::IInstruction* const Instruction;
 
-	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses, SetOfVars&& liveIn, SetOfVars&& liveOut, bool isMove, 
-			const CodeGeneration::IInstruction* instruction ) :
-		Defs( defs ), Uses( uses ), LiveIn( liveIn ), LiveOut( liveOut ), IsMoveInstruction( isMove ),
-		Instruction( instruction )
-	{}
+	explicit CFlowControlVertex( const CodeGeneration::IInstruction* instruction );
 
-	CFlowControlVertex( SetOfVars&& defs, SetOfVars&& uses, bool isMove,
-			const CodeGeneration::IInstruction* instruction ) :
-		Defs( defs ), Uses( uses ), IsMoveInstruction( isMove ), Instruction( instruction )
-	{}
-
+	// Вершины равны, если указатели на соответствующие инструкции равны
 	bool operator == ( const CFlowControlVertex& other ) const;
 };
 

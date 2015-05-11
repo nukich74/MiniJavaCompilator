@@ -14,6 +14,7 @@
 #include "IRStm.h"
 #include "IRExp.h"
 #include <RegisterAllocation\FlowControlGraphBuilder.h>
+#include <RegisterAllocation\VarInterferenceGraphBuilder.h>
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -113,7 +114,10 @@ int main()
 			// Тестируем построение графа потока управления, выводим все в файл
 			RegisterAllocation::CFlowControlGraphBuilder flowControlGraphBuilder;
 			flowControlGraphBuilder.BuildFlowControlGraph( instructionMuncher.GetInstructionsList() );
-			flowControlGraphBuilder.GetFlowControlGraph();
+			// Тестируем построение графа взаимодействия
+			RegisterAllocation::CVarInterferenceGraphBuilder varInterferenceGraphBuilder;
+			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlGraphBuilder.GetFlowControlGraph() );
+			varInterferenceGraphBuilder.GetVarInterferenceGraph();
 		}
 	}
 
