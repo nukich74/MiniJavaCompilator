@@ -135,7 +135,7 @@ public:
 	const IAccess* GetField( std::string name ) const;
 	void AddField( const std::string _name, const IAccess* _var );
 
-	// Доступ к переменной (не известно какой local, formal или какой то другой)
+	// Доступ к переменной (не известно какой local, formal или какой-то другой)
 	const IAccess* GetAccess( std::string _name ) const;
 
 	// Корень IRTree для текущей функции
