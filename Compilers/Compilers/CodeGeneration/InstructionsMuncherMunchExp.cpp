@@ -137,7 +137,7 @@ Temp::CTemp CInstructionsMuncher::munchExpBinop( const IRTree::CBinop* exp )
 		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
 		int rightValue = dynamic_cast<const IRTree::CConst*>( exp->right.get() )->value;
 		Temp::CTemp tmp;
-		emit( new CMove( "mov 'd0, " + std::to_string( leftValue ) + "\n", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
+		emit( new CMove( "mov 'd0, " + std::to_string( leftValue ), std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
 		emit( new COper( command + " 'd0, " + std::to_string( rightValue ), std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
 		return tmp;
 	} else if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 ) {
@@ -166,11 +166,41 @@ Temp::CTemp CInstructionsMuncher::munchExpBinop( const IRTree::CBinop* exp )
 
 Temp::CTemp CInstructionsMuncher::munchExpBinopMul( const IRTree::CBinop* exp )
 {
-	return Temp::CTemp();
+	std::list<Temp::CTemp> mulDestination( 1, *frame->GetRegister( Frame::R_EAX ) );
+	mulDestination.push_back( *frame->GetRegister( Frame::R_EDX ) );
+	if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 && dynamic_cast<const IRTree::CConst*>( exp->right.get() ) != 0 ) {
+		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
+		int rightValue = dynamic_cast<const IRTree::CConst*>( exp->right.get() )->value;
+		Temp::CTemp tmp;
+		emit( new CMove( "mov 'd0, " + std::to_string( leftValue ), std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
+		emit( new CMove( "mov 'd0, " + std::to_string( rightValue ), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EAX ) ), std::list<Temp::CTemp>() ) );
+		emit( new COper( "mul 's0", mulDestination, std::list<Temp::CTemp>( 1, tmp ) ) );
+	} else if( dynamic_cast<const IRTree::CConst*>( exp->left.get() ) != 0 ) {
+		int leftValue = dynamic_cast<const IRTree::CConst*>( exp->left.get() )->value;
+		Temp::CTemp tmp;
+		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>( 1, munchExp( exp->right.get() ) ) ) );
+		emit( new CMove( "mov 'd0, "  + std::to_string( leftValue ), 
+			std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EAX ) ), std::list<Temp::CTemp>() ) );
+		emit( new COper( "mul 's0", mulDestination, std::list<Temp::CTemp>( 1, tmp ) ) );
+	} else if( dynamic_cast<const IRTree::CConst*>( exp->right.get() ) != 0 ) {
+		int rightValue = dynamic_cast<const IRTree::CConst*>( exp->right.get() )->value;
+		Temp::CTemp tmp;
+		emit( new CMove( "mov 'd0, "  + std::to_string( rightValue ), 
+			std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EAX ) ), std::list<Temp::CTemp>() ) );
+		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>( 1, munchExp( exp->left.get() ) ) ) );
+		emit( new COper( "mul 's0", mulDestination, std::list<Temp::CTemp>( 1, tmp ) ) );
+	} else {
+		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>(  1, *frame->GetRegister( Frame::R_EAX ) ), std::list<Temp::CTemp>( 1, munchExp( exp->left.get() ) ) ) );
+		Temp::CTemp tmp;
+		emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>( 1, munchExp( exp->right.get() ) ) ) );
+		emit( new COper( "mul 's0", mulDestination, std::list<Temp::CTemp>( 1, tmp ) ) );
+	}
+	return *frame->GetRegister( Frame::R_EAX );
 }
 
 Temp::CTemp CInstructionsMuncher::munchExpBinopLess( const IRTree::CBinop* exp )
 {
+	assert( false );
 	return Temp::CTemp();
 }
 
@@ -181,7 +211,7 @@ Temp::CTemp CInstructionsMuncher::munchExpCall( const IRTree::CCall* exp )
 		assert( false );
 	}
 	std::list<Temp::CTemp> source = munchArgs( exp->args );
-	emit( new COper( "call " + functionName->label->Name(), std::list<Temp::CTemp>(), source ) );
+	emit( new COper( "call " + functionName->label->Name(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EAX ) ), source ) );
 	return Temp::CTemp();
 }
 
