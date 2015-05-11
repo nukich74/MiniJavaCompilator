@@ -34,13 +34,14 @@ public:
 class CInFrame : public IAccess {
 public:
 
-	CInFrame( int _offsetInWords ) : offsetInWords( _offsetInWords ) {}
+	CInFrame( int _number ) : number( _number ) {}
 
 	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const override;
 
 private:
-
-	const int offsetInWords;
+	
+	// Порядковый номер локальной переменной
+	const int number;
 
 };
 
@@ -68,6 +69,21 @@ public:
 
 };
 
+class CFormalParameterInStack : public IAccess {
+public:
+	CFormalParameterInStack( int _number ) : number( _number ) {}
+
+	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const;
+
+private:
+
+	// Порядковый номер аргумента, переданного как формальный параметр функции
+	// Считать начинаем с 1
+	// 0 резервируется для this который мы договорились передавать через стек
+	const int number;
+
+};
+
 // Класс-контейнер с платформо-зависимой информацией о функции
 class CFrame {
 public:
@@ -86,7 +102,11 @@ public:
 
 	const Temp::CTemp* GetRegister( TRegisters registerType ) const
 	{
+<<<<<<< HEAD
 		assert( registerType >= 0 && registerType < R_Count );
+=======
+		assert( registerType >= R_EAX && registerType < R_Count );
+>>>>>>> 958d64bc398f5e36a74d2bca34475163378e2af8
 		return registers.at( registerType ).get();
 	}
 

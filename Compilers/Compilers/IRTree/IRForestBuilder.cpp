@@ -106,18 +106,19 @@ void CIRForestBuilder::Visit( const CExpIdExpList& exp )
 	std::string methodName = exp.Id();
 	Temp::CLabel* functionLabel = new Temp::CLabel( methodName );
 	IRTree::CName* functionName = new IRTree::CName( functionLabel );
-	const IRTree::CExpList* args;
+
+	IRTree::CExpList* args = new IRTree::CExpList( new IRTree::CTemp( *currentFrame->ThisPointer() ), nullptr );
 	if( exp.ExpList() != 0 ) {
 		exp.ExpList()->Accept( *this );
-		args = lastReturnedExpList;
+		args->tail = std::shared_ptr<const IRTree::CExpList>( lastReturnedExpList );
 	}
 	else {
-		args = new IRTree::CExpList( nullptr, nullptr );
+		args->tail = nullptr;
 	}
 #pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	Temp::CTemp* returned = new Temp::CTemp();
 	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *returned );
-	// Только если функция возвращает значени иначе просто будет stm
+	// Только если функция возвращает значение иначе просто будет stm
 	lastReturnedExp = new IRTree::CEseq(new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, *lastReturnedExpList ) ), returnedTemp );
 	lastReturnedExpList = nullptr;
 
@@ -299,7 +300,7 @@ void CIRForestBuilder::Visit( const CMethodDeclList& methodDeclList )
 
 void CIRForestBuilder::Visit( const CMethodDecl& methodDecl )
 {
-	// Все это мы игнорируем, это есть у теблицы символоа
+	// Все это мы игнорируем, это есть у таблицы символов
 	methodDecl.ReturnedType()->Accept( *this );
 	if( methodDecl.FormalList() != 0 ) {
 		methodDecl.FormalList()->Accept( *this );
@@ -339,9 +340,8 @@ void CIRForestBuilder::Visit( const CMethodDecl& methodDecl )
 	}
 	
 	// Добавляем параметры функции фрейму
-	for( const auto& field : *params ) {
-		currentFrame->AddField( field.Name(), new Frame::CInFrame( currentFrame->LocalCounter ) );
-		currentFrame->LocalCounter++;
+	for( int i = 0; i < params->size(); ++i ) {
+		currentFrame->AddField( params->at( i ).Name(), new Frame::CFormalParameterInStack( i + 1 ) );
 	}
 	// Добавляем локальные переменные фрейму
 	for( const auto& field : *locals ) {

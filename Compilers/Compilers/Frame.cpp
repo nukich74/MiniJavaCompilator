@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 
 #include "Frame.h"
 
@@ -66,10 +66,11 @@ void CFrame::AddField( const std::string _name, const IAccess* _var )
 
 const IRTree::IExp* CInFrame::ToExp( const Frame::CFrame* frame ) const
 {
+	// Смещаемся в область меньших адресов
 	return new IRTree::CMem( new IRTree::CBinop(
-		IRTree::B_Plus, new IRTree::CTemp( *( frame->FramePointer() ) ),
+		IRTree::B_Minus, new IRTree::CTemp( *( frame->FramePointer() ) ),
 		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
-		new IRTree::CConst( offsetInWords ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
+		new IRTree::CConst( number + 1 ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
 }
 
 
@@ -104,6 +105,15 @@ std::string to_string( TRegisters registerType )
 			assert( false );
 			return std::string( "Unknown register" );
 	}
+}
+
+
+const IRTree::IExp* CFormalParameterInStack::ToExp( const Frame::CFrame* frame ) const
+{
+	return new IRTree::CMem( new IRTree::CBinop(
+		IRTree::B_Plus, new IRTree::CTemp( *( frame->FramePointer() ) ),
+		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
+		new IRTree::CConst( number ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
 }
 
 } // namespace Frame
