@@ -28,13 +28,32 @@ const IRTree::IExp* CConditionalWrapper::ToExp() const {
 	
 const IRTree::IStm* CAndWrapper::ToConditional( const Temp::CLabel* t, const Temp::CLabel* f ) const {
 	Temp::CLabel* firstTrueLabel = new Temp::CLabel();
-	IRTree::CConst* falseConst = new IRTree::CConst(0);
-	IRTree::CCjump* firstTrueJump = new IRTree::CCjump( IRTree::CJ_NotEqual, left, falseConst, firstTrueLabel, f );
 	IRTree::CLabel* firstTrueIRLabel = new IRTree::CLabel( firstTrueLabel );
+
+	IRTree::CConst* falseConst = new IRTree::CConst(0);
+
+	// первый аргумент
+	const IRTree::IStm* firstTrueJump;
+	auto asBinop = dynamic_cast< const IRTree::CBinop* >( left );
+	if( asBinop != nullptr ) {
+		switch( asBinop->binop ) {
+			case IRTree::B_And:
+			{
+				CAndWrapper andWrapper( asBinop->left.get(), asBinop->right.get() );
+				firstTrueJump = andWrapper.ToConditional( firstTrueLabel, f );
+				break;
+			}
+			default:
+				assert( false );
+				break;
+		}
+	} else {
+		firstTrueJump = new IRTree::CCjump( IRTree::CJ_NotEqual, left, falseConst, firstTrueLabel, f );
+	}
+
 	IRTree::CCjump* secondTrueJump = new IRTree::CCjump( IRTree::CJ_NotEqual, right, falseConst, t, f );
-	IRTree::CSeq* firstFalseSeq = new IRTree::CSeq( firstTrueIRLabel, secondTrueJump );
-	IRTree::CSeq* finalSeq = new IRTree::CSeq( firstTrueJump, firstFalseSeq );
-	return finalSeq;
+
+	return new IRTree::CSeq( firstTrueJump, firstTrueIRLabel, secondTrueJump );
 }
 
 }
