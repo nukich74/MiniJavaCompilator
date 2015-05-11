@@ -11,12 +11,19 @@ void CVarInterferenceGraphBuilder::BuildVarInterferenceGraph( const vector<CFlow
 		if( vertex->IsMoveInstruction ) {
 			// Для MOVE инструкции a <- c для всех b1, ..., bn из live-out, не равных c, добавляем пары (a, b1), ..., (a, bn)
 			assert( vertex->Defs.size() == 1 );
-			assert( vertex->Uses.size() == 1 );
-			const Temp::CTemp& dst = *vertex->Defs.begin();
-			const Temp::CTemp& src = *vertex->Uses.begin();
+			assert( vertex->Uses.size() <= 1 );
+			const Temp::CTemp& def = *vertex->Defs.begin();
 			for( const Temp::CTemp& var : vertex->LiveOut ) {
-				if( var != src ) {
-					varInterferenceGraph.AddBothEdges( dst, var );
+				if( var == def ) {
+					// Нет смысла добавлять взаимодействие переменной с собой
+					continue;
+				}
+				if( vertex->Uses.size() == 0 || var != *vertex->Uses.begin() ) {
+					if( varInterferenceGraph.HasEdge( def, var ) ) {
+						// Ребро уже есть
+						continue;
+					}
+					varInterferenceGraph.AddBothEdges( def, var );
 				}
 			}
 		} else {
@@ -26,7 +33,14 @@ void CVarInterferenceGraphBuilder::BuildVarInterferenceGraph( const vector<CFlow
 				assert( vertex->Defs.size() == 1 );
 				const Temp::CTemp& def = *vertex->Defs.begin();
 				for( const Temp::CTemp& var : vertex->LiveOut ) {
-					assert( !varInterferenceGraph.HasEdge( def, var ) );
+					if( var == def ) {
+						// Нет смысла добавлять взаимодействие переменной с собой
+						continue;
+					}
+					if( varInterferenceGraph.HasEdge( def, var ) ) {
+						// Ребро уже есть
+						continue;
+					}
 					varInterferenceGraph.AddBothEdges( def, var );
 				}
 			}
