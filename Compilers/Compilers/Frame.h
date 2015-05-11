@@ -34,13 +34,14 @@ public:
 class CInFrame : public IAccess {
 public:
 
-	CInFrame( int _offsetInWords ) : offsetInWords( _offsetInWords ) {}
+	CInFrame( int _number ) : number( _number ) {}
 
 	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const override;
 
 private:
-
-	const int offsetInWords;
+	
+	// Порядковый номер локальной переменной
+	const int number;
 
 };
 
@@ -65,6 +66,21 @@ public:
 	{
 		throw std::logic_error("The method or operation is not implemented.");
 	}
+
+};
+
+class CFormalParameterInStack : public IAccess {
+public:
+	CFormalParameterInStack( int _number ) : number( _number ) {}
+
+	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const;
+
+private:
+
+	// Порядковый номер аргумента, переданного как формальный параметр функции
+	// Считать начинаем с 1
+	// 0 резервируется для this который мы договорились передавать через стек
+	const int number;
 
 };
 
