@@ -33,7 +33,7 @@ const IRTree::IStm* CAndWrapper::ToConditional( const Temp::CLabel* t, const Tem
 	IRTree::CConst* falseConst = new IRTree::CConst(0);
 
 	// первый аргумент
-	const IRTree::IStm* firstTrueJump;
+	const IRTree::IStm* firstTrueJump = nullptr;
 	auto asBinop = dynamic_cast< const IRTree::CBinop* >( left );
 	if( asBinop != nullptr ) {
 		switch( asBinop->binop ) {
