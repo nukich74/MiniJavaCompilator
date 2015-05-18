@@ -31,5 +31,5 @@ CMove::CMove( const std::string& _Assem, const std::list<Temp::CTemp>& _dst,  co
 { }
 
 CLabel::CLabel( const Temp::CLabel& _label ) :
-	IInstruction( "", std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), std::list<Temp::CLabel>( 1, _label ) )
+	IInstruction( "'l0:", std::list<Temp::CTemp>( ), std::list<Temp::CTemp>( ), std::list<Temp::CLabel>( 1, _label ) )
 { }
