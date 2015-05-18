@@ -125,8 +125,20 @@ Temp::CTemp CInstructionsMuncher::munchExpBinopMul( const IRTree::CBinop* exp )
 
 Temp::CTemp CInstructionsMuncher::munchExpBinopLess( const IRTree::CBinop* exp )
 {
-	// assert( false );
-	return Temp::CTemp();
+	Temp::CTemp tmp;
+	emit( new COper( "mov 'd0, 0", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
+	Temp::CTemp left;
+	Temp::CTemp right;
+	emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, left ), std::list<Temp::CTemp>( 1, munchExp( exp->left.get() ) ) ) );
+	emit( new CMove( "mov 'd0, 's0", std::list<Temp::CTemp>( 1, right ), std::list<Temp::CTemp>( 1, munchExp( exp->right.get() ) ) ) );
+	std::list<Temp::CTemp> source( 1, left );
+	source.push_back( right );
+	emit( new COper( "cmp 's0 's1", std::list<Temp::CTemp>(), source ) );
+	Temp::CLabel label;
+	emit( new COper( "jnl 'l0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>(), std::list<Temp::CLabel>( 1, label ) ) );
+	emit( new COper( "mov 'd0, 1", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
+	emit( new CLabel( label ) );
+	return tmp;
 }
 
 Temp::CTemp CInstructionsMuncher::munchExpCall( const IRTree::CCall* exp )
@@ -137,7 +149,11 @@ Temp::CTemp CInstructionsMuncher::munchExpCall( const IRTree::CCall* exp )
 	}
 	std::list<Temp::CTemp> source = munchArgs( exp->args );
 	emit( new COper( "call " + functionName->label->Name(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EAX ) ), source ) );
-	return Temp::CTemp();
+	Temp::CTemp tmp;
+	for( size_t i = 0; i < source.size(); ++i ) {
+		emit( new COper( "pop 'd0", std::list<Temp::CTemp>( 1, tmp ), std::list<Temp::CTemp>() ) );
+	}
+	return *frame->GetRegister( Frame::R_EAX );
 }
 
 std::list<Temp::CTemp> CInstructionsMuncher::munchArgs( const IRTree::CExpList exp )
