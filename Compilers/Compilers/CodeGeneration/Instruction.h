@@ -47,6 +47,7 @@ public:
 class CLabel : public IInstruction {
 public:
 	CLabel( const Temp::CLabel& _labelList );
+
 };
 
 } // namespace CodeGeneration
