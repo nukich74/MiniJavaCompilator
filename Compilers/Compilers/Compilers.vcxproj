@@ -41,10 +41,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)Compilers\IRTree;$(SolutionDir)Compilers\AbstractTree;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)\Compilers\IRTree;$(SolutionDir)\Compilers\AbstractTree;$(IncludePath);$(SolutionDir)\Compilers\CodeGeneration;</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IncludePath>$(SolutionDir)\Compilers\IRTree;$(SolutionDir)\Compilers\AbstractTree;$(IncludePath);$(SolutionDir)\Compilers\CodeGeneration;</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -103,6 +104,7 @@
     <ClInclude Include="IRTree\IRTree.h" />
     <ClInclude Include="IRTree\IRTreeToDigraphConverter.h" />
     <ClInclude Include="IRTree\IRForestBuilder.h" />
+    <ClInclude Include="PrologueAndEpilogue\PrologueWriter.h" />
     <ClInclude Include="RegisterAllocation\DirectedGraph.hpp" />
     <ClInclude Include="RegisterAllocation\FlowControlGraphBuilder.h" />
     <ClInclude Include="RegisterAllocation\VarInterferenceGraphBuilder.h" />

@@ -79,6 +79,7 @@
     <ClInclude Include="RegisterAllocation\VarInterferenceGraphBuilder.h" />
     <ClInclude Include="ConditionalWrapper.h" />
     <ClInclude Include="FineAssert.h" />
+    <ClInclude Include="PrologueAndEpilogue\PrologueWriter.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
