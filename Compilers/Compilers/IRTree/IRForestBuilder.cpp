@@ -138,7 +138,8 @@ void CIRForestBuilder::Visit( const CExpIdVoidExpList& exp )
 #pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	Temp::CTemp* returned = new Temp::CTemp();
 	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *returned );
-	// Только если функция возвращает значени иначе просто будет stm
+	// Только если функция возвращает значение иначе просто будет stm
+#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	lastReturnedExp = new IRTree::CEseq( new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, *lastReturnedExpList ) ), returnedTemp );
 	lastReturnedExpList = nullptr;
 }
@@ -181,7 +182,12 @@ void CIRForestBuilder::Visit( const CNewIntExpIndex& exp )
 	// Выделяем память
 	Temp::CLabel* mallocLabel = new Temp::CLabel( "malloc" );
 	const IRTree::CName* mallocName = new IRTree::CName( mallocLabel );
-	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *( new IRTree::CExpList( lengthDeFacto, nullptr ) ) );
+
+	// Первы аргумент всегда this
+	IRTree::CExpList* args = new IRTree::CExpList( new IRTree::CTemp( *currentFrame->ThisPointer() ),
+		new IRTree::CExpList( lengthDeFacto, nullptr ) );
+	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *args );
+
 	Temp::CTemp* resultTemp = new Temp::CTemp();
 	const IRTree::CTemp* tempTemp = new IRTree::CTemp( *resultTemp );
 	// Проставляем память нулями
@@ -192,12 +198,24 @@ void CIRForestBuilder::Visit( const CNewIntExpIndex& exp )
 }
 void CIRForestBuilder::Visit( const CNewId& exp )
 {
-#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	// Выделяем память
 	Temp::CLabel* mallocLabel = new Temp::CLabel( "malloc" );
-	// По хорошему здесь надо посчитать сколько всего полей у класса и выделить столько машинных слов
+
+	// Здесь считается сколько всего полей у класса
 	const IRTree::CName* mallocName = new IRTree::CName( mallocLabel );
-	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *(new IRTree::CExpList( new IRTree::CConst( 100500 ), nullptr ) ) );
+	auto classDecriptor = symbolsTable.Classes().find( exp.TypeId() );
+	assert( classDecriptor != symbolsTable.Classes().end() );
+	int fieldsCount = classDecriptor->second.Fields.size();
+	// Проходимся по предкам
+	classDecriptor = symbolsTable.Classes().find( classDecriptor->second.BaseClass );
+	while( classDecriptor != symbolsTable.Classes().end() ) {
+		fieldsCount += classDecriptor->second.Fields.size();
+	}
+	// Выделяем память для полей самого класса и для полей базового класса
+	// Первы аргумент всегда this
+	IRTree::CExpList* args = new IRTree::CExpList( new IRTree::CTemp( *currentFrame->ThisPointer() ), 
+		new IRTree::CExpList( new IRTree::CConst( fieldsCount * currentFrame->WordSize() ), nullptr ) );
+	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *args );
 	Temp::CTemp* resultTemp = new Temp::CTemp();
 	const IRTree::CTemp* tempTemp = new IRTree::CTemp( *resultTemp );
 	// Проставляем память нулями
@@ -444,7 +462,8 @@ void CIRForestBuilder::Visit( const CPrintStatement& printStatement )
 	// Вызываем функцию
 	Temp::CLabel* funcName = new Temp::CLabel( "System.out.println" );
 	const IRTree::CName* funcNameTree = new IRTree::CName( funcName );
-	const IRTree::CExpList* args = new IRTree::CExpList( exprForPrint, nullptr );
+	// Первый аргумент все равно this
+	const IRTree::CExpList* args = new IRTree::CExpList( new IRTree::CTemp( *currentFrame->ThisPointer() ), new IRTree::CExpList( exprForPrint, nullptr ) );
 	const IRTree::IExp* funcCall = new IRTree::CCall( funcNameTree, *args );
 	lastReturnedStm = new IRTree::CExp( funcCall );
 }
