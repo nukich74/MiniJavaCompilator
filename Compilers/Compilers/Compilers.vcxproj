@@ -104,6 +104,7 @@
     <ClInclude Include="IRTree\IRTree.h" />
     <ClInclude Include="IRTree\IRTreeToDigraphConverter.h" />
     <ClInclude Include="IRTree\IRForestBuilder.h" />
+    <ClInclude Include="PrologueAndEpilogue\EpilogueWriter.h" />
     <ClInclude Include="PrologueAndEpilogue\PrologueWriter.h" />
     <ClInclude Include="RegisterAllocation\DirectedGraph.hpp" />
     <ClInclude Include="RegisterAllocation\FlowControlGraphBuilder.h" />
@@ -154,6 +155,8 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="parser.tab.cpp" />
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
+    <ClCompile Include="PrologueAndEpilogue\EpilogueWriter.cpp" />
+    <ClCompile Include="PrologueAndEpilogue\PrologueWriter.cpp" />
     <ClCompile Include="RegisterAllocation\FlowControlGraphBuilder.cpp" />
     <ClCompile Include="RegisterAllocation\VarInterferenceGraphBuilder.cpp" />
     <ClCompile Include="ConditionalWrapper.cpp" />

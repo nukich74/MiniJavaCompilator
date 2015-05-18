@@ -1,6 +1,6 @@
-// Автор: Николай Фролов.
+п»ї// РђРІС‚РѕСЂ: РќРёРєРѕР»Р°Р№ Р¤СЂРѕР»РѕРІ.
 
-// Описание: добавляет код пролога к функции.
+// РћРїРёСЃР°РЅРёРµ: РґРѕР±Р°РІР»СЏРµС‚ РєРѕРґ РїСЂРѕР»РѕРіР° Рє С„СѓРЅРєС†РёРё.
 
 #pragma once
 
@@ -9,6 +9,7 @@
 
 class CPrologueWriter {
 public:
+	static std::vector< std::unique_ptr<CodeGeneration::IInstruction> > AddPrologue( Frame::CFrame* frame, int numberOfTemps );
 private:
 
 };

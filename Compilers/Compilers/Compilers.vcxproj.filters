@@ -26,6 +26,8 @@
     <ClCompile Include="RegisterAllocation\FlowControlGraphBuilder.cpp" />
     <ClCompile Include="RegisterAllocation\VarInterferenceGraphBuilder.cpp" />
     <ClCompile Include="ConditionalWrapper.cpp" />
+    <ClCompile Include="PrologueAndEpilogue\EpilogueWriter.cpp" />
+    <ClCompile Include="PrologueAndEpilogue\PrologueWriter.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -80,6 +82,7 @@
     <ClInclude Include="ConditionalWrapper.h" />
     <ClInclude Include="FineAssert.h" />
     <ClInclude Include="PrologueAndEpilogue\PrologueWriter.h" />
+    <ClInclude Include="PrologueAndEpilogue\EpilogueWriter.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
