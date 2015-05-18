@@ -10,10 +10,9 @@
 #include <cassert>
 #include <common.h>
 #include <Visitor.h>
-#include "ExpConverter.h"
 #include "IRExp.h"
 #include "StmConverter.h"
-#include "StatementWrapper.h"
+#include "ConditionalWrapper.h"
 
 namespace Translate {
 
@@ -407,10 +406,9 @@ void CIRForestBuilder::Visit( const CStatementList& statementList )
 		for( ; iter != statementList.StatmentList().end(); iter++ ) {
 			(*iter)->Accept( *this );
 			const IRTree::IStm* statementToAdd = 0;
-			if( lastReturnedStm == 0 ) {
-				// Нам нужны только IStm потому юзаем конвертер
-				Translate::CExpConverter converter( lastReturnedExp );
-				statementToAdd = converter.ToStm();
+			if( lastReturnedStm == nullptr ) {
+				// Нам нужны только IStm 
+				statementToAdd = new IRTree::CExp( lastReturnedExp );
 			} else {
 				statementToAdd = lastReturnedStm;
 			}
@@ -480,16 +478,8 @@ void CIRForestBuilder::Visit( const CIfStatement& ifStatement )
 		lastReturnedExp = nullptr;
 		lastReturnedStm = nullptr;
 	}
-	const IRTree::CBinop* asBinop = dynamic_cast<const IRTree::CBinop*>( ifExpr );
-	if( asBinop != nullptr && asBinop->binop == IRTree::B_And ) {
-		Translate::CAndWrapper wrapper( asBinop->left.get(), asBinop->right.get() );
-		lastReturnedStm = new IRTree::CSeq( wrapper.ToConditional( trueLabelTemp, falseLabelTemp ), trueStm, falseStm );
-	} else {
-		Translate::CExpConverter converter( ifExpr );
-		// Предполагается что ToConditional правильно обрабатывает если второй аргумент 0
-		lastReturnedStm = new IRTree::CSeq( converter.ToConditional( trueLabelTemp, falseLabelTemp ), trueStm, falseStm );
-	}
-
+	Translate::CConditionalWrapper wrapper( ifExpr );
+	lastReturnedStm = new IRTree::CSeq( wrapper.ToConditional( trueLabelTemp, falseLabelTemp ) , trueStm, falseStm );
 }
 
 void CIRForestBuilder::Visit( const CWhileStatement& whileStatement )
@@ -501,7 +491,7 @@ void CIRForestBuilder::Visit( const CWhileStatement& whileStatement )
 	IRTree::CLabel* inLoopLabel = new IRTree::CLabel( inLoopLabelTemp );
 	IRTree::CLabel* endLabel = new IRTree::CLabel( endLabelTemp );
 	whileStatement.Exp()->Accept( *this );
-	Translate::CExpConverter converter( lastReturnedExp );
+	Translate::CConditionalWrapper converter( lastReturnedExp );
 	const IRTree::IStm* whileStm = converter.ToConditional( inLoopLabelTemp, endLabelTemp );
 	lastReturnedExp = nullptr;
 	lastReturnedStm = nullptr;
