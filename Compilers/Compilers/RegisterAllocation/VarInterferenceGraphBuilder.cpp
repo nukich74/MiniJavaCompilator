@@ -75,19 +75,17 @@ void CVarInterferenceGraphBuilder::BuildVarInterferenceGraph( const vector<CFlow
 		} else {
 			// В любой не-MOVE инструкции, которая определяет некоторую переменную a, для всех переменных b1, ..., bn
 			// из live-out добавляем пары взаимодействия (a, b1), ..., (a, bn)
-			if( vertex->Defs.size() > 0 ) {
-				assert( vertex->Defs.size() == 1 );
-				const Temp::CTemp& def = *vertex->Defs.begin();
+			for( const auto& varFromDefs : vertex->Defs ) {
 				for( const Temp::CTemp& var : vertex->LiveOut ) {
-					if( var == def ) {
+					if( var == varFromDefs ) {
 						// Нет смысла добавлять взаимодействие переменной с собой
 						continue;
 					}
-					if( varInterferenceGraph.GetEdge( def, var ) != ET_Interfere ) {
+					if( varInterferenceGraph.GetEdge( varFromDefs, var ) != ET_Interfere ) {
 						// Ребро уже есть
 						continue;
 					}
-					varInterferenceGraph.SetEdge( def, var, ET_Interfere );
+					varInterferenceGraph.SetEdge( varFromDefs, var, ET_Interfere );
 				}
 			}
 		}
