@@ -11,5 +11,5 @@ class CEpilogueWriter {
 public:
 	static std::vector< std::unique_ptr<CodeGeneration::IInstruction> > AddEpilogue( Frame::CFrame* frame );
 private:
-	void emit( CodeGeneration::IInstruction*, std::vector< std::unique_ptr<CodeGeneration::IInstruction> >& instList );
+	static void emit( CodeGeneration::IInstruction*, std::vector< std::unique_ptr<CodeGeneration::IInstruction> >& instList );
 };
