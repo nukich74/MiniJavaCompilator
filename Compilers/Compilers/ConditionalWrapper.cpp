@@ -53,7 +53,7 @@ const IRTree::IStm* CConditionalWrapper::binopToConditional( const IRTree::CBino
 			return new IRTree::CCjump( IRTree::CJ_NotEqual, binop, new IRTree::CConst( 0 ), t, f );
 		default:
 			assert( false );
-			break;
+			return nullptr;
 	}
 }
 
