@@ -81,7 +81,7 @@ void CVarInterferenceGraphBuilder::BuildVarInterferenceGraph( const vector<CFlow
 						// Нет смысла добавлять взаимодействие переменной с собой
 						continue;
 					}
-					if( varInterferenceGraph.GetEdge( varFromDefs, var ) != ET_Interfere ) {
+					if( varInterferenceGraph.GetEdge( varFromDefs, var ) == ET_Interfere ) {
 						// Ребро уже есть
 						continue;
 					}
