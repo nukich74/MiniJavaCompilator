@@ -144,8 +144,13 @@ std::list<Temp::CTemp> CInstructionsMuncher::munchArgs( const IRTree::CExpList e
 {
 	std::list<const IRTree::IExp*> args;
 	IRTree::CExpList tmp = exp;
-	while( tmp.tail.get() != 0 ) {
+	while( true ) {
 		args.push_back( tmp.head.get() );
+		if( tmp.tail.get() == 0 ) {
+			break;
+		} else {
+			tmp = *tmp.tail.get();
+		}
 	}
 	std::list<Temp::CTemp> argsTempList;
 	for( auto iter = args.rbegin(); iter != args.rend(); ++iter ) {
