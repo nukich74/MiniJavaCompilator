@@ -20,10 +20,11 @@ void CIRTreeEseqLifter::Visit( const CMove* node )
 			CExpList* innerList = new CExpList( 0, 0 );
 			innerList->head = node->src;
 			CExpList* outList = new CExpList( 0, innerList );
-			outList->head = node->src;
+			outList->head = node->dst;
 			Visit( outList );
-			CMove* newMove = new CMove( 0, 0 );
-			newMove->dst = lastBuildPair.second->head;
+			CMem* newMem = new CMem( 0 );
+			newMem->exp = lastBuildPair.second->head;
+			CMove* newMove = new CMove( newMem, 0 );
 			newMove->src = lastBuildPair.second->tail->head;
 			CSeq* newNode = new CSeq( lastBuildPair.first, newMove );
 			lastBuildStm = newNode;
