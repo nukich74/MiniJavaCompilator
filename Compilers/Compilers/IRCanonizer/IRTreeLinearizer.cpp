@@ -54,7 +54,7 @@ void CLinearizer::Reorder()
 	for( auto i = independentBlocks.begin(); i != independentBlocks.end(); i++ ) {
 		const CCjump* cjumpNode = dynamic_cast<const CCjump*>( i->back().get() );
 		if( cjumpNode != nullptr ) {
-			// Нашли блок заканчивающийсся на СJump ставим после него его false метку
+			// Нашли блок заканчивающийся на СJump ставим после него его false метку
 			auto j = i;
 			j++;
 			for( ; j != independentBlocks.end(); j++ ) {
@@ -67,6 +67,7 @@ void CLinearizer::Reorder()
 				i++;
 				i = independentBlocks.insert( i, *j );
 				independentBlocks.erase( j );
+				i--;
 			} else {
 				assert( false );
 			}
@@ -74,9 +75,9 @@ void CLinearizer::Reorder()
 		}
 
 		const CJump* jumpNode = dynamic_cast<const CJump*>( i->back().get() );
-		if( cjumpNode != nullptr ) {
+		if( jumpNode != nullptr ) {
 			// Нашли блок заканчивающийсся на Jump ставим после него его метку
-			auto& j = i;
+			auto j = i;
 			j++;
 			for( ; j != independentBlocks.end(); j++ ) {
 				const CLabel* labelNode = dynamic_cast<const CLabel*>( j->front().get() );
@@ -89,6 +90,7 @@ void CLinearizer::Reorder()
 				i++;
 				i = independentBlocks.insert( i, *j );
 				independentBlocks.erase( j );
+				i--;
 			}
 			continue;
 		}

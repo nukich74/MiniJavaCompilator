@@ -89,7 +89,6 @@ class CFrame {
 public:
 	CFrame( const std::string _name ) :
 		Name( _name ), ThisCounter( 0 ), LocalCounter( 0 ), 
-		framePointer( new Temp::CTemp( _name + "_FP" ) ), 
 		thisPointer( new Temp::CTemp( _name + "_thisPointer" ) ),
 		returnValue( new Temp::CTemp( _name + "_returnValue" ) ) 
 	{
@@ -108,7 +107,7 @@ public:
 
 	// FP нужен для того чтобы получать смещение для локальных переменных внутри функции
 	const Temp::CTemp* FramePointer() const {
-		return framePointer.get();
+		return GetRegister( R_EBP );
 	}
 
 	// this нужен чтобы получать смещения на поля объекта класса
@@ -153,7 +152,6 @@ private:
 	std::map<const std::string, const IAccess* > locals;
 	std::map<const std::string, const IAccess* > fields;
 
-	std::shared_ptr<const Temp::CTemp> framePointer;
 	std::shared_ptr<const Temp::CTemp> thisPointer;
 	std::shared_ptr<const Temp::CTemp> returnValue;
 	std::vector< std::shared_ptr<const Temp::CTemp> > registers;
