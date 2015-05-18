@@ -43,6 +43,14 @@ const IRTree::IStm* CConditionalWrapper::binopToConditional( const IRTree::CBino
 			return andBinopToConditional( binop, t, f );
 		case IRTree::B_Less:
 			return new IRTree::CCjump( IRTree::CJ_Less, binop->left.get(), binop->right.get(), t, f );
+		case IRTree::B_Greater:
+			return new IRTree::CCjump( IRTree::CJ_Greater, binop->left.get(), binop->right.get(), t, f );
+		case IRTree::B_Plus:
+		case IRTree::B_Minus:
+		case IRTree::B_Mul:
+		case IRTree::B_Division:
+		case IRTree::B_Xor:
+			return new IRTree::CCjump( IRTree::CJ_NotEqual, binop, new IRTree::CConst( 0 ), t, f );
 		default:
 			assert( false );
 			break;
