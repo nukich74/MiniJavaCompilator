@@ -2,7 +2,7 @@
 // Описание: Реализация функции Format (подстановка в строку инструкции названий регистров)
 
 #include <CodeGeneration\Instruction.h>
-#include <assert.h>
+#include "FineAssert.h"
 
 using namespace CodeGeneration;
 

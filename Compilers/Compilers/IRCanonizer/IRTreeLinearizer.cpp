@@ -2,7 +2,7 @@
 // Описание: Класс реализующий обход дерева, с преобразованием его в линейную структуру
 
 #include "IRTreeLinearizer.h"
-#include <assert.h>
+#include "FineAssert.h"
 #include <IRExp.h>
 
 using namespace std;

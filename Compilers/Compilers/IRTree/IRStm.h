@@ -7,7 +7,7 @@
 #include <Temp.h>
 #include "IRTreeVisitor.h"
 #include <memory>
-#include <assert.h>
+#include "FineAssert.h"
 
 namespace IRTree {
 // Копируем результат вычисления выражения src в dst (dst - либо временная переменная CIRTemp, либо адрес CIRMem)

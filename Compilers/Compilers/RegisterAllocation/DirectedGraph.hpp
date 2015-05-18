@@ -5,7 +5,7 @@
 
 #include <vector>
 #include <map>
-#include <assert.h>
+#include "FineAssert.h"
 #include <algorithm>
 #include <memory>
 

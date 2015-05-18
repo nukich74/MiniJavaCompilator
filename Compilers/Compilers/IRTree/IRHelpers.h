@@ -6,7 +6,7 @@
 #include "IRTreeVisitor.h"
 #include <memory>
 #include <string>
-#include <assert.h>
+#include "FineAssert.h"
 
 namespace IRTree {
 

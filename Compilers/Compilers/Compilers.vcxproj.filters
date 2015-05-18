@@ -78,6 +78,7 @@
     <ClInclude Include="RegisterAllocation\FlowControlGraphBuilder.h" />
     <ClInclude Include="RegisterAllocation\VarInterferenceGraphBuilder.h" />
     <ClInclude Include="ConditionalWrapper.h" />
+    <ClInclude Include="FineAssert.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />
