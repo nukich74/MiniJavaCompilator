@@ -88,4 +88,7 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 void CInstructionsMuncher::emit( IInstruction* instruction )
 {
 	instructionsList.emplace_back( std::unique_ptr<IInstruction>( instruction ) );
+#ifdef _DEBUG
+	debugInfo.push_back( instruction->DebugInfo() );
+#endif
 }

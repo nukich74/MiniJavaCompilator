@@ -106,8 +106,12 @@ int main()
 			instructionMuncher.CodeGen();
 			// Выводим все в файл 
 			std::ofstream programmListing( std::string( "Listing__" ) + frame->Name + std::string( ".asm" ) );
-			for( const auto& line : instructionMuncher.GetInstructionsList() ) {
-				programmListing << line->Assem << std::endl;
+			auto& instList = instructionMuncher.GetInstructionsList();
+			for( size_t i = 0; i < instList.size(); ++i ) {
+#ifdef _DEBUG
+				programmListing << instructionMuncher.GetDebugInfo()[i] << std::endl;
+#endif
+				programmListing << instList[i]->Assem << std::endl;
 			}
 			programmListing.close();
 			

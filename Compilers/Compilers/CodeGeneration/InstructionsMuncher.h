@@ -26,9 +26,12 @@ public:
 	// Результат работы механизма
 	const std::vector< std::unique_ptr<IInstruction> >& GetInstructionsList() const { return instructionsList; }
 
+	const std::vector<std::string>& GetDebugInfo() const { return debugInfo; }
+
 private:
 	const std::vector< std::shared_ptr<const IRTree::IStm> >& reorderedStmList;
 	std::vector< std::unique_ptr<IInstruction> > instructionsList;
+	std::vector<std::string> debugInfo;
 	const Frame::CFrame* frame;
 
 	void emit( IInstruction* instruction );

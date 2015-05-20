@@ -24,6 +24,19 @@ public:
 
 	std::string Format( const std::map<Temp::CTemp, std::string>& varsMapping ) const;
 
+#ifdef _DEBUG
+	std::string DebugInfo() const
+	{ 
+		std::string result = "; Destinations: ";
+		for( auto& tmp : dst ) { result += tmp.Name(); result += ", "; }
+		result += "Sources: ";
+		for( auto& tmp : src ) { result += tmp.Name(); result += ", "; }
+		result += "Labels: ";
+		for( auto& lbl: labelList ) { result += lbl.Name(); result += ", "; }
+		return result;
+	}	
+#endif
+
 	// Для того, чтобы сделать класс абстрактным
 	virtual ~IInstruction() = 0 {}
 

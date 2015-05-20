@@ -55,7 +55,7 @@ Temp::CTemp CInstructionsMuncher::munchExpBinopInMem( const IRTree::CBinop* exp 
 	Temp::CTemp tmp;
 	std::list<Temp::CTemp> source( 1, munchExp( exp->left.get() ) );
 	source.push_back( munchExp( exp->right.get() ) );
-	emit( new COper( "mov 'd0, ['s0 + 's1 " + binopOperation + "'s2]",
+	emit( new COper( "mov 'd0, ['s0 " + binopOperation + " 's1]",
 		std::list<Temp::CTemp>( 1, tmp ), source ) );
 	return tmp;
 }
