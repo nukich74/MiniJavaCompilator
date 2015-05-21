@@ -14,10 +14,11 @@ namespace RegisterAllocation {
 		int k;
 		std::stack<Temp::CTemp> vertexStack;
 		RegisterAllocation::CVarInterferenceGraphBuilder::CGraph varGraph;
-		void simplify();
-		void coalice();
-		void spill();
-		void select();
+		bool simplify();
+		bool coalice();
+		bool spill();
+		bool select();
+		bool freeze();
 	};
 
 }

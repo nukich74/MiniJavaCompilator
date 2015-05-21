@@ -51,8 +51,7 @@ void CVarInterferenceGraphBuilder::CGraph::DeleteVertex( const Temp::CTemp& vert
 	assert( edges.find(vertex) != edges.end() );
 	edges.erase( vertex );
 	degree.erase( vertex );
-	for ( auto from = edges.begin(); from != edges.end(); ++from ) 
-	{
+	for ( auto from = edges.begin(); from != edges.end(); ++from )  {
 		if ( from->second[vertex] == ET_Interfere ) --degree[from->first];
 		from->second.erase( vertex );
 	}
@@ -66,22 +65,18 @@ void CVarInterferenceGraphBuilder::CGraph::MergeVertices( const Temp::CTemp& fir
 	std::unordered_map<Temp::CTemp, TEdgeType> newVertexRow;
 	//Переменная, представляющая объединение 2-х
 	Temp::CTemp mergedTemp( firstVar.Name() + std::string("&") + secondVar.Name() );
-	for ( auto iter = edges.begin(); iter != edges.end(); ++iter )
-	{
+	for ( auto iter = edges.begin(); iter != edges.end(); ++iter ) {
 		newVertexRow[iter->first] = ET_None;
 	}
 	//Получаем информацию с какими вершинами соединены 2 входные
-	for ( auto iter = edges.find( firstVar )->second.begin(); iter != edges.find( firstVar )->second.end(); ++iter )
-	{
+	for ( auto iter = edges.find( firstVar )->second.begin(); iter != edges.find( firstVar )->second.end(); ++iter ) {
 		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
 	}
-	for ( auto iter = edges.find( secondVar )->second.begin(); iter != edges.find( secondVar )->second.end(); ++iter )
-	{
+	for ( auto iter = edges.find( secondVar )->second.begin(); iter != edges.find( secondVar )->second.end(); ++iter ) {
 		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
 	}
 	//Обновляем значения в графе для старых вершин
-	for (auto iter = edges.begin(); iter != edges.end(); ++iter)
-	{
+	for (auto iter = edges.begin(); iter != edges.end(); ++iter) {
 		iter->second[mergedTemp] = newVertexRow[iter->first];
 		if (newVertexRow[iter->first] == ET_Interfere) {
 			++degree[mergedTemp];
@@ -96,16 +91,62 @@ void CVarInterferenceGraphBuilder::CGraph::MergeVertices( const Temp::CTemp& fir
 void CVarInterferenceGraphBuilder::CGraph::GetVertices( vector<Temp::CTemp>& vertices)
 {
 	vertices.clear();
-	for (auto iter = edges.begin(); iter != edges.end(); ++iter) 
-	{
+	for (auto iter = edges.begin(); iter != edges.end(); ++iter)  {
 		vertices.push_back(iter->first);
 	}
 }
 
-int CVarInterferenceGraphBuilder::CGraph::GetDegree( const Temp::CTemp vertex )
+int CVarInterferenceGraphBuilder::CGraph::GetDegree( const Temp::CTemp& vertex )
 {
 	assert( edges.find(vertex) != edges.end() );
 	return degree[vertex];
+}
+
+void CVarInterferenceGraphBuilder::CGraph::FreezeVertex( const Temp::CTemp& vertex )
+{
+	assert( edges.find(vertex) != edges.end() );
+	for ( auto iter = edges.find(vertex)->second.begin(); iter != edges.find(vertex)->second.end(); ++iter ) {
+		if ( iter->second == ET_Move ) {
+			iter->second == ET_None;
+		}
+	}
+}
+
+bool CVarInterferenceGraphBuilder::CGraph::CanCoalice( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar, int k )
+{
+	//Briggs coalice
+	std::unordered_map<Temp::CTemp, TEdgeType> newVertexRow;
+	for ( auto iter = edges.begin(); iter != edges.end(); ++iter ) {
+		newVertexRow[iter->first] = ET_None;
+	}
+	//Получаем информацию с какими вершинами соединены 2 входные
+	for ( auto iter = edges.find( firstVar )->second.begin(); iter != edges.find( firstVar )->second.end(); ++iter ) {
+		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
+	}
+	for ( auto iter = edges.find( secondVar )->second.begin(); iter != edges.find( secondVar )->second.end(); ++iter ) {
+		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
+	}
+	int	neighborsCount = 0;
+	for ( auto iter = newVertexRow.begin(); iter != newVertexRow.end(); ++iter ) {
+		if ( iter->second == ET_Interfere ) ++neighborsCount;
+	}
+	if ( neighborsCount <= k ) {
+		return true;
+	}
+
+	//George coalice
+	bool georgeWorks = true;
+	for ( auto iter = edges.find( firstVar )->second.begin(); iter != edges.find( firstVar )->second.end(); ++iter ) {
+		if ( edges[iter->first][secondVar] != ET_Interfere || degree[iter->first] >= k ) {
+			georgeWorks = false;
+			break;
+		}
+	}
+	if ( georgeWorks ) {
+		return true;
+	}
+
+	return false;
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

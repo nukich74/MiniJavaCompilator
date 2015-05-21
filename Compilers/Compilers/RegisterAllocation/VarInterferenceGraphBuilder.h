@@ -38,7 +38,11 @@ public:
 		void MergeVertices( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar );
 		//Удалить вершину
 		void DeleteVertex( const Temp::CTemp& vertex );
-		int GetDegree( const Temp::CTemp vertex );
+		//Заморозка вершины
+		void FreezeVertex( const Temp::CTemp& vertex );
+		//Проверяет, можно ли объединить 2 вершины
+		bool CanCoalice( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar, int k );
+		int GetDegree( const Temp::CTemp& vertex );
 
 	private:
 		std::unordered_map<Temp::CTemp, std::unordered_map<Temp::CTemp, TEdgeType> > edges;
