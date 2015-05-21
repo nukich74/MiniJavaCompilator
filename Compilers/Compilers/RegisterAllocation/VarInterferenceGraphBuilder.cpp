@@ -12,6 +12,7 @@ namespace RegisterAllocation {
 void CVarInterferenceGraphBuilder::CGraph::AddVertices( const vector<Temp::CTemp>& vertices )
 {
 	for( const auto& firstVertex : vertices ) {
+		degree[firstVertex] = 0;
 		for( const auto& secondVertex : vertices ) {
 			edges[firstVertex][secondVertex] = ET_None;
 		}
@@ -43,6 +44,68 @@ void CVarInterferenceGraphBuilder::CGraph::SetEdge( const Temp::CTemp& firstVar,
 	edgeIt = edgesFromFirstVarIt->second.find( firstVar );
 	assert( edgeIt != edgesFromFirstVarIt->second.end( ) );
 	edgeIt->second = edgeType;
+}
+
+void CVarInterferenceGraphBuilder::CGraph::DeleteVertex( const Temp::CTemp& vertex )
+{
+	assert( edges.find(vertex) != edges.end() );
+	edges.erase( vertex );
+	degree.erase( vertex );
+	for ( auto from = edges.begin(); from != edges.end(); ++from ) 
+	{
+		if ( from->second[vertex] == ET_Interfere ) --degree[from->first];
+		from->second.erase( vertex );
+	}
+}
+
+void CVarInterferenceGraphBuilder::CGraph::MergeVertices( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar )
+{
+	assert( firstVar.Name() != secondVar.Name() );
+	assert( edges.find( firstVar ) != edges.end() );
+	assert( edges.find( secondVar ) != edges.end() );
+	std::unordered_map<Temp::CTemp, TEdgeType> newVertexRow;
+	//Переменная, представляющая объединение 2-х
+	Temp::CTemp mergedTemp( firstVar.Name() + std::string("&") + secondVar.Name() );
+	for ( auto iter = edges.begin(); iter != edges.end(); ++iter )
+	{
+		newVertexRow[iter->first] = ET_None;
+	}
+	//Получаем информацию с какими вершинами соединены 2 входные
+	for ( auto iter = edges.find( firstVar )->second.begin(); iter != edges.find( firstVar )->second.end(); ++iter )
+	{
+		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
+	}
+	for ( auto iter = edges.find( secondVar )->second.begin(); iter != edges.find( secondVar )->second.end(); ++iter )
+	{
+		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
+	}
+	//Обновляем значения в графе для старых вершин
+	for (auto iter = edges.begin(); iter != edges.end(); ++iter)
+	{
+		iter->second[mergedTemp] = newVertexRow[iter->first];
+		if (newVertexRow[iter->first] == ET_Interfere) {
+			++degree[mergedTemp];
+			++degree[iter->first];
+		}
+	}
+	edges[mergedTemp] = newVertexRow;
+	DeleteVertex(firstVar);
+	DeleteVertex(secondVar);
+}
+
+void CVarInterferenceGraphBuilder::CGraph::GetVertices( vector<Temp::CTemp>& vertices)
+{
+	vertices.clear();
+	for (auto iter = edges.begin(); iter != edges.end(); ++iter) 
+	{
+		vertices.push_back(iter->first);
+	}
+}
+
+int CVarInterferenceGraphBuilder::CGraph::GetDegree( const Temp::CTemp vertex )
+{
+	assert( edges.find(vertex) != edges.end() );
+	return degree[vertex];
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

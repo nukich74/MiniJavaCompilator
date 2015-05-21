@@ -108,6 +108,7 @@
     <ClInclude Include="PrologueAndEpilogue\PrologueWriter.h" />
     <ClInclude Include="RegisterAllocation\DirectedGraph.hpp" />
     <ClInclude Include="RegisterAllocation\FlowControlGraphBuilder.h" />
+    <ClInclude Include="RegisterAllocation\StackBuilder.h" />
     <ClInclude Include="RegisterAllocation\VarInterferenceGraphBuilder.h" />
     <ClInclude Include="StmConverter.h" />
     <ClInclude Include="SubtreeWrapper.h" />
@@ -158,6 +159,7 @@
     <ClCompile Include="PrologueAndEpilogue\EpilogueWriter.cpp" />
     <ClCompile Include="PrologueAndEpilogue\PrologueWriter.cpp" />
     <ClCompile Include="RegisterAllocation\FlowControlGraphBuilder.cpp" />
+    <ClCompile Include="RegisterAllocation\StackBuilder.cpp" />
     <ClCompile Include="RegisterAllocation\VarInterferenceGraphBuilder.cpp" />
     <ClCompile Include="ConditionalWrapper.cpp" />
     <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />

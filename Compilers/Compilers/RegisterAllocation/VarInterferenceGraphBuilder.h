@@ -32,9 +32,17 @@ public:
 		TEdgeType GetEdge( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar ) const;
 		// Установить ребро
 		void SetEdge( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar, TEdgeType edgeType );
+		//Получить список вершин
+		void GetVertices( vector<Temp::CTemp>& vertices );
+		//Объединить 2 вершины
+		void MergeVertices( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar );
+		//Удалить вершину
+		void DeleteVertex( const Temp::CTemp& vertex );
+		int GetDegree( const Temp::CTemp vertex );
 
 	private:
 		std::unordered_map<Temp::CTemp, std::unordered_map<Temp::CTemp, TEdgeType> > edges;
+		std::unordered_map<Temp::CTemp, int> degree;
 	};
 
 	// Собственно построить граф взаимодействия переменных по графу потока управления
