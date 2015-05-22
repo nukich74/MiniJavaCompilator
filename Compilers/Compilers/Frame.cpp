@@ -77,7 +77,7 @@ const IRTree::IExp* CInFrame::ToExp( const Frame::CFrame* frame ) const
 const IRTree::IExp* CInObject::ToExp( const Frame::CFrame* frame ) const
 {
 	return new IRTree::CMem( new IRTree::CBinop(
-		IRTree::B_Plus, new IRTree::CTemp( *( frame->ThisPointer() ) ),
+		IRTree::B_Plus, frame->ThisPointerExp(),
 		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
 		new IRTree::CConst( offsetInWords ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
 }

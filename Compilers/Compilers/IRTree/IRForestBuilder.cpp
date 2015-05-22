@@ -165,7 +165,7 @@ void CIRForestBuilder::Visit( const CId& exp )
 
 void CIRForestBuilder::Visit( const CThis& exp )
 {
-	lastReturnedExp = new IRTree::CTemp( *currentFrame->ThisPointer() );
+	lastReturnedExp = currentFrame->ThisPointerExp();
 }
 
 void CIRForestBuilder::Visit( const CNewIntExpIndex& exp )
@@ -179,8 +179,8 @@ void CIRForestBuilder::Visit( const CNewIntExpIndex& exp )
 	Temp::CLabel* mallocLabel = new Temp::CLabel( "malloc" );
 	const IRTree::CName* mallocName = new IRTree::CName( mallocLabel );
 
-	// Первы аргумент всегда this
-	IRTree::CExpList* args = new IRTree::CExpList( new IRTree::CTemp( *currentFrame->ThisPointer() ),
+	// Первы аргумент всегда thisz
+	IRTree::CExpList* args = new IRTree::CExpList( currentFrame->ThisPointerExp(),
 		new IRTree::CExpList( lengthDeFacto, nullptr ) );
 	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *args );
 
@@ -209,7 +209,7 @@ void CIRForestBuilder::Visit( const CNewId& exp )
 	}
 	// Выделяем память для полей самого класса и для полей базового класса
 	// Первы аргумент всегда this
-	IRTree::CExpList* args = new IRTree::CExpList( new IRTree::CTemp( *currentFrame->ThisPointer() ), 
+	IRTree::CExpList* args = new IRTree::CExpList( currentFrame->ThisPointerExp(), 
 		new IRTree::CExpList( new IRTree::CConst( fieldsCount * currentFrame->WordSize() ), nullptr ) );
 	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *args );
 	Temp::CTemp* resultTemp = new Temp::CTemp();
@@ -459,7 +459,7 @@ void CIRForestBuilder::Visit( const CPrintStatement& printStatement )
 	Temp::CLabel* funcName = new Temp::CLabel( "System.out.println" );
 	const IRTree::CName* funcNameTree = new IRTree::CName( funcName );
 	// Первый аргумент все равно this
-	const IRTree::CExpList* args = new IRTree::CExpList( new IRTree::CTemp( *currentFrame->ThisPointer() ), new IRTree::CExpList( exprForPrint, nullptr ) );
+	const IRTree::CExpList* args = new IRTree::CExpList( currentFrame->ThisPointerExp(), new IRTree::CExpList( exprForPrint, nullptr ) );
 	const IRTree::IExp* funcCall = new IRTree::CCall( funcNameTree, *args );
 	lastReturnedStm = new IRTree::CExp( funcCall );
 }

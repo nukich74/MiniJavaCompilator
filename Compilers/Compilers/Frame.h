@@ -89,7 +89,6 @@ class CFrame {
 public:
 	CFrame( const std::string _name ) :
 		Name( _name ), ThisCounter( 0 ), LocalCounter( 0 ), 
-		thisPointer( new Temp::CTemp( _name + "_thisPointer" ) ),
 		returnValue( new Temp::CTemp( _name + "_returnValue" ) ) 
 	{
 		for( int i = 0; i < R_Count; ++i ) {
@@ -111,8 +110,8 @@ public:
 	}
 
 	// this нужен чтобы получать смещения на поля объекта класса
-	const Temp::CTemp* ThisPointer() const {
-		return thisPointer.get();
+	const IRTree::IExp* ThisPointerExp() const {
+		return new IRTree::CMem( new IRTree::CTemp( *FramePointer() ) );
 	}
 
 	const Temp::CTemp* ReturnValue() const {
@@ -152,7 +151,6 @@ private:
 	std::map<const std::string, const IAccess* > locals;
 	std::map<const std::string, const IAccess* > fields;
 
-	std::shared_ptr<const Temp::CTemp> thisPointer;
 	std::shared_ptr<const Temp::CTemp> returnValue;
 	std::vector< std::shared_ptr<const Temp::CTemp> > registers;
 };
