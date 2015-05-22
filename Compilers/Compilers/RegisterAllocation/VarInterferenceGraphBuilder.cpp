@@ -107,7 +107,7 @@ void CVarInterferenceGraphBuilder::CGraph::FreezeVertex( const Temp::CTemp& vert
 	assert( edges.find(vertex) != edges.end() );
 	for ( auto iter = edges.find(vertex)->second.begin(); iter != edges.find(vertex)->second.end(); ++iter ) {
 		if ( iter->second == ET_Move ) {
-			iter->second == ET_None;
+			iter->second = ET_None;
 		}
 	}
 }
