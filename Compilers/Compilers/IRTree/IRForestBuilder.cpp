@@ -106,7 +106,7 @@ void CIRForestBuilder::Visit( const CExpIdExpList& exp )
 	Temp::CLabel* functionLabel = new Temp::CLabel( methodName );
 	IRTree::CName* functionName = new IRTree::CName( functionLabel );
 
-	IRTree::CExpList* args = new IRTree::CExpList( new IRTree::CTemp( *currentFrame->ThisPointer() ), nullptr );
+	IRTree::CExpList* args = new IRTree::CExpList( exprToBeCalled, nullptr );
 	if( exp.ExpList() != 0 ) {
 		exp.ExpList()->Accept( *this );
 		args->tail = std::shared_ptr<const IRTree::CExpList>( lastReturnedExpList );
@@ -114,7 +114,6 @@ void CIRForestBuilder::Visit( const CExpIdExpList& exp )
 	else {
 		args->tail = nullptr;
 	}
-#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	Temp::CTemp* returned = new Temp::CTemp();
 	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *returned );
 	// Только если функция возвращает значение иначе просто будет stm
@@ -134,12 +133,9 @@ void CIRForestBuilder::Visit( const CExpIdVoidExpList& exp )
 	std::string methodName = exp.Id();
 	Temp::CLabel* functionLabel = new Temp::CLabel( methodName );
 	IRTree::CName* functionName = new IRTree::CName( functionLabel );
-	const IRTree::CExpList* args = new IRTree::CExpList( nullptr, nullptr );
-#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
+	const IRTree::CExpList* args = new IRTree::CExpList( exprToBeCalled, nullptr );
 	Temp::CTemp* returned = new Temp::CTemp();
 	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *returned );
-	// Только если функция возвращает значение иначе просто будет stm
-#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	lastReturnedExp = new IRTree::CEseq( new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, *lastReturnedExpList ) ), returnedTemp );
 	lastReturnedExpList = nullptr;
 }
