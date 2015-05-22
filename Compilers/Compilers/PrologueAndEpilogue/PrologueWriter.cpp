@@ -29,14 +29,14 @@ void CPrologueWriter::emit( CodeGeneration::IInstruction* inst, vector< unique_p
 
 void CPrologueWriter::saveRegisters( Frame::CFrame* frame, vector< unique_ptr<CodeGeneration::IInstruction> >& instList )
 {
-	emit( new COper( "push 'd0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EBX ) ) ),
+	emit( new COper( "push 's0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EBX ) ) ),
 		  instList );
-	emit( new COper( "push 'd0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_ECX ) ) ),
+	emit( new COper( "push 's0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_ECX ) ) ),
 		  instList );
-	emit( new COper( "push 'd0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EDX ) ) ),
+	emit( new COper( "push 's0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EDX ) ) ),
 		  instList );
-	emit( new COper( "push 'd0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EDI ) ) ),
+	emit( new COper( "push 's0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EDI ) ) ),
 		  instList );
-	emit( new COper( "push 'd0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_ESI ) ) ),
+	emit( new COper( "push 's0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_ESI ) ) ),
 		  instList );
 }
