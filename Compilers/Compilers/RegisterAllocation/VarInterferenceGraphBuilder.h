@@ -44,6 +44,7 @@ public:
 		bool CanCoalice( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar, int k );
 		//Обновляет значения степеней вершин
 		void UpdateDegree();
+		void ConnectRegisters();
 		int GetDegree( const Temp::CTemp& vertex );
 
 	private:

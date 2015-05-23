@@ -1,11 +1,11 @@
-#include "StackBuilder.h"
+п»ї#include "StackBuilder.h"
 #include <string>
 
 namespace RegisterAllocation {
 	
 	void CStackBuilder::buildStack() 
 	{
-			//построение стэка для вершин
+			//РїРѕСЃС‚СЂРѕРµРЅРёРµ СЃС‚СЌРєР° РґР»СЏ РІРµСЂС€РёРЅ
 			do {
 				bool isSimplified = simplify();
 				while (isSimplified) isSimplified = simplify();
@@ -16,7 +16,16 @@ namespace RegisterAllocation {
 				bool isSpilled = spill();
 				if (!isSpilled) break;
 			} while ( true );
-			//раскраска
+			//СЂР°СЃРєСЂР°СЃРєР°
+			vector<Temp::CTemp> vertices;
+			sourceGraph.GetVertices( vertices );
+			int currColor = 1;
+			for ( auto vert : vertices ) {
+				if ( vert.Name()[0] == 'E' ) {
+					colors[vert] = currColor;
+					++currColor;
+				}
+			}
 			while ( !vertexStack.empty() ) {
 				Temp::CTemp currVertex = vertexStack.top();
 				vertexStack.pop();
@@ -71,6 +80,7 @@ namespace RegisterAllocation {
 		vector<Temp::CTemp> vertices;
 		varGraph.GetVertices( vertices );
 		for ( auto from : vertices ) {
+			if ( from.Name()[0] == 'E' ) continue;
 			if ( varGraph.GetDegree(from) <= k ) {
 				bool moveMarked = false;
 				for (auto to : vertices) {
@@ -130,10 +140,12 @@ namespace RegisterAllocation {
 	{
 		vector<Temp::CTemp> vertices;
 		varGraph.GetVertices(vertices);
-		if (!vertices.empty()) {
-			varGraph.DeleteVertex(vertices[0]);
-			return true;
-			vertexStack.push(vertices[0]);
+		for ( auto vert : vertices ) {
+			if ( vert.Name()[0] != 'E' ) {
+				varGraph.DeleteVertex( vert );
+				vertexStack.push( vert );
+				return true;
+			}
 		}
 		return false;
 	}

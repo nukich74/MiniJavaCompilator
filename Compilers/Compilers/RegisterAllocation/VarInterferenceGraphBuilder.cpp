@@ -116,6 +116,7 @@ void CVarInterferenceGraphBuilder::CGraph::FreezeVertex( const Temp::CTemp& vert
 
 bool CVarInterferenceGraphBuilder::CGraph::CanCoalice( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar, int k )
 {
+	if ( firstVar.Name()[0] == 'E' || secondVar.Name()[0] == 'E' ) return false;
 	//Briggs coalice
 	std::unordered_map<Temp::CTemp, TEdgeType> newVertexRow;
 	for ( auto iter = edges.begin(); iter != edges.end(); ++iter ) {
@@ -161,10 +162,36 @@ void CVarInterferenceGraphBuilder::CGraph::UpdateDegree()
 {
 	for ( auto from = edges.begin(); from != edges.end(); ++from )
 	{
-		degree[from->first] = 0;
 		for ( auto to = from->second.begin(); to != from->second.end(); ++to )
 		{
 			if (to->second == ET_Interfere) ++degree[from->first];
+		}
+	}
+}
+
+void CVarInterferenceGraphBuilder::CGraph::ConnectRegisters()
+{
+	vector<Temp::CTemp> registers; 
+	registers.push_back(Temp::CTemp("EAX")); registers.push_back(Temp::CTemp("EBX"));
+	registers.push_back(Temp::CTemp("EDX")); registers.push_back(Temp::CTemp("ECX"));
+	registers.push_back(Temp::CTemp("EBP")); registers.push_back(Temp::CTemp("ESI"));
+	registers.push_back(Temp::CTemp("EDI")); registers.push_back(Temp::CTemp("ESP"));
+	for ( auto from : registers )
+	{
+		if ( edges.find( from ) == edges.end() ) {
+			for ( auto to = edges.begin(); to != edges.end(); ++to )
+			{
+				edges[from][to->first] = ET_None;
+				edges[to->first][from] = ET_None;
+			}
+		}
+	}
+	for ( auto from : registers )
+	{
+		for ( auto to : registers )
+		{
+			if ( from.Name() != to.Name() ) edges[to][from] = ET_Interfere;
+			else edges[from][to] = ET_None;
 		}
 	}
 }
@@ -214,6 +241,7 @@ void CVarInterferenceGraphBuilder::BuildVarInterferenceGraph( const vector<CFlow
 			}
 		}
 	}
+	varInterferenceGraph.ConnectRegisters();
 	varInterferenceGraph.UpdateDegree();
 }
 
