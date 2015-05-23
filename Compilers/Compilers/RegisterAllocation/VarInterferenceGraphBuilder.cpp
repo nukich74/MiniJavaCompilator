@@ -76,6 +76,8 @@ void CVarInterferenceGraphBuilder::CGraph::MergeVertices( const Temp::CTemp& fir
 		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
 	}
 	//Обновляем значения в графе для старых вершин
+	newVertexRow[mergedTemp] = ET_None;
+	degree[mergedTemp] = 0;
 	for (auto iter = edges.begin(); iter != edges.end(); ++iter) {
 		iter->second[mergedTemp] = newVertexRow[iter->first];
 		if (newVertexRow[iter->first] == ET_Interfere) {
@@ -149,6 +151,18 @@ bool CVarInterferenceGraphBuilder::CGraph::CanCoalice( const Temp::CTemp& firstV
 	return false;
 }
 
+void CVarInterferenceGraphBuilder::CGraph::UpdateDegree()
+{
+	for ( auto from = edges.begin(); from != edges.end(); ++from )
+	{
+		degree[from->first] = 0;
+		for ( auto to = from->second.begin(); to != from->second.end(); ++to )
+		{
+			if (to->second == ET_Interfere) ++degree[from->first];
+		}
+	}
+}
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // CVarInterferenceGraphBuilder
 
@@ -194,6 +208,7 @@ void CVarInterferenceGraphBuilder::BuildVarInterferenceGraph( const vector<CFlow
 			}
 		}
 	}
+	varInterferenceGraph.UpdateDegree();
 }
 
 void CVarInterferenceGraphBuilder::addVerticesToGraph( const vector<CFlowControlVertex*>& flowControlVertices )

@@ -15,6 +15,7 @@
 #include "IRExp.h"
 #include <RegisterAllocation\FlowControlGraphBuilder.h>
 #include <RegisterAllocation\VarInterferenceGraphBuilder.h>
+#include <RegisterAllocation\StackBuilder.h>
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -123,7 +124,8 @@ int main()
 			std::vector<RegisterAllocation::CFlowControlVertex*> flowControlVertices;
 			flowControlGraphBuilder.GetFlowControlGraph().CopyVerticesTo( flowControlVertices );
 			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlVertices );
-			varInterferenceGraphBuilder.GetVarInterferenceGraph();
+			RegisterAllocation::CStackBuilder stackBuilder( varInterferenceGraphBuilder.GetVarInterferenceGraph() );
+			stackBuilder.buildStack();
 		}
 	}
 

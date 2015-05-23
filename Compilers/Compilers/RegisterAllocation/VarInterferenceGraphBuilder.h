@@ -42,6 +42,8 @@ public:
 		void FreezeVertex( const Temp::CTemp& vertex );
 		//Проверяет, можно ли объединить 2 вершины
 		bool CanCoalice( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar, int k );
+		//Обновляет значения степеней вершин
+		void UpdateDegree();
 		int GetDegree( const Temp::CTemp& vertex );
 
 	private:
