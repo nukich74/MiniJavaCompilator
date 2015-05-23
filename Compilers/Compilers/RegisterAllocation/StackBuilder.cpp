@@ -1,23 +1,70 @@
 #include "StackBuilder.h"
+#include <string>
 
 namespace RegisterAllocation {
 	
 	void CStackBuilder::buildStack() 
 	{
-		do {
-			bool isSimplified = simplify();
-			bool isCoaliced = coalice();
-			if ( !isSimplified && !isCoaliced ) {
+			//построение стэка для вершин
+			do {
+				bool isSimplified = simplify();
+				while (isSimplified) isSimplified = simplify();
+				bool isCoaliced = coalice();
+				if (isCoaliced) continue;
 				bool isFrosen = freeze();
-				if ( !isFrosen ) {
-					bool isSpilled = spill();
+				if (isFrosen) continue;
+				bool isSpilled = spill();
+				if (!isSpilled) break;
+			} while ( true );
+			//раскраска
+			while ( !vertexStack.empty() ) {
+				Temp::CTemp currVertex = vertexStack.top();
+				vertexStack.pop();
+				size_t isUnion = currVertex.Name().find("&");
+				vector<Temp::CTemp> vertices;
+				sourceGraph.GetVertices( vertices );
+				std::unordered_set<int> neighborColors;
+				if (isUnion == std::string::npos) {
+					for (auto vert : vertices) {
+						if ( sourceGraph.GetEdge( currVertex, vert ) == RegisterAllocation::CVarInterferenceGraphBuilder::ET_Interfere ) {
+							neighborColors.insert( colors[vert] );
+						}
+					}
+					int assignColor = 0;
+					for (int i = 1; i <= k; ++i) {
+						if ( neighborColors.find(i) == neighborColors.end() ) {
+							assignColor = i;
+							break;
+						}
+					}
+					if ( assignColor != 0 ) {
+						colors[currVertex] = assignColor;
+					} else {
+						spilledVars.insert( currVertex );
+					}
+				} else {
+					Temp::CTemp  firstVar = Temp::CTemp( currVertex.Name().substr( 0, isUnion ) );
+					Temp::CTemp  secondVar = Temp::CTemp( currVertex.Name().substr( isUnion + 1, currVertex.Name().size() - isUnion - 1  ) );
+					for (auto vert : vertices) {
+						if ( sourceGraph.GetEdge( firstVar, vert ) == RegisterAllocation::CVarInterferenceGraphBuilder::ET_Interfere ||
+							sourceGraph.GetEdge( secondVar, vert ) == RegisterAllocation::CVarInterferenceGraphBuilder::ET_Interfere) {
+							neighborColors.insert( colors[vert] );
+						}
+					}
+					int assignColor = 0;
+					for (int i = 1; i <= k; ++i) {
+						if ( neighborColors.find(i) == neighborColors.end() ) {
+							assignColor = i;
+							break;
+						}
+					}
+					if ( assignColor != 0 ) {
+						colors[firstVar] = assignColor;
+						colors[secondVar] = assignColor;
+					}
 				}
 			}
-			vector<Temp::CTemp> vect;
-			varGraph.GetVertices( vect );
-			if ( vect.empty() ) break;
-		} while ( true );
-	}
+		}
 
 	bool CStackBuilder::simplify()
 	{

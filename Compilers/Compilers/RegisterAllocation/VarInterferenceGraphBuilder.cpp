@@ -70,10 +70,10 @@ void CVarInterferenceGraphBuilder::CGraph::MergeVertices( const Temp::CTemp& fir
 	}
 	//Получаем информацию с какими вершинами соединены 2 входные
 	for ( auto iter = edges.find( firstVar )->second.begin(); iter != edges.find( firstVar )->second.end(); ++iter ) {
-		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
+		if (iter->first.Name() != secondVar.Name() ) newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
 	}
 	for ( auto iter = edges.find( secondVar )->second.begin(); iter != edges.find( secondVar )->second.end(); ++iter ) {
-		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
+		if (iter->first.Name() != firstVar.Name() ) newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
 	}
 	//Обновляем значения в графе для старых вершин
 	newVertexRow[mergedTemp] = ET_None;
@@ -129,10 +129,16 @@ bool CVarInterferenceGraphBuilder::CGraph::CanCoalice( const Temp::CTemp& firstV
 		newVertexRow[iter->first] = std::min( newVertexRow[iter->first], iter->second );
 	}
 	int	neighborsCount = 0;
+	bool moveRelated = false;
 	for ( auto iter = newVertexRow.begin(); iter != newVertexRow.end(); ++iter ) {
 		if ( iter->second == ET_Interfere ) ++neighborsCount;
+		if ( iter->second == ET_Move && iter->first.Name() != firstVar.Name() && 
+				secondVar.Name() != iter->first.Name() ) {
+			moveRelated = true;
+			break;
+		}
 	}
-	if ( neighborsCount <= k ) {
+	if ( neighborsCount <= k && !moveRelated ) {
 		return true;
 	}
 
@@ -144,7 +150,7 @@ bool CVarInterferenceGraphBuilder::CGraph::CanCoalice( const Temp::CTemp& firstV
 			break;
 		}
 	}
-	if ( georgeWorks ) {
+	if ( georgeWorks && !moveRelated ) {
 		return true;
 	}
 
