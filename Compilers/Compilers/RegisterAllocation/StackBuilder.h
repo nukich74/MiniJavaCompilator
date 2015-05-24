@@ -9,7 +9,7 @@ namespace RegisterAllocation {
 	public:
 		CStackBuilder(CVarInterferenceGraphBuilder::CGraph inputGraph) : sourceGraph(inputGraph), varGraph(inputGraph), k(8) {}
 		void buildStack();
-		std::unordered_map<Temp::CTemp, int> getColorMap() { return colors; }
+		std::unordered_map<Temp::CTemp, Temp::CTemp> getRegisterMap() { return registers; }
 	private:
 		int k;
 		std::stack<Temp::CTemp> vertexStack;
@@ -19,6 +19,7 @@ namespace RegisterAllocation {
 		RegisterAllocation::CVarInterferenceGraphBuilder::CGraph sourceGraph;
 		std::unordered_set<Temp::CTemp> spilledVars;
 		std::unordered_map<Temp::CTemp, int> colors;
+		std::unordered_map<Temp::CTemp, Temp::CTemp> registers;
 		bool simplify();
 		bool coalice();
 		bool spill();

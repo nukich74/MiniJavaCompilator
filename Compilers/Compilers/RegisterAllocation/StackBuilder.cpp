@@ -73,6 +73,16 @@ namespace RegisterAllocation {
 					}
 				}
 			}
+			//соответствие цветов и регистров
+			std::unordered_map<int, Temp::CTemp> colors2Registers;
+			for ( auto iter = colors.begin(); iter != colors.end(); ++iter ) {
+				if ( iter->first.Name()[0] == 'E' ) {
+					colors2Registers[iter->second] = iter->first;
+				}
+			}
+			for ( auto iter = colors.begin(); iter != colors.end(); ++iter ) {
+				registers[iter->first] = colors2Registers[iter->second];
+			}
 		}
 
 	bool CStackBuilder::simplify()
