@@ -92,8 +92,6 @@ int main()
 			// Линеаризум деревья в std::vector<std::shared_ptr<const IStm> > 
 			IRTree::CLinearizer linearizer( frame );
 			linearizer.Linearize();
-			linearizer.SplitByLabelAndJump();
-			linearizer.Reorder();
 			// С этим работаем дальше
 
 			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_linearized_" )
