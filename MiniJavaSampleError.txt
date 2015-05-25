@@ -1,4 +1,4 @@
-class Factorial {
+class FactorialError {
 	public static void main(String[] a) {
 		System.out.println( (new Summator()).Sum());
 		Lkdjalkdjas;asd;mad;laskd;lsadkasl;
