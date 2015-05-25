@@ -5,6 +5,7 @@ namespace RegisterAllocation {
 	
 	void CStackBuilder::buildStack() 
 	{
+			colored = true;
 			//построение стэка для вершин
 			do {
 				bool isSimplified = simplify();
@@ -59,6 +60,7 @@ namespace RegisterAllocation {
 						}
 					}
 				}
+				if (assignColor == 0) colored = false;
 				for( auto coal : coaliced ) {
 					colors[coal] = assignColor;
 				}
