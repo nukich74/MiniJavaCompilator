@@ -69,17 +69,15 @@ const IRTree::IExp* CInFrame::ToExp( const Frame::CFrame* frame ) const
 	// Смещаемся в область меньших адресов
 	return new IRTree::CMem( new IRTree::CBinop(
 		IRTree::B_Minus, new IRTree::CTemp( *( frame->FramePointer() ) ),
-		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
-		new IRTree::CConst( number + 1 ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
+		new IRTree::CBinop( IRTree::B_Mul, new IRTree::CConst( number + 1 ), new IRTree::CConst( frame->WordSize() ) ) ) );
 }
 
 
 const IRTree::IExp* CInObject::ToExp( const Frame::CFrame* frame ) const
 {
 	return new IRTree::CMem( new IRTree::CBinop(
-		IRTree::B_Plus, frame->ThisPointerExp(),
-		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
-		new IRTree::CConst( offsetInWords ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
+		IRTree::B_Plus, frame->ThisPointerExp(), new IRTree::CBinop( IRTree::B_Mul,
+		new IRTree::CConst( offsetInWords ), new IRTree::CConst( frame->WordSize() ) ) ) );
 }
 
 std::string to_string( TRegisters registerType )
