@@ -109,9 +109,8 @@ std::string to_string( TRegisters registerType )
 const IRTree::IExp* CFormalParameterInStack::ToExp( const Frame::CFrame* frame ) const
 {
 	return new IRTree::CMem( new IRTree::CBinop(
-		IRTree::B_Plus, new IRTree::CTemp( *( frame->FramePointer() ) ),
-		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
-		new IRTree::CConst( number ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
+		IRTree::B_Plus, new IRTree::CTemp( *( frame->FramePointer() ) ), new IRTree::CBinop( IRTree::B_Mul,
+		new IRTree::CConst( number ), new IRTree::CConst( frame->WordSize() ) ) ) );
 }
 
 } // namespace Frame
