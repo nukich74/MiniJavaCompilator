@@ -7,7 +7,7 @@ namespace RegisterAllocation {
 
 	class CStackBuilder {
 	public:
-		CStackBuilder(CVarInterferenceGraphBuilder::CGraph inputGraph) : sourceGraph(inputGraph), varGraph(inputGraph), k(8) {}
+		CStackBuilder(CVarInterferenceGraphBuilder::CGraph inputGraph) : sourceGraph(inputGraph), varGraph(inputGraph), k(6) {}
 		void buildStack();
 		std::unordered_map<Temp::CTemp, Temp::CTemp> getRegisterMap() { return registers; }
 	private:

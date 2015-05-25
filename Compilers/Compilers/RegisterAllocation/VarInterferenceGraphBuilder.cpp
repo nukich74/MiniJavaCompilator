@@ -116,7 +116,7 @@ void CVarInterferenceGraphBuilder::CGraph::FreezeVertex( const Temp::CTemp& vert
 
 bool CVarInterferenceGraphBuilder::CGraph::CanCoalice( const Temp::CTemp& firstVar, const Temp::CTemp& secondVar, int k )
 {
-	if ( firstVar.Name()[0] == 'E' || secondVar.Name()[0] == 'E' ) return false;
+	if ( firstVar.Name() == "ESP" || firstVar.Name() == "EBP" || secondVar.Name() == "ESP" || secondVar.Name() == "EBP" ) return false;
 	//Briggs coalice
 	std::unordered_map<Temp::CTemp, TEdgeType> newVertexRow;
 	for ( auto iter = edges.begin(); iter != edges.end(); ++iter ) {
@@ -174,7 +174,7 @@ void CVarInterferenceGraphBuilder::CGraph::ConnectRegisters()
 	vector<Temp::CTemp> registers; 
 	registers.push_back(Temp::CTemp("EAX")); registers.push_back(Temp::CTemp("EBX"));
 	registers.push_back(Temp::CTemp("EDX")); registers.push_back(Temp::CTemp("ECX"));
-	registers.push_back(Temp::CTemp("EBP")); registers.push_back(Temp::CTemp("ESI"));
+	registers.push_back(Temp::CTemp("ESI")); registers.push_back(Temp::CTemp("EBP"));
 	registers.push_back(Temp::CTemp("EDI")); registers.push_back(Temp::CTemp("ESP"));
 	for ( auto from : registers )
 	{
