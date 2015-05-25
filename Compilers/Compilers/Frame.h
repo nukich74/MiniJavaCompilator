@@ -88,8 +88,7 @@ private:
 class CFrame {
 public:
 	CFrame( const std::string _name ) :
-		Name( _name ), ThisCounter( 0 ), LocalCounter( 0 ), 
-		returnValue( new Temp::CTemp( _name + "_returnValue" ) ) 
+		Name( _name ), ThisCounter( 0 ), LocalCounter( 0 )
 	{
 		for( int i = 0; i < R_Count; ++i ) {
 			registers.emplace_back( std::shared_ptr<const Temp::CTemp>( new const Temp::CTemp( to_string( static_cast< TRegisters >( i ) ) ) ) );
@@ -115,7 +114,7 @@ public:
 	}
 
 	const Temp::CTemp* ReturnValue() const {
-		return returnValue.get();
+		return GetRegister( R_EAX );
 	}
 
 	// Машинно зависимая информация
@@ -151,7 +150,6 @@ private:
 	std::map<const std::string, const IAccess* > locals;
 	std::map<const std::string, const IAccess* > fields;
 
-	std::shared_ptr<const Temp::CTemp> returnValue;
 	std::vector< std::shared_ptr<const Temp::CTemp> > registers;
 };
 
