@@ -8,7 +8,7 @@ using namespace CodeGeneration;
 vector< unique_ptr<CodeGeneration::IInstruction> > CEpilogueWriter::AddEpilogue( Frame::CFrame* frame )
 {
 	vector< unique_ptr<CodeGeneration::IInstruction> > epilogue;
-	emit( new COper( "mov 'd0 ['s0+6*4]", std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_ESP ) ), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EBP ) ) ),
+	emit( new COper( "mov 'd0 ['s0-6*4]", std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_ESP ) ), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EBP ) ) ),
 		  epilogue );
 	restoreRegisters( frame, epilogue );
 	emit( new COper( "pop 'd0", std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EBP ) ), std::list<Temp::CTemp>() ),
