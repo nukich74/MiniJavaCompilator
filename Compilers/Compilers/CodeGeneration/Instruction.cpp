@@ -17,6 +17,9 @@ IInstruction::IInstruction( const std::string& _Assem, const std::list<Temp::CTe
 
 std::string IInstruction::Format( const std::unordered_map<Temp::CTemp, std::string>& varsMapping ) const
 {
+	if( !labelList.empty() ) {
+		return Assem;
+	}
 	std::string result( Assem );
 	// Не нужно до распределения регистров.
 	for( size_t i = 0; i < result.size(); ++i ) {
