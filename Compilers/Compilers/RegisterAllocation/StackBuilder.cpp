@@ -84,10 +84,12 @@ namespace RegisterAllocation {
 				}
 			}
 			for ( auto iter = colors.begin(); iter != colors.end(); ++iter ) {
-				registers[iter->first] = colors2Registers[iter->second].Name();
+				std::string newName = colors2Registers[iter->second].Name();
+				std::transform( newName.begin(), newName.end(), newName.begin(), ::tolower);
+				registers[iter->first] = newName;
 			}
-			registers[Temp::CTemp("ESP")] = "ESP";
-			registers[Temp::CTemp("EBP")] = "EBP";
+			registers[Temp::CTemp("ESP")] = "esp";
+			registers[Temp::CTemp("EBP")] = "ebp";
 		}
 
 	bool CStackBuilder::simplify()
