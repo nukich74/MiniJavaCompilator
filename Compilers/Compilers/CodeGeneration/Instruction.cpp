@@ -15,7 +15,7 @@ IInstruction::IInstruction( const std::string& _Assem, const std::list<Temp::CTe
 	labelList( _labelList )
 { }
 
-std::string IInstruction::Format( const std::map<Temp::CTemp, std::string>& varsMapping ) const
+std::string IInstruction::Format( const std::unordered_map<Temp::CTemp, std::string>& varsMapping ) const
 {
 	std::string result( Assem );
 	// Не нужно до распределения регистров.
@@ -39,7 +39,7 @@ std::string IInstruction::Format( const std::map<Temp::CTemp, std::string>& vars
 			int posInArray = std::stoi( number );
 			auto iter = from->begin();
 			for( int j = 0; j < posInArray; ++j, ++iter ) { }
-			result.replace( result.begin() + i, result.begin() + end, varsMapping[ iter->Name ] );
+			result.replace( result.begin() + i, result.begin() + end, varsMapping.find( *iter )->second );
 		}
 	}
 	return result;

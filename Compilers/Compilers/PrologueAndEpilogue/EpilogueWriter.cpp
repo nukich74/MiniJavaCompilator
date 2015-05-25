@@ -5,7 +5,7 @@
 using namespace std;
 using namespace CodeGeneration;
 
-vector< unique_ptr<CodeGeneration::IInstruction> > CEpilogueWriter::AddEpilogue( Frame::CFrame* frame )
+vector< unique_ptr<CodeGeneration::IInstruction> > CEpilogueWriter::AddEpilogue( const Frame::CFrame* frame )
 {
 	vector< unique_ptr<CodeGeneration::IInstruction> > epilogue;
 	emit( new COper( "mov 'd0 ['s0-6*4]", std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_ESP ) ), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EBP ) ) ),
@@ -22,7 +22,7 @@ void CEpilogueWriter::emit( CodeGeneration::IInstruction* inst, vector< unique_p
 	instList.emplace_back( unique_ptr<CodeGeneration::IInstruction>( inst ) );
 }
 
-void CEpilogueWriter::restoreRegisters( Frame::CFrame* frame, vector< unique_ptr<CodeGeneration::IInstruction> >& instList )
+void CEpilogueWriter::restoreRegisters( const Frame::CFrame* frame, vector< unique_ptr<CodeGeneration::IInstruction> >& instList )
 {
 	emit( new COper( "pop 'd0", std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_ESI ) ), std::list<Temp::CTemp>() ),
 		  instList );
