@@ -1,4 +1,4 @@
-class Factorial {
+class Factorial3 {
 	public static void main(String[] a) {
 		System.out.println(2+2*2-1/3);
 	}

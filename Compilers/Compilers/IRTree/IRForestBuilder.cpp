@@ -63,7 +63,7 @@ void CIRForestBuilder::Visit( const CUnMinExp& exp )
 	exp.Exp()->Accept( *this );
 	const IRTree::IExp* second = lastReturnedExp;
 	// Аналогично binop
-	lastReturnedExp = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Minus, first, second ) );
+	lastReturnedExp = new IRTree::CBinop( IRTree::B_Minus, first, second );
 }
 
 void CIRForestBuilder::Visit( const CExpWithIndex& exp )
@@ -72,11 +72,12 @@ void CIRForestBuilder::Visit( const CExpWithIndex& exp )
 	const IRTree::IExp* varExp = lastReturnedExp;
 	lastReturnedExp = nullptr;
 	exp.Index()->Accept( *this );
-	const IRTree::IExp* indexExp = new IRTree::CBinop( IRTree::B_Plus, new IRTree::CMem( lastReturnedExp ), new IRTree::CConst( 1 ) );
+	// в 0м элементе лежит размер массива
+	const IRTree::IExp* indexExp = new IRTree::CBinop( IRTree::B_Plus, lastReturnedExp, new IRTree::CConst( 1 ) );
 	lastReturnedExp = nullptr;
 	IRTree::IExp* offset = new IRTree::CBinop( IRTree::B_Mul, new IRTree::CConst( Frame::CFrame::WordSize() ), indexExp );
-	// Возвращаем адрес переменной
-	lastReturnedExp =  new IRTree::CMem( new IRTree::CBinop( IRTree::B_Plus, varExp, offset ) );
+	// Возвращаем значение переменной
+	lastReturnedExp = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Plus, new IRTree::CMem( varExp ), offset ) );
 }
 
 void CIRForestBuilder::Visit( const CExpDotLength& exp )
@@ -84,15 +85,8 @@ void CIRForestBuilder::Visit( const CExpDotLength& exp )
 	// Во время компиляции уже известен размер каждого массива, он должен проверяться на корректность при валидации
 	exp.Exp()->Accept( *this );
 	const IRTree::IExp* varExp = lastReturnedExp;
-	lastReturnedExp = nullptr;
-	const IRTree::IExp* lengthCommandRW = new IRTree::CBinop( IRTree::B_Plus, varExp, new IRTree::CConst( 0 ) );
-	// Создаем временную переменную
-	const Temp::CTemp* lengthTemp = new Temp::CTemp();
-	const IRTree::CTemp* tempVar = new IRTree::CTemp( *lengthTemp );
-	// Копируем значение туда
-	const IRTree::CMove* movingCommand = new IRTree::CMove( tempVar, lengthCommandRW );
-	// Возвращаем адрес переменной
-	lastReturnedExp = new IRTree::CEseq( movingCommand, tempVar );
+	// Возвращаем длину
+	lastReturnedExp = new IRTree::CMem( varExp );
 }
 
 void CIRForestBuilder::Visit( const CExpIdExpList& exp )
@@ -114,12 +108,10 @@ void CIRForestBuilder::Visit( const CExpIdExpList& exp )
 	else {
 		args->tail = nullptr;
 	}
-	Temp::CTemp* returned = new Temp::CTemp();
-	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *returned );
+	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *currentFrame->ReturnValue() );
 	// Только если функция возвращает значение иначе просто будет stm
-	lastReturnedExp = new IRTree::CEseq(new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, *lastReturnedExpList ) ), returnedTemp );
+	lastReturnedExp = new IRTree::CEseq( new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, *lastReturnedExpList ) ), returnedTemp );
 	lastReturnedExpList = nullptr;
-
 }
 
 void CIRForestBuilder::Visit( const CExpIdVoidExpList& exp )
@@ -134,8 +126,7 @@ void CIRForestBuilder::Visit( const CExpIdVoidExpList& exp )
 	Temp::CLabel* functionLabel = new Temp::CLabel( methodName );
 	IRTree::CName* functionName = new IRTree::CName( functionLabel );
 	const IRTree::CExpList* args = new IRTree::CExpList( exprToBeCalled, nullptr );
-	Temp::CTemp* returned = new Temp::CTemp();
-	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *returned );
+	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *currentFrame->ReturnValue() );
 	lastReturnedExp = new IRTree::CEseq( new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, *lastReturnedExpList ) ), returnedTemp );
 	lastReturnedExpList = nullptr;
 }
@@ -170,27 +161,28 @@ void CIRForestBuilder::Visit( const CThis& exp )
 
 void CIRForestBuilder::Visit( const CNewIntExpIndex& exp )
 {
-#pragma message( "TODO Здесь все сложнее чем сейчас сделано" )
 	exp.Exp()->Accept( *this );
 	const IRTree::IExp* lengthOfArrray = lastReturnedExp;
 	lastReturnedExp = nullptr;
-	const IRTree::IExp* lengthDeFacto = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Plus, lengthOfArrray, new IRTree::CConst( 1 ) ) );
+	const IRTree::IExp* lengthDeFacto = new IRTree::CBinop( IRTree::B_Plus, lengthOfArrray, new IRTree::CConst( 1 ) );
+	const IRTree::IExp* realSize = new IRTree::CBinop( IRTree::B_Mul, lengthDeFacto, new IRTree::CConst( currentFrame->WordSize() ) );
 	// Выделяем память
 	Temp::CLabel* mallocLabel = new Temp::CLabel( "malloc" );
 	const IRTree::CName* mallocName = new IRTree::CName( mallocLabel );
 
-	// Первы аргумент всегда thisz
-	IRTree::CExpList* args = new IRTree::CExpList( currentFrame->ThisPointerExp(),
-		new IRTree::CExpList( lengthDeFacto, nullptr ) );
-	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *args );
-
-	Temp::CTemp* resultTemp = new Temp::CTemp();
-	const IRTree::CTemp* tempTemp = new IRTree::CTemp( *resultTemp );
+	IRTree::CExpList* argsMalloc = new IRTree::CExpList( realSize, nullptr );
+	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *argsMalloc );
+	// Послу вызова mallocCall адрес памяти уже в EAX
+	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *currentFrame->ReturnValue() );
 	// Проставляем память нулями
-	const IRTree::CCall* memSetCall = nullptr;
-	const IRTree::CSeq* mallocMoveMemset = new IRTree::CSeq( new IRTree::CMove( tempTemp, mallocCall ), 
-		new IRTree::CMove( tempTemp, lengthOfArrray ) , new IRTree::CExp( memSetCall ) );
-	lastReturnedExp = new IRTree::CEseq( mallocMoveMemset, tempTemp );
+	Temp::CLabel* memsetLabel = new Temp::CLabel( "memset" );
+	const IRTree::CName* memsetName = new IRTree::CName( memsetLabel );
+	IRTree::CExpList* argMemset = new IRTree::CExpList( returnedTemp, new IRTree::CExpList( realSize, nullptr ) );
+	const IRTree::CCall* memsetCall = new IRTree::CCall( memsetName, *argMemset );
+
+	const IRTree::IStm* setLength = new IRTree::CMove( returnedTemp, lengthOfArrray );
+
+	lastReturnedExp = new IRTree::CEseq( new IRTree::CSeq( new IRTree::CExp( mallocCall ), new IRTree::CExp( memsetCall ), setLength ), returnedTemp );
 }
 void CIRForestBuilder::Visit( const CNewId& exp )
 {
@@ -209,15 +201,20 @@ void CIRForestBuilder::Visit( const CNewId& exp )
 	}
 	// Выделяем память для полей самого класса и для полей базового класса
 	// Первы аргумент всегда this
-	IRTree::CExpList* args = new IRTree::CExpList( currentFrame->ThisPointerExp(), 
-		new IRTree::CExpList( new IRTree::CConst( fieldsCount * currentFrame->WordSize() ), nullptr ) );
-	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *args );
-	Temp::CTemp* resultTemp = new Temp::CTemp();
-	const IRTree::CTemp* tempTemp = new IRTree::CTemp( *resultTemp );
+	const IRTree::IExp* realSize = new IRTree::CConst( fieldsCount * currentFrame->WordSize() );
+	IRTree::CExpList* mallocArgs = new IRTree::CExpList( realSize, nullptr );
+	const IRTree::CCall* mallocCall = new IRTree::CCall( mallocName, *mallocArgs );
+
+	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *currentFrame->ReturnValue() );
 	// Проставляем память нулями
-	const IRTree::CCall* memSetCall = nullptr;
-	const IRTree::CSeq* mallocMoveMemset = new IRTree::CSeq( new IRTree::CMove( tempTemp, mallocCall ), new IRTree::CExp( memSetCall ) );
-	lastReturnedExp = new IRTree::CEseq( mallocMoveMemset, tempTemp );
+
+	// Проставляем память нулями
+	Temp::CLabel* memsetLabel = new Temp::CLabel( "memset" );
+	const IRTree::CName* memsetName = new IRTree::CName( memsetLabel );
+	IRTree::CExpList* argMemset = new IRTree::CExpList( returnedTemp, new IRTree::CExpList( realSize, nullptr ) );
+	const IRTree::CCall* memsetCall = new IRTree::CCall( memsetName, *argMemset );
+
+	lastReturnedExp = new IRTree::CEseq( new IRTree::CSeq( new IRTree::CExp( mallocCall ), new IRTree::CExp( memsetCall ) ), returnedTemp );
 
 }
 
@@ -226,7 +223,7 @@ void CIRForestBuilder::Visit( const CNotExp& exp )
 	// Получаем lastReturnedExp и записываем туда конструкцию XOR c Const(0)
 	exp.Exp()->Accept( *this );
 	lastReturnedExp = new IRTree::CBinop( IRTree::B_Xor, 
-		new IRTree::CConst( 0 ), new IRTree::CMem( lastReturnedExp ) );
+		new IRTree::CConst( 0 ), lastReturnedExp );
 }
 
 void CIRForestBuilder::Visit( const CExpInBrackets& exp )
@@ -340,8 +337,7 @@ void CIRForestBuilder::Visit( const CMethodDecl& methodDecl )
 			currentFrame->ThisCounter++;
 		}
 	}
-	// Добавил костыль, ибо не компилится - в ClassDecsriptor методы и переменные хранятся в массивах а не map.
-	// Если не конструкция вам не по душе можете выделить в отдельный метод, либо развлечься иным способом.
+
 	const std::vector<SymbolsTable::CVariableDescriptor>* params = nullptr;
 	const std::vector<SymbolsTable::CVariableDescriptor>* locals = nullptr;
 	for( auto& method : symbolsTable.Classes( ).at( className ).Methods ) {
@@ -416,7 +412,7 @@ void CIRForestBuilder::Visit( const CStatementList& statementList )
 	} else {
 		auto iter = statementList.StatmentList().begin();
 		iter++;
-		// начинаем после прервого!
+		// начинаем после первого!
 		for( ; iter != statementList.StatmentList().end(); iter++ ) {
 			(*iter)->Accept( *this );
 			const IRTree::IStm* statementToAdd = 0;
@@ -437,13 +433,16 @@ void CIRForestBuilder::Visit( const CStatementList& statementList )
 void CIRForestBuilder::Visit( const CAssignStatement& assignStatement )
 {
 	const IRTree::IExp* leftExp = currentFrame->GetAccess( assignStatement.LeftId() )->ToExp( currentFrame );
-	if( assignStatement.IndexExp() != 0 ) {
+	if( assignStatement.IndexExp() != nullptr ) {
 		assignStatement.IndexExp()->Accept( *this );
-		const IRTree::IExp* index = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Plus, lastReturnedExp, new IRTree::CConst( 1 ) ) );
-		leftExp = new IRTree::CMem( new IRTree::CBinop( IRTree::B_Plus, leftExp, index ) );
+		const IRTree::IExp* indexDeFacto = new IRTree::CBinop( IRTree::B_Plus, lastReturnedExp , new IRTree::CConst( 1 ) );
+		const IRTree::IExp* realSize = new IRTree::CBinop( IRTree::B_Mul, indexDeFacto, new IRTree::CConst(  currentFrame->WordSize() ) );
+		
+		leftExp = new IRTree::CBinop( IRTree::B_Plus, new IRTree::CMem( leftExp ), realSize );
 	}
+	leftExp = new IRTree::CMem( leftExp );
 	assignStatement.RightExp()->Accept( *this );
-	const IRTree::IExp* rightExp = lastReturnedExp;
+	const IRTree::IExp* rightExp = new IRTree::CMem( lastReturnedExp );
 	lastReturnedExp = nullptr;
 	lastReturnedStm = new IRTree::CMove( leftExp, rightExp );
 }
@@ -458,8 +457,7 @@ void CIRForestBuilder::Visit( const CPrintStatement& printStatement )
 	// Вызываем функцию
 	Temp::CLabel* funcName = new Temp::CLabel( "System.out.println" );
 	const IRTree::CName* funcNameTree = new IRTree::CName( funcName );
-	// Первый аргумент все равно this
-	const IRTree::CExpList* args = new IRTree::CExpList( currentFrame->ThisPointerExp(), new IRTree::CExpList( exprForPrint, nullptr ) );
+	const IRTree::CExpList* args = new IRTree::CExpList( exprForPrint, nullptr );
 	const IRTree::IExp* funcCall = new IRTree::CCall( funcNameTree, *args );
 	lastReturnedStm = new IRTree::CExp( funcCall );
 }

@@ -16,6 +16,8 @@
 #include <RegisterAllocation\FlowControlGraphBuilder.h>
 #include <RegisterAllocation\VarInterferenceGraphBuilder.h>
 #include <RegisterAllocation\StackBuilder.h>
+#include <PrologueAndEpilogue/EpilogueWriter.h>
+#include <PrologueAndEpilogue/PrologueWriter.h>
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -92,8 +94,6 @@ int main()
 			// Линеаризум деревья в std::vector<std::shared_ptr<const IStm> > 
 			IRTree::CLinearizer linearizer( frame );
 			linearizer.Linearize();
-			linearizer.SplitByLabelAndJump();
-			linearizer.Reorder();
 			// С этим работаем дальше
 
 			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_linearized_" )
@@ -108,11 +108,19 @@ int main()
 			// Выводим все в файл 
 			std::ofstream programmListing( std::string( "Listing__" ) + frame->Name + std::string( ".asm" ) );
 			auto& instList = instructionMuncher.GetInstructionsList();
-			for( size_t i = 0; i < instList.size(); ++i ) {
+			auto prologue = CPrologueWriter::AddPrologue( frame, 0 );
+			auto epilogue = CEpilogueWriter::AddEpilogue( frame );
+			for( auto& inst : prologue ) {
+				programmListing << inst->Assem << std::endl;
+			}
+			for( size_t i = 1; i < instList.size() - 1; ++i ) { 
 #ifdef _DEBUG
 				programmListing << instructionMuncher.GetDebugInfo()[i] << std::endl;
 #endif
 				programmListing << instList[i]->Assem << std::endl;
+			}
+			for( auto& inst : epilogue ) {
+				programmListing << inst->Assem << std::endl;
 			}
 			programmListing.close();
 			

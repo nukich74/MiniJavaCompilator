@@ -16,9 +16,6 @@ public:
 	CLinearizer( const Frame::CFrame* _frame ) : frame( _frame ) {}
 
 	void Linearize();
-	void SplitByLabelAndJump();
-	// Перегруппирует IndependentBlocks таким образом чтобы после каждого CJump шла его false метка
-	void Reorder();
 	std::vector< std::shared_ptr<const IStm> > GetReordered();
 
 	
@@ -30,6 +27,9 @@ private:
 	std::list< std::vector< std::shared_ptr<const IStm> > > independentBlocks;
 
 	void CLinearizer::linearize( std::shared_ptr<const IStm> root );
+	void splitByLabelAndJump();
+	// Перегруппирует IndependentBlocks таким образом чтобы после каждого CJump шла его false метка
+	void reorder();
 	
 };
 

@@ -12,9 +12,11 @@ namespace IRTree {
 void CLinearizer::Linearize( )
 {
 	linearize( std::shared_ptr<const IRTree::IStm>( frame->Stm ) );
+	splitByLabelAndJump();
+	reorder();
 }
 
-void CLinearizer::SplitByLabelAndJump()
+void CLinearizer::splitByLabelAndJump()
 {
 	// Текущий конструируемый независимый блок
 	vector< std::shared_ptr<const IStm> > currentBlock;
@@ -49,7 +51,7 @@ void CLinearizer::SplitByLabelAndJump()
 	independentBlocks.push_back( currentBlock );
 }
 
-void CLinearizer::Reorder()
+void CLinearizer::reorder()
 {
 	for( auto i = independentBlocks.begin(); i != independentBlocks.end(); i++ ) {
 		const CCjump* cjumpNode = dynamic_cast<const CCjump*>( i->back().get() );
@@ -69,7 +71,14 @@ void CLinearizer::Reorder()
 				independentBlocks.erase( j );
 				i--;
 			} else {
-				assert( false );
+				// нельзя поставить false метку после СJUMP
+				// делаем трюк
+				const Temp::CLabel* fakeFalseLabel = new Temp::CLabel();
+				const IRTree::CCjump* newCjump = new IRTree::CCjump( cjumpNode->relop, cjumpNode->left.get(), cjumpNode->right.get(), cjumpNode->iftrue, fakeFalseLabel );
+				i->pop_back();
+				i->emplace_back( newCjump );
+				i->emplace_back( new IRTree::CLabel( fakeFalseLabel ) );
+				i->emplace_back( new IRTree::CJump( cjumpNode->iffalse ) );
 			}
 			continue;
 		}

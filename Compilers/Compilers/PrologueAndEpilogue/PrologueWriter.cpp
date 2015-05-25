@@ -5,7 +5,7 @@
 using namespace std;
 using namespace CodeGeneration;
 
-vector< unique_ptr<CodeGeneration::IInstruction> > CPrologueWriter::AddPrologue( Frame::CFrame* frame, int numberOfTemps )
+vector< unique_ptr<CodeGeneration::IInstruction> > CPrologueWriter::AddPrologue( const Frame::CFrame* frame, int numberOfTemps )
 {
 	vector< unique_ptr<CodeGeneration::IInstruction> > prologue;
 	emit( new CLabel( Temp::CLabel( frame->Name ) ), prologue );
@@ -27,7 +27,7 @@ void CPrologueWriter::emit( CodeGeneration::IInstruction* inst, vector< unique_p
 	instList.emplace_back( unique_ptr<CodeGeneration::IInstruction>( inst ) );
 }
 
-void CPrologueWriter::saveRegisters( Frame::CFrame* frame, vector< unique_ptr<CodeGeneration::IInstruction> >& instList )
+void CPrologueWriter::saveRegisters( const Frame::CFrame* frame, vector< unique_ptr<CodeGeneration::IInstruction> >& instList )
 {
 	emit( new COper( "push 's0", std::list<Temp::CTemp>(), std::list<Temp::CTemp>( 1, *frame->GetRegister( Frame::R_EBX ) ) ),
 		  instList );

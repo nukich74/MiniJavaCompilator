@@ -59,16 +59,6 @@ private:
 
 };
 
-class CInRegister : public IAccess {
-public:
-
-	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const override
-	{
-		throw std::logic_error("The method or operation is not implemented.");
-	}
-
-};
-
 class CFormalParameterInStack : public IAccess {
 public:
 	CFormalParameterInStack( int _number ) : number( _number ) {}
