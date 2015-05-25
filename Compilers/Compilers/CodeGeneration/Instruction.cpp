@@ -3,6 +3,7 @@
 
 #include <CodeGeneration\Instruction.h>
 #include "FineAssert.h"
+#include <cctype>
 
 using namespace CodeGeneration;
 
@@ -16,9 +17,32 @@ IInstruction::IInstruction( const std::string& _Assem, const std::list<Temp::CTe
 
 std::string IInstruction::Format( const std::map<Temp::CTemp, std::string>& varsMapping ) const
 {
+	std::string result( Assem );
 	// Не нужно до распределения регистров.
-	assert( false );
-	return std::string();
+	for( size_t i = 0; i < result.size(); ++i ) {
+		if( result[i] == '\'' ) {
+			int start = i + 1;
+			int end = start;
+			std::string type = std::string( 1, result[start] );
+			std::string number;
+			while( std::isdigit( result[++end] ) ) {
+				number.push_back( result[end] );
+			}
+			const std::list<Temp::CTemp>* from = nullptr;
+			if( type == "d" ) {
+				from = &dst;
+			} else if( type == "s" ) {
+				from = &src;
+			} else {
+				assert( false );
+			}
+			int posInArray = std::stoi( number );
+			auto iter = from->begin();
+			for( int j = 0; j < posInArray; ++j, ++iter ) { }
+			result.replace( result.begin() + i, result.begin() + end, varsMapping[ iter->Name ] );
+		}
+	}
+	return result;
 }
 
 COper::COper( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, const std::list<Temp::CTemp>& _src,
