@@ -442,7 +442,7 @@ void CIRForestBuilder::Visit( const CAssignStatement& assignStatement )
 	}
 	leftExp = new IRTree::CMem( leftExp );
 	assignStatement.RightExp()->Accept( *this );
-	const IRTree::IExp* rightExp = new IRTree::CMem( lastReturnedExp );
+	const IRTree::IExp* rightExp = lastReturnedExp;
 	lastReturnedExp = nullptr;
 	lastReturnedStm = new IRTree::CMove( leftExp, rightExp );
 }
