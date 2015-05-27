@@ -11,6 +11,7 @@
 #include <IRExp.h>
 #include <IRStm.h>
 #include <Frame.h>
+#include <unordered_set>
 
 namespace CodeGeneration {
 
@@ -27,6 +28,8 @@ public:
 	const std::vector< std::unique_ptr<IInstruction> >& GetInstructionsList() const { return instructionsList; }
 
 	const std::vector<std::string>& GetDebugInfo() const { return debugInfo; }
+	// Оборачивает переменные перед использованием mov'ами
+	void FetchStoreSpilledVars( const std::unordered_set<Temp::CTemp>& spilledVars );
 
 private:
 	const std::vector< std::shared_ptr<const IRTree::IStm> >& reorderedStmList;

@@ -23,6 +23,8 @@ public:
 	const std::list<Temp::CTemp>& DefinedVars( ) const { return dst; }
 	const std::list<Temp::CLabel>& JumpTargets( ) const { return labelList; }
 
+	void ChangeVars( std::unordered_map<Temp::CTemp, Temp::CTemp>& excahngeMap );
+
 	std::string Format( const std::unordered_map<Temp::CTemp, std::string>& varsMapping ) const;
 
 #ifdef _DEBUG

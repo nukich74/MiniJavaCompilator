@@ -5,6 +5,8 @@ namespace RegisterAllocation {
 	
 	void CStackBuilder::buildStack() 
 	{
+		colored = false;
+		while ( !colored ) {
 			colored = true;
 			//построение стэка для вершин
 			do {
@@ -33,9 +35,13 @@ namespace RegisterAllocation {
 				vertexStack.pop();
 				vector<Temp::CTemp> vertices;
 				sourceGraph.GetVertices( vertices );
+				//цвета соседей
 				std::unordered_set<int> neighborColors;
+				//набор переменных, входящих в вершину
 				std::unordered_set<Temp::CTemp> coaliced;
+				//имя для парса и извлечения набора переменных вершины
 				std::string vertName = currVertex.Name();
+				//цвет, в который хотим покрасить вершину
 				int assignColor = 0;
 				//вытаскиваем все переменные, свернутые в данную
 				while ( vertName.find("&") != std::string::npos ) {
@@ -45,8 +51,10 @@ namespace RegisterAllocation {
 					coaliced.insert( Temp::CTemp( currTemp ) );
 					vertName = vertName.substr( pos + 1 );
 				}
+				if ( vertName[0] == 'E' ) assignColor = colors[ Temp::CTemp( vertName ) ];
+				coaliced.insert( Temp::CTemp( vertName ) );
+				//если нет предраскрашенных, то пытаемся найти свободный цвет
 				if ( assignColor == 0 ) {
-					coaliced.insert( Temp::CTemp(vertName) );
 					for ( auto vert : vertices ) {
 						for ( auto firstVar : coaliced )
 							if ( sourceGraph.GetEdge( firstVar, vert ) == RegisterAllocation::CVarInterferenceGraphBuilder::ET_Interfere ) {
@@ -60,39 +68,49 @@ namespace RegisterAllocation {
 						}
 					}
 				}
-				if (assignColor == 0) colored = false;
-				for( auto coal : coaliced ) {
-					colors[coal] = assignColor;
-				}
-				//так как исходная вершина с & раскрашена не будет, то делаем это отдельно
-				colors[currVertex] = assignColor;
-			}
-			//удаляем вспомогательную информацию о свернутых переменных
-			//инкремент упрятывается, чтобы не было инкремента невалидного итератора
-			for ( auto iter = colors.begin(); iter != colors.end(); ) {
-				if ( iter->first.Name().find("&") != std::string::npos ) {
-					auto oldIter = iter;
-					++iter; 
-					colors.erase( oldIter );
+				//если не нашло цвета, то все переменные покрасить нельзя, надо перестраивать код
+				if (assignColor == 0) {
+					colored = false;
+					for( auto vert : coaliced ) spilledVars.insert(vert);
 				} else {
-					++iter;
+					//иначе раскрашиваем каждую переменную отдельно
+					for( auto coal : coaliced ) {
+						colors[coal] = assignColor;
+					}
+					//так как исходная вершина с & раскрашена не будет, то делаем это отдельно
+					colors[currVertex] = assignColor;
 				}
 			}
-			//соответствие цветов и регистров
-			std::unordered_map<int, Temp::CTemp> colors2Registers;
-			for ( auto iter = colors.begin(); iter != colors.end(); ++iter ) {
-				if ( iter->first.Name()[0] == 'E' ) {
-					colors2Registers[iter->second] = iter->first;
-				}
-			}
-			for ( auto iter = colors.begin(); iter != colors.end(); ++iter ) {
-				std::string newName = colors2Registers[iter->second].Name();
-				std::transform( newName.begin(), newName.end(), newName.begin(), ::tolower);
-				registers[iter->first] = newName;
-			}
-			registers[Temp::CTemp("ESP")] = "esp";
-			registers[Temp::CTemp("EBP")] = "ebp";
+			//заглушка, чтобы код не зацикливался
+			assert(colored);
 		}
+
+		//удаляем вспомогательную информацию о свернутых переменных
+		//инкремент упрятывается, чтобы не было инкремента невалидного итератора
+		for ( auto iter = colors.begin(); iter != colors.end(); ) {
+			if ( iter->first.Name().find("&") != std::string::npos ) {
+				auto oldIter = iter;
+				++iter; 
+				colors.erase( oldIter );
+			} else {
+				++iter;
+			}
+		}
+		//соответствие цветов и регистров
+		std::unordered_map<int, Temp::CTemp> colors2Registers;
+		for ( auto iter = colors.begin(); iter != colors.end(); ++iter ) {
+			if ( iter->first.Name()[0] == 'E' ) {
+				colors2Registers[iter->second] = iter->first;
+			}
+		}
+		for ( auto iter = colors.begin(); iter != colors.end(); ++iter ) {
+			std::string newName = colors2Registers[iter->second].Name();
+			std::transform( newName.begin(), newName.end(), newName.begin(), ::tolower);
+			registers[iter->first] = newName;
+		}
+		registers[Temp::CTemp("ESP")] = "esp";
+		registers[Temp::CTemp("EBP")] = "ebp";
+	}
 
 	bool CStackBuilder::simplify()
 	{

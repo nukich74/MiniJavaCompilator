@@ -48,6 +48,20 @@ std::string IInstruction::Format( const std::unordered_map<Temp::CTemp, std::str
 	return result;
 }
 
+void IInstruction::ChangeVars( std::unordered_map<Temp::CTemp, Temp::CTemp>& exchangeMap )
+{
+	for( auto iter = dst.begin(); iter != dst.end(); ++iter ) {
+		if ( exchangeMap.find( *iter ) != exchangeMap.end() ) {
+			*iter = exchangeMap[*iter];
+		}
+	}
+	for( auto iter = src.begin(); iter != src.end(); ++iter ) {
+		if ( exchangeMap.find( *iter ) != exchangeMap.end() ) {
+			*iter = exchangeMap[*iter];
+		}
+	}
+}
+
 COper::COper( const std::string& _Assem, const std::list<Temp::CTemp>& _dst, const std::list<Temp::CTemp>& _src,
 	const std::list<Temp::CLabel> _labelList ) :
 	IInstruction( _Assem, _dst, _src, _labelList )
