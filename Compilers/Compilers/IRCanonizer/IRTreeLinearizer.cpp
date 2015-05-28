@@ -74,11 +74,11 @@ void CLinearizer::reorder()
 				// нельзя поставить false метку после СJUMP
 				// делаем трюк
 				const Temp::CLabel* fakeFalseLabel = new Temp::CLabel();
-				const IRTree::CCjump* newCjump = new IRTree::CCjump( cjumpNode->relop, cjumpNode->left.get(), cjumpNode->right.get(), cjumpNode->iftrue, fakeFalseLabel );
+				const IRTree::CCjump* newCjump = new IRTree::CCjump( cjumpNode->relop, cjumpNode->left, cjumpNode->right, cjumpNode->iftrue, fakeFalseLabel );
 				i->pop_back();
-				i->emplace_back( newCjump );
-				i->emplace_back( new IRTree::CLabel( fakeFalseLabel ) );
-				i->emplace_back( new IRTree::CJump( cjumpNode->iffalse ) );
+ 				i->emplace_back( shared_ptr<const IRTree::IStm>( newCjump ) );
+ 				i->emplace_back( new IRTree::CLabel( fakeFalseLabel ) );
+ 				i->emplace_back( new IRTree::CJump( cjumpNode->iffalse ) );
 			}
 			continue;
 		}

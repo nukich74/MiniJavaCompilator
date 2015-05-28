@@ -60,6 +60,17 @@ public:
 // Условный переход по меткам
 class CCjump : public IStm {
 public:
+
+	CCjump( TCJump _relop, std::shared_ptr<const IExp> _left, std::shared_ptr<const IExp> _right, const Temp::CLabel* const _iftrue,
+		const Temp::CLabel* const _iffalse ) :
+		relop( _relop ),
+		left( _left ),
+		right( _right ),
+		iftrue( _iftrue ),
+		iffalse( _iffalse )
+	{
+	}
+
 	CCjump( TCJump _relop, const IExp* const _left, const IExp* const _right, const Temp::CLabel* const _iftrue,
 		const Temp::CLabel* const _iffalse ) :
 		relop( _relop ),
@@ -67,7 +78,8 @@ public:
 		right( _right ),
 		iftrue( _iftrue ),
 		iffalse( _iffalse )
-	{}
+	{
+	}
 
 	virtual void Accept( IVisitor& printer ) const
 	{
