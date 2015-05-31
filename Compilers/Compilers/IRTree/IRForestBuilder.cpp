@@ -480,15 +480,16 @@ void CIRForestBuilder::Visit( const CIfStatement& ifStatement )
 	IRTree::CLabel* trueLabel = new IRTree::CLabel( trueLabelTemp );
 	IRTree::CLabel* falseLabel = new IRTree::CLabel( falseLabelTemp );
 	IRTree::CLabel* endLabel = new IRTree::CLabel( endLabelTemp );
-	IRTree::CJump* jumpToEnd = new IRTree::CJump( endLabelTemp );
+	IRTree::CJump* trueJumpToEnd = new IRTree::CJump( endLabelTemp );
 	ifStatement.IfStatement()->Accept( *this );
-	IRTree::IStm* trueStm = new IRTree::CSeq( trueLabel, lastReturnedStm, jumpToEnd );
+	IRTree::IStm* trueStm = new IRTree::CSeq( trueLabel, lastReturnedStm, trueJumpToEnd );
 	lastReturnedExp = nullptr;
 	lastReturnedStm = nullptr;
 	IRTree::IStm* falseStm = 0;
 	if( ifStatement.ElseStatement() != 0 ) {
 		ifStatement.ElseStatement()->Accept( *this );
-		falseStm = new IRTree::CSeq( falseLabel, lastReturnedStm, jumpToEnd );
+		IRTree::CJump* falseJumpToEnd = new IRTree::CJump( endLabelTemp );
+		falseStm = new IRTree::CSeq( falseLabel, lastReturnedStm, falseJumpToEnd );
 		lastReturnedExp = nullptr;
 		lastReturnedStm = nullptr;
 	}
