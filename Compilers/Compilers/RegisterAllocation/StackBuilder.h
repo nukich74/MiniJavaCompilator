@@ -10,6 +10,7 @@ namespace RegisterAllocation {
 	public:
 		CStackBuilder() : colored(false), k(6) {}
 		void BuildStack( CodeGeneration::CInstructionsMuncher& instructionMuncher );
+		int GetTempCount() { return std::max(registers.size() - 8, unsigned(0) ); }
 		std::unordered_map<Temp::CTemp, std::string> GetRegisterMap() { return registers; }
 	private:
 		int k;
