@@ -127,7 +127,7 @@ void CIRForestBuilder::Visit( const CExpIdVoidExpList& exp )
 	IRTree::CName* functionName = new IRTree::CName( functionLabel );
 	const IRTree::CExpList* args = new IRTree::CExpList( exprToBeCalled, nullptr );
 	const IRTree::CTemp* returnedTemp = new IRTree::CTemp( *currentFrame->ReturnValue() );
-	lastReturnedExp = new IRTree::CEseq( new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, *lastReturnedExpList ) ), returnedTemp );
+	lastReturnedExp = new IRTree::CEseq( new IRTree::CMove( returnedTemp, new IRTree::CCall( functionName, IRTree::CExpList( 0, 0 ) ) ), returnedTemp );
 	lastReturnedExpList = nullptr;
 }
 

@@ -107,13 +107,13 @@ int main()
 			instructionMuncher.CodeGen();
 
 			// Тестируем построение графа потока управления, выводим все в файл
-			/*RegisterAllocation::CFlowControlGraphBuilder flowControlGraphBuilder;
+			RegisterAllocation::CFlowControlGraphBuilder flowControlGraphBuilder;
 			flowControlGraphBuilder.BuildFlowControlGraph( instructionMuncher.GetInstructionsList() );
 			// Тестируем построение графа взаимодействия
 			RegisterAllocation::CVarInterferenceGraphBuilder varInterferenceGraphBuilder;
 			std::vector<RegisterAllocation::CFlowControlVertex*> flowControlVertices;
 			flowControlGraphBuilder.GetFlowControlGraph().CopyVerticesTo( flowControlVertices );
-			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlVertices );*/
+			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlVertices );
 			RegisterAllocation::CStackBuilder stackBuilder;
 			stackBuilder.BuildStack( instructionMuncher );
 
