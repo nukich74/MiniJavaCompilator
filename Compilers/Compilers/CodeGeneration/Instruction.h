@@ -47,6 +47,8 @@ protected:
 	std::list<Temp::CTemp> dst;
 	std::list<Temp::CTemp> src;
 	std::list<Temp::CLabel> labelList;
+
+	static bool isUseless( std::string );
 };
 
 class COper : public IInstruction {

@@ -125,11 +125,14 @@ int main()
 			for( auto& inst : prologue ) {
 				programmListing << inst->Format( stackBuilder.GetRegisterMap() ) << std::endl;
 			}
-			for( size_t i = 1; i < instList.size() - 1; ++i ) { 
+			for( size_t i = 1; i < instList.size(); ++i ) { 
 #ifdef _DEBUG
-				programmListing << instructionMuncher.GetDebugInfo()[i] << std::endl;
+				// programmListing << instructionMuncher.GetDebugInfo()[i] << std::endl;
 #endif
-				programmListing << instList[i]->Format( stackBuilder.GetRegisterMap() ) << std::endl;
+				std::string output = instList[i]->Format( stackBuilder.GetRegisterMap() );
+				if( !output.empty() ) { 
+					programmListing << output << std::endl;
+				}
 			}
 			for( auto& inst : epilogue ) {
 				programmListing << inst->Format( stackBuilder.GetRegisterMap() ) << std::endl;

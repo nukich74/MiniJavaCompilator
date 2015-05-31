@@ -17,9 +17,6 @@ IInstruction::IInstruction( const std::string& _Assem, const std::list<Temp::CTe
 
 std::string IInstruction::Format( const std::unordered_map<Temp::CTemp, std::string>& varsMapping ) const
 {
-	if( !labelList.empty() ) {
-		return Assem;
-	}
 	std::string result( Assem );
 	// Не нужно до распределения регистров.
 	for( size_t i = 0; i < result.size(); ++i ) {
@@ -32,20 +29,37 @@ std::string IInstruction::Format( const std::unordered_map<Temp::CTemp, std::str
 				number.push_back( result[end] );
 			}
 			const std::list<Temp::CTemp>* from = nullptr;
+			const std::list<Temp::CLabel>* fLabel = nullptr;
 			if( type == "d" ) {
 				from = &dst;
 			} else if( type == "s" ) {
 				from = &src;
+			} else if( type == "l" ) {
+				fLabel = &labelList;
 			} else {
 				assert( false );
 			}
 			int posInArray = std::stoi( number );
-			auto iter = from->begin();
-			for( int j = 0; j < posInArray; ++j, ++iter ) { }
-			result.replace( result.begin() + i, result.begin() + end, varsMapping.find( *iter )->second );
+			if( from != nullptr ) {
+				auto iter = from->begin();
+				for( int j = 0; j < posInArray; ++j, ++iter ) { }
+				result.replace( result.begin() + i, result.begin() + end, varsMapping.find( *iter )->second );
+			} else {
+				auto iter = fLabel->begin();
+				for( int j = 0; j < posInArray; ++j, ++iter ) { }
+				result.replace( result.begin() + i, result.begin() + end, iter->Name() );
+			}
 		}
 	}
+	if( isUseless( result ) ) {
+		return std::string();
+	}
 	return result;
+}
+
+bool IInstruction::isUseless( std::string str )
+{
+	return str == "mov eax eax" || str == "mov ebx ebx" || str == "mov ecx ecx" || str == "mov edx edx" || str == "mov esi esi" || str == "mov edi edi";
 }
 
 void IInstruction::ChangeVars( std::unordered_map<Temp::CTemp, Temp::CTemp>& exchangeMap )
