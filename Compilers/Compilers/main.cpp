@@ -107,15 +107,15 @@ int main()
 			instructionMuncher.CodeGen();
 
 			// Тестируем построение графа потока управления, выводим все в файл
-			RegisterAllocation::CFlowControlGraphBuilder flowControlGraphBuilder;
+			/*RegisterAllocation::CFlowControlGraphBuilder flowControlGraphBuilder;
 			flowControlGraphBuilder.BuildFlowControlGraph( instructionMuncher.GetInstructionsList() );
 			// Тестируем построение графа взаимодействия
 			RegisterAllocation::CVarInterferenceGraphBuilder varInterferenceGraphBuilder;
 			std::vector<RegisterAllocation::CFlowControlVertex*> flowControlVertices;
 			flowControlGraphBuilder.GetFlowControlGraph().CopyVerticesTo( flowControlVertices );
-			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlVertices );
-			RegisterAllocation::CStackBuilder stackBuilder( varInterferenceGraphBuilder.GetVarInterferenceGraph() );
-			stackBuilder.buildStack();
+			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlVertices );*/
+			RegisterAllocation::CStackBuilder stackBuilder;
+			stackBuilder.BuildStack( instructionMuncher );
 
 			// Выводим все в файл 
 			std::ofstream programmListing( std::string( "Listing__" ) + frame->Name + std::string( ".asm" ) );
@@ -123,16 +123,16 @@ int main()
 			auto prologue = CPrologueWriter::AddPrologue( frame, 0 );
 			auto epilogue = CEpilogueWriter::AddEpilogue( frame );
 			for( auto& inst : prologue ) {
-				programmListing << inst->Format( stackBuilder.getRegisterMap() ) << std::endl;
+				programmListing << inst->Format( stackBuilder.GetRegisterMap() ) << std::endl;
 			}
 			for( size_t i = 1; i < instList.size() - 1; ++i ) { 
 #ifdef _DEBUG
 				programmListing << instructionMuncher.GetDebugInfo()[i] << std::endl;
 #endif
-				programmListing << instList[i]->Format( stackBuilder.getRegisterMap() ) << std::endl;
+				programmListing << instList[i]->Format( stackBuilder.GetRegisterMap() ) << std::endl;
 			}
 			for( auto& inst : epilogue ) {
-				programmListing << inst->Format( stackBuilder.getRegisterMap() ) << std::endl;
+				programmListing << inst->Format( stackBuilder.GetRegisterMap() ) << std::endl;
 			}
 			programmListing.close();
 			

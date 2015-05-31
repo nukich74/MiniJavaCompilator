@@ -2,14 +2,15 @@
 #include "VarInterferenceGraphBuilder.h"
 #include "DirectedGraph.hpp"
 #include <stack>
+#include "CodeGeneration\InstructionsMuncher.h"
 
 namespace RegisterAllocation {
 
 	class CStackBuilder {
 	public:
-		CStackBuilder(CVarInterferenceGraphBuilder::CGraph inputGraph) : colored(false), sourceGraph(inputGraph), varGraph(inputGraph), k(6) {}
-		void buildStack();
-		std::unordered_map<Temp::CTemp, std::string> getRegisterMap() { assert(colored); return registers; }
+		CStackBuilder() : colored(false), k(6) {}
+		void BuildStack( CodeGeneration::CInstructionsMuncher& instructionMuncher );
+		std::unordered_map<Temp::CTemp, std::string> GetRegisterMap() { return registers; }
 	private:
 		int k;
 		std::stack<Temp::CTemp> vertexStack;
@@ -26,6 +27,7 @@ namespace RegisterAllocation {
 		bool spill();
 		bool select();
 		bool freeze();
+		void preparation();
 	};
 
 }

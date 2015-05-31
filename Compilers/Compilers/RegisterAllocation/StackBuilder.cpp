@@ -1,13 +1,25 @@
 ﻿#include "StackBuilder.h"
 #include <string>
+#include "CodeGeneration\InstructionsMuncher.h"
 
 namespace RegisterAllocation {
 	
-	void CStackBuilder::buildStack() 
+	void CStackBuilder::BuildStack( CodeGeneration::CInstructionsMuncher& instructionMuncher ) 
 	{
 		colored = false;
 		while ( !colored ) {
 			colored = true;
+			instructionMuncher.FetchStoreSpilledVars( spilledVars );
+			//очищаем поля класса для работы с нуля
+			preparation();
+			RegisterAllocation::CFlowControlGraphBuilder flowControlGraphBuilder;
+			flowControlGraphBuilder.BuildFlowControlGraph( instructionMuncher.GetInstructionsList() );
+			RegisterAllocation::CVarInterferenceGraphBuilder varInterferenceGraphBuilder;
+			std::vector<RegisterAllocation::CFlowControlVertex*> flowControlVertices;
+			flowControlGraphBuilder.GetFlowControlGraph().CopyVerticesTo( flowControlVertices );
+			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlVertices );
+			sourceGraph = varInterferenceGraphBuilder.GetVarInterferenceGraph();
+			varGraph = varInterferenceGraphBuilder.GetVarInterferenceGraph();
 			//построение стэка для вершин
 			do {
 				bool isSimplified = simplify();
@@ -81,8 +93,6 @@ namespace RegisterAllocation {
 					colors[currVertex] = assignColor;
 				}
 			}
-			//заглушка, чтобы код не зацикливался
-			assert(colored);
 		}
 
 		//удаляем вспомогательную информацию о свернутых переменных
@@ -187,4 +197,11 @@ namespace RegisterAllocation {
 		return false;
 	}
 
+}
+
+void RegisterAllocation::CStackBuilder::preparation()
+{
+	colors.clear();
+	registers.clear();
+	spilledVars.clear();
 }

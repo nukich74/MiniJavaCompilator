@@ -126,4 +126,5 @@ void CInstructionsMuncher::FetchStoreSpilledVars( const std::unordered_set<Temp:
 			newInstructionList.emplace_back( storeComand );
 		}
 	}
+	instructionsList.swap( newInstructionList );
 }
