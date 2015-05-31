@@ -99,6 +99,10 @@ void CIRTreeCallLifter::Visit( const CEseq* node )
 
 void CIRTreeCallLifter::Visit( const CExpList* node )
 {
+	if( node->head == 0 ) {
+		lastExpList = new CExpList( 0, 0 );
+		return;
+	}
 	node->head->Accept( *this );
 	IExp* tmpHead = lastExp;
 	if( node->tail != nullptr ) {

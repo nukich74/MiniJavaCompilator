@@ -67,19 +67,18 @@ void CFrame::AddField( const std::string _name, const IAccess* _var )
 const IRTree::IExp* CInFrame::ToExp( const Frame::CFrame* frame ) const
 {
 	// Смещаемся в область меньших адресов
+	// сохраняется 6 регистров и ret addr
 	return new IRTree::CMem( new IRTree::CBinop(
 		IRTree::B_Minus, new IRTree::CTemp( *( frame->FramePointer() ) ),
-		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
-		new IRTree::CConst( number + 1 ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
+		new IRTree::CBinop( IRTree::B_Mul, new IRTree::CConst( number + 7 ), new IRTree::CConst( frame->WordSize() ) ) ) );
 }
 
 
 const IRTree::IExp* CInObject::ToExp( const Frame::CFrame* frame ) const
 {
 	return new IRTree::CMem( new IRTree::CBinop(
-		IRTree::B_Plus, new IRTree::CTemp( *( frame->ThisPointer() ) ),
-		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
-		new IRTree::CConst( offsetInWords ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
+		IRTree::B_Plus, frame->ThisPointerExp(), new IRTree::CBinop( IRTree::B_Mul,
+		new IRTree::CConst( offsetInWords ), new IRTree::CConst( frame->WordSize() ) ) ) );
 }
 
 std::string to_string( TRegisters registerType )
@@ -111,9 +110,8 @@ std::string to_string( TRegisters registerType )
 const IRTree::IExp* CFormalParameterInStack::ToExp( const Frame::CFrame* frame ) const
 {
 	return new IRTree::CMem( new IRTree::CBinop(
-		IRTree::B_Plus, new IRTree::CTemp( *( frame->FramePointer() ) ),
-		new IRTree::CMem( new IRTree::CBinop( IRTree::B_Mul,
-		new IRTree::CConst( number ), new IRTree::CConst( frame->WordSize() ) ) ) ) );
+		IRTree::B_Plus, new IRTree::CTemp( *( frame->FramePointer() ) ), new IRTree::CBinop( IRTree::B_Mul,
+		new IRTree::CConst( number ), new IRTree::CConst( frame->WordSize() ) ) ) );
 }
 
 } // namespace Frame

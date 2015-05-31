@@ -9,10 +9,8 @@
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
     <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />
     <ClCompile Include="IRTree\Temp.cpp" />
-    <ClCompile Include="SubtreeWrapper.cpp" />
     <ClCompile Include="SymbolsTable\TypeChecker.cpp" />
     <ClCompile Include="SymbolsTable\SymbolsTable.cpp" />
-    <ClCompile Include="StatementWrapper.cpp" />
     <ClCompile Include="Frame.cpp" />
     <ClCompile Include="Digrapg.cpp" />
     <ClCompile Include="IRTree\IRTreeToDigraphConverter.cpp" />
@@ -27,6 +25,10 @@
     <ClCompile Include="CodeGeneration\InstructionsMuncherForAzat.cpp" />
     <ClCompile Include="RegisterAllocation\FlowControlGraphBuilder.cpp" />
     <ClCompile Include="RegisterAllocation\VarInterferenceGraphBuilder.cpp" />
+    <ClCompile Include="ConditionalWrapper.cpp" />
+    <ClCompile Include="PrologueAndEpilogue\EpilogueWriter.cpp" />
+    <ClCompile Include="PrologueAndEpilogue\PrologueWriter.cpp" />
+    <ClCompile Include="RegisterAllocation\StackBuilder.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Visitor.h" />
@@ -66,8 +68,6 @@
     <ClInclude Include="SymbolsTable\TypeChecker.h" />
     <ClInclude Include="SymbolsTable\SymbolsTable.h" />
     <ClInclude Include="StmConverter.h" />
-    <ClInclude Include="ExpConverter.h" />
-    <ClInclude Include="StatementWrapper.h" />
     <ClInclude Include="Digrapg.h" />
     <ClInclude Include="IRTree\IRTreeToDigraphConverter.h" />
     <ClInclude Include="IRTree\IRForestBuilder.h" />
@@ -80,6 +80,11 @@
     <ClInclude Include="RegisterAllocation\DirectedGraph.hpp" />
     <ClInclude Include="RegisterAllocation\FlowControlGraphBuilder.h" />
     <ClInclude Include="RegisterAllocation\VarInterferenceGraphBuilder.h" />
+    <ClInclude Include="ConditionalWrapper.h" />
+    <ClInclude Include="FineAssert.h" />
+    <ClInclude Include="PrologueAndEpilogue\PrologueWriter.h" />
+    <ClInclude Include="PrologueAndEpilogue\EpilogueWriter.h" />
+    <ClInclude Include="RegisterAllocation\StackBuilder.h" />
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="parser.y" />

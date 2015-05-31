@@ -15,6 +15,9 @@
 #include "IRExp.h"
 #include <RegisterAllocation\FlowControlGraphBuilder.h>
 #include <RegisterAllocation\VarInterferenceGraphBuilder.h>
+#include <RegisterAllocation\StackBuilder.h>
+#include <PrologueAndEpilogue/EpilogueWriter.h>
+#include <PrologueAndEpilogue/PrologueWriter.h>
 
 int yyparse( std::shared_ptr<CProgram>& astRoot, int* );
 
@@ -91,8 +94,6 @@ int main()
 			// Линеаризум деревья в std::vector<std::shared_ptr<const IStm> > 
 			IRTree::CLinearizer linearizer( frame );
 			linearizer.Linearize();
-			linearizer.SplitByLabelAndJump();
-			linearizer.Reorder();
 			// С этим работаем дальше
 
 			IRTree::CIRTreeToDigraphConverter irTreeToDigraphConverter( std::string( "IRTree_linearized_" )
@@ -104,13 +105,7 @@ int main()
 
 			CodeGeneration::CInstructionsMuncher instructionMuncher( reordered, frame );
 			instructionMuncher.CodeGen();
-			// Выводим все в файл 
-			std::ofstream programmListing( std::string( "Listing__" ) + frame->Name + std::string( ".asm" ) );
-			for( const auto& line : instructionMuncher.GetInstructionsList() ) {
-				programmListing << line->Assem << std::endl;
-			}
-			programmListing.close();
-			
+
 			// Тестируем построение графа потока управления, выводим все в файл
 			RegisterAllocation::CFlowControlGraphBuilder flowControlGraphBuilder;
 			flowControlGraphBuilder.BuildFlowControlGraph( instructionMuncher.GetInstructionsList() );
@@ -119,7 +114,29 @@ int main()
 			std::vector<RegisterAllocation::CFlowControlVertex*> flowControlVertices;
 			flowControlGraphBuilder.GetFlowControlGraph().CopyVerticesTo( flowControlVertices );
 			varInterferenceGraphBuilder.BuildVarInterferenceGraph( flowControlVertices );
-			varInterferenceGraphBuilder.GetVarInterferenceGraph();
+			RegisterAllocation::CStackBuilder stackBuilder;
+			stackBuilder.BuildStack( instructionMuncher );
+
+			// Выводим все в файл 
+			std::ofstream programmListing( std::string( "Listing__" ) + frame->Name + std::string( ".asm" ) );
+			auto& instList = instructionMuncher.GetInstructionsList();
+			auto prologue = CPrologueWriter::AddPrologue( frame, 0 );
+			auto epilogue = CEpilogueWriter::AddEpilogue( frame );
+			for( auto& inst : prologue ) {
+				programmListing << inst->Format( stackBuilder.GetRegisterMap() ) << std::endl;
+			}
+			for( size_t i = 1; i < instList.size() - 1; ++i ) { 
+#ifdef _DEBUG
+				programmListing << instructionMuncher.GetDebugInfo()[i] << std::endl;
+#endif
+				programmListing << instList[i]->Format( stackBuilder.GetRegisterMap() ) << std::endl;
+			}
+			for( auto& inst : epilogue ) {
+				programmListing << inst->Format( stackBuilder.GetRegisterMap() ) << std::endl;
+			}
+			programmListing.close();
+			
+			
 		}
 	}
 

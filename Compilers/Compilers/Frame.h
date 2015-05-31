@@ -59,16 +59,6 @@ private:
 
 };
 
-class CInRegister : public IAccess {
-public:
-
-	virtual const IRTree::IExp* ToExp( const Frame::CFrame* frame ) const override
-	{
-		throw std::logic_error("The method or operation is not implemented.");
-	}
-
-};
-
 class CFormalParameterInStack : public IAccess {
 public:
 	CFormalParameterInStack( int _number ) : number( _number ) {}
@@ -88,10 +78,7 @@ private:
 class CFrame {
 public:
 	CFrame( const std::string _name ) :
-		Name( _name ), ThisCounter( 0 ), LocalCounter( 0 ), 
-		framePointer( new Temp::CTemp( _name + "_FP" ) ), 
-		thisPointer( new Temp::CTemp( _name + "_thisPointer" ) ),
-		returnValue( new Temp::CTemp( _name + "_returnValue" ) ) 
+		Name( _name ), ThisCounter( 0 ), LocalCounter( 0 )
 	{
 		for( int i = 0; i < R_Count; ++i ) {
 			registers.emplace_back( std::shared_ptr<const Temp::CTemp>( new const Temp::CTemp( to_string( static_cast< TRegisters >( i ) ) ) ) );
@@ -108,16 +95,16 @@ public:
 
 	// FP нужен для того чтобы получать смещение для локальных переменных внутри функции
 	const Temp::CTemp* FramePointer() const {
-		return framePointer.get();
+		return GetRegister( R_EBP );
 	}
 
 	// this нужен чтобы получать смещения на поля объекта класса
-	const Temp::CTemp* ThisPointer() const {
-		return thisPointer.get();
+	const IRTree::IExp* ThisPointerExp() const {
+		return new IRTree::CMem( new IRTree::CTemp( *FramePointer() ) );
 	}
 
 	const Temp::CTemp* ReturnValue() const {
-		return returnValue.get();
+		return GetRegister( R_EAX );
 	}
 
 	// Машинно зависимая информация
@@ -135,7 +122,7 @@ public:
 	const IAccess* GetField( std::string name ) const;
 	void AddField( const std::string _name, const IAccess* _var );
 
-	// Доступ к переменной (не известно какой local, formal или какой то другой)
+	// Доступ к переменной (не известно какой local, formal или какой-то другой)
 	const IAccess* GetAccess( std::string _name ) const;
 
 	// Корень IRTree для текущей функции
@@ -153,9 +140,6 @@ private:
 	std::map<const std::string, const IAccess* > locals;
 	std::map<const std::string, const IAccess* > fields;
 
-	std::shared_ptr<const Temp::CTemp> framePointer;
-	std::shared_ptr<const Temp::CTemp> thisPointer;
-	std::shared_ptr<const Temp::CTemp> returnValue;
 	std::vector< std::shared_ptr<const Temp::CTemp> > registers;
 };
 

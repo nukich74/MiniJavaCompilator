@@ -5,7 +5,7 @@
 #include "IRStm.h"
 #include "Temp.h"
 #include "SubtreeWrapper.h"
-#include <assert.h>
+#include "FineAssert.h"
 
 namespace Translate {
 

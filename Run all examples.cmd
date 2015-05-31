@@ -10,3 +10,4 @@ compilers.exe < ../../Test3.java
 compilers.exe < ../../Test4.java
 compilers.exe < ../../Test5.java
 compilers.exe < ../../Test6.java
+compilers.exe < ../../Interference.txt

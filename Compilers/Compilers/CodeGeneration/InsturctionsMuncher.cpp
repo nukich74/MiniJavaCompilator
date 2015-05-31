@@ -88,4 +88,43 @@ void CInstructionsMuncher::munchStm( const IRTree::IStm* stm )
 void CInstructionsMuncher::emit( IInstruction* instruction )
 {
 	instructionsList.emplace_back( std::unique_ptr<IInstruction>( instruction ) );
+#ifdef _DEBUG
+	debugInfo.push_back( instruction->DebugInfo() );
+#endif
+}
+
+void CInstructionsMuncher::FetchStoreSpilledVars( const std::unordered_set<Temp::CTemp>& spilledVars )
+{
+	std::vector< std::unique_ptr<IInstruction> > newInstructionList;
+	for ( auto iter = instructionsList.begin(); iter != instructionsList.end(); ++iter ) {
+		const std::list<Temp::CTemp>& defs = iter->get()->DefinedVars();
+		const std::list<Temp::CTemp>& used = iter->get()->UsedVars();
+		std::unordered_map<Temp::CTemp, Temp::CTemp> exchangeMap;
+		std::unordered_map<Temp::CTemp, Temp::CTemp> storedMap;		
+		for ( auto usedVar = used.begin(); usedVar != used.begin(); ++usedVar ) {
+			if ( spilledVars.find( *usedVar ) != spilledVars.end() ) {
+				exchangeMap[*usedVar] =  Temp::CTemp();
+				IInstruction* fetchInstruction = new CMove("mov 'd0 's0", std::list<Temp::CTemp>(1, exchangeMap[*usedVar]), 
+						std::list<Temp::CTemp>(1, *usedVar));
+				newInstructionList.emplace_back( fetchInstruction );
+			}
+		}
+		//для начала надо вставить модифицированную инструкцию, только потом store команды.
+		for ( auto defVar = defs.begin(); defVar != defs.begin(); ++defVar ) {
+			if ( spilledVars.find( *defVar ) != spilledVars.end() ) {
+				Temp::CTemp newTempVar =  Temp::CTemp();
+				exchangeMap[*defVar] = newTempVar;
+				storedMap[*defVar] = newTempVar;
+			}
+		}
+		iter->get()->ChangeVars( exchangeMap );
+		newInstructionList.emplace_back( iter->release() );
+		//вставка store команд
+		for ( auto storeParams = storedMap.begin(); storeParams != storedMap.end(); ++storeParams ) {
+			IInstruction* storeComand = new CMove("mov 'd0 's0", std::list<Temp::CTemp>(1, storeParams->first), 
+					std::list<Temp::CTemp>(1, storeParams->second) );
+			newInstructionList.emplace_back( storeComand );
+		}
+	}
+	instructionsList.swap( newInstructionList );
 }
