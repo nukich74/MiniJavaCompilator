@@ -161,12 +161,14 @@ int CInstructionsMuncher::munchArgs( const IRTree::CExpList exp )
 {
 	std::list<const IRTree::IExp*> args;
 	IRTree::CExpList tmp = exp;
-	while( true ) {
-		args.push_back( tmp.head.get() );
-		if( tmp.tail.get() == 0 ) {
-			break;
-		} else {
-			tmp = *tmp.tail.get();
+	if( tmp.head != 0 ) {
+		while( true ) {
+			args.push_back( tmp.head.get() );
+			if( tmp.tail.get() == 0 ) {
+				break;
+			} else {
+				tmp = *tmp.tail.get();
+			}
 		}
 	}
 	for( auto iter = args.rbegin(); iter != args.rend(); ++iter ) {
