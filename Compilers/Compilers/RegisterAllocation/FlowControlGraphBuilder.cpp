@@ -60,9 +60,7 @@ void CFlowControlGraphBuilder::addInstructionsToGraph( const vector<unique_ptr<I
 		for( const Temp::CLabel& label : vertex->Instruction->JumpTargets() ) {
 			auto it = labels.find( label );
 			if( it != labels.end() ) {
-				if( !flowControlGraph.HasEdge( vertex, it->second ) ) {
-					flowControlGraph.AddEdge( vertex, it->second );
-				}
+				flowControlGraph.AddEdge( vertex, it->second );
 			}
 		}
 	}

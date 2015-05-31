@@ -155,6 +155,7 @@
     <ClCompile Include="RegisterAllocation\FlowControlGraphBuilder.cpp" />
     <ClCompile Include="RegisterAllocation\VarInterferenceGraphBuilder.cpp" />
     <ClCompile Include="StatementWrapper.cpp" />
+    <ClCompile Include="SubtreeWrapper.cpp" />
     <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />
     <ClCompile Include="SymbolsTable\SymbolsTable.cpp" />
     <ClCompile Include="SymbolsTable\SymbolTableConstructor.cpp" />

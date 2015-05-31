@@ -9,6 +9,7 @@
     <ClCompile Include="AbstractTree\PrettyPrinterVisitor.cpp" />
     <ClCompile Include="SymbolsTable\ErrorsAggregator.cpp" />
     <ClCompile Include="IRTree\Temp.cpp" />
+    <ClCompile Include="SubtreeWrapper.cpp" />
     <ClCompile Include="SymbolsTable\TypeChecker.cpp" />
     <ClCompile Include="SymbolsTable\SymbolsTable.cpp" />
     <ClCompile Include="StatementWrapper.cpp" />
