@@ -308,6 +308,9 @@ void CIRTreeEseqLifter::Visit( const CExpList* node )
 		CExpList* newHeadExpList = new CExpList( *iter, resultExpList );
 		resultExpList = newHeadExpList;
 	}
+	if ( resultExpList == 0 ) {
+		resultExpList = new CExpList( 0, 0 );
+	}
 	lastBuildPair = make_pair( resultStm, resultExpList );
 }
 
